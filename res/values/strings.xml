@@ -4,5 +4,7 @@
     <string name="app_name">SoundScape</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="main_btn_record">Start Recording</string>
+    <string name="main_btn_recording">Recording...</string>
 
 </resources>
