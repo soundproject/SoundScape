@@ -1,6 +1,5 @@
 package il.ac.idc.milab.soundscape;
 
-import android.R.bool;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -70,12 +69,10 @@ public class MainActivity extends Activity {
 			private Button m_ThisButton = (Button) findViewById(R.id.mainBtnRecord);
 			private SoundRecorder m_SoundRecorder = new SoundRecorder();
 			
-			private boolean m_Recording; 
-			
 			@Override
 			public void onClick(View v) {
 				
-				if (m_Recording)
+				if (m_SoundRecorder.isRecording())
 				{
 					m_SoundRecorder.stopRecording();
 				} else
@@ -83,10 +80,8 @@ public class MainActivity extends Activity {
 					m_SoundRecorder.startRecording();
 				}
 				
-				String text = m_Recording ? getString(R.string.main_btn_record) :
-								getString(R.string.main_btn_recording);
-				
-				m_Recording = !m_Recording;
+				String text = m_SoundRecorder.isRecording() ? getString(R.string.main_btn_recording) :
+								getString(R.string.main_btn_record);
 				
 				m_ThisButton.setText(text);
 			}
