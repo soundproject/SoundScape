@@ -12,4 +12,13 @@
         android:layout_centerVertical="true"
         android:text="@string/main_btn_record" />
 
+    <Button
+        android:id="@+id/welcome_btn_show_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mainBtnRecord"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="78dp"
+        android:text="@string/main_btn_show_location" />
+
 </RelativeLayout>
