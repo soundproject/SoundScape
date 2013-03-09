@@ -1,7 +1,11 @@
 package il.ac.idc.milab.soundscape;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,7 +71,8 @@ public class MainActivity extends Activity {
 		
 		m_RecordButton.setOnClickListener(new OnClickListener() {			
 			private Button m_ThisButton = (Button) findViewById(R.id.mainBtnRecord);
-			private SoundRecorder m_SoundRecorder = new SoundRecorder();
+			File directoryForRecording = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+			private SoundRecorder m_SoundRecorder = new SoundRecorder(directoryForRecording);
 			
 			@Override
 			public void onClick(View v) {
@@ -94,5 +99,4 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
-
 }
