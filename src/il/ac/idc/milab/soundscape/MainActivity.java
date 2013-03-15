@@ -25,6 +25,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// TODO: Get list of games and create their buttons
+		
 		// init recorder
 		initRecorder();
 		
