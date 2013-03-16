@@ -1,20 +1,23 @@
 package il.ac.idc.milab.soundscape;
 
 import java.io.File;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.storage.StorageManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    // instance variables
+    private static final String TAG = null;
+	// instance variables
     GPSTracker m_Gps;
     Button m_ShowLocationButton;
     Button m_RecordButton;
@@ -28,13 +31,52 @@ public class MainActivity extends Activity {
 		// TODO: Get list of games and create their buttons
 		
 		// init recorder
-		initRecorder();
+//		initRecorder();
 		
 		// init GPS
-		initGpsTracker();
+//		initGpsTracker();
+		
+		Button[] buttons  = initGamesButtons();
 		
 	}
 
+	private Button[] initGamesButtons() {
+		// TODO Auto-generated method stub
+
+		// TODO: get games from server?
+		String[] opponents = {"Alice", "Bob", "Eve"}; // this simulates list of opponents from server
+		
+		Button[] buttons = new Button[opponents.length];
+
+		LayoutParams param = new LinearLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f);
+		
+		LinearLayout linear = (LinearLayout) findViewById(R.id.mainLayoutLinear);
+
+		for(int i = 0; i < buttons.length; i++)
+		{
+			Button button = new Button(getApplicationContext());
+			button.setLayoutParams(param);
+			button.setPadding(10, 5, 10, 5);
+			button.setText(opponents[i]);
+			buttons[i] = button;
+			linear.addView(button);
+			button.setOnClickListener(createOnClickListener(button));
+		}
+
+		return buttons;
+	}
+
+	View.OnClickListener createOnClickListener(final Button button)  {
+		return new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent startPlayingGameActivity = new Intent("il.ac.idc.milab.soundscape.MainGameActivity");
+				startPlayingGameActivity.putExtra("Opponent", button.getText());
+				startActivityForResult(startPlayingGameActivity, 0);
+			}
+		};
+	}
+	
 	private void initGpsTracker() {
     	// GPS related code
         m_ShowLocationButton = (Button) findViewById(R.id.welcome_btn_show_location);
@@ -100,5 +142,11 @@ public class MainActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent intentData) {
+
+		String name = (String) intentData.getExtras().get("Name");
+		Log.i(TAG, "Returning to main menu..." + name);
 	}
 }

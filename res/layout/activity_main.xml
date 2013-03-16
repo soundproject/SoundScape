@@ -21,4 +21,15 @@
         android:layout_marginTop="78dp"
         android:text="@string/main_btn_show_location" />
 
+    <LinearLayout
+        android:id="@+id/mainLayoutLinear"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="47dp"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
 </RelativeLayout>

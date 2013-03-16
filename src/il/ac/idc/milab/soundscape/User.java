@@ -8,6 +8,11 @@ public class User
 	
 	private String m_Name;
 	
+	public User(String i_Name) {
+		// TODO Auto-generated constructor stub
+		this.m_Name = i_Name;
+	}
+	
 	public String getName()
 	{
 		return this.m_Name;
