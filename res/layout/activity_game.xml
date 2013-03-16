@@ -1,0 +1,263 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/game_container_linear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity" 
+    android:orientation="vertical">
+
+    <Button 
+        android:id="@+id/game_button_giveup"
+        android:text="@string/game_button_give_up"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/music_note"
+        android:layout_gravity="center|center_vertical" />
+    
+    <Button 
+        android:id="@+id/game_button_play_audio"
+        android:text="@string/game_button_audio_text"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" 
+        />
+    
+    <LinearLayout
+        android:id="@+id/game_guess_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:showDividers="beginning" >
+
+		<TextView 
+		    android:id="@+id/game_word_letter_1"
+		    android:text="R"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border"
+		    android:layout_marginLeft="10dp" 
+		    
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_word_letter_2"
+		    android:text="A"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_word_letter_3"
+		    android:text="I"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_word_letter_4"
+		    android:text="N"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/game_guess_letters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:showDividers="beginning" >
+
+        <TextView 
+		    android:id="@+id/game_guess_letter_1"
+		    android:text="A"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border"
+		    android:layout_marginLeft="10dp" 
+		    
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_2"
+		    android:text="B"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_3"
+		    android:text="C"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_4"
+		    android:text="D"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_5"
+		    android:text="C"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_6"
+		    android:text="D"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/game_guess_letters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:showDividers="beginning" >
+
+        <TextView 
+		    android:id="@+id/game_guess_letter_1"
+		    android:text="A"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border"
+		    android:layout_marginLeft="10dp" 
+		    
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_2"
+		    android:text="B"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_3"
+		    android:text="C"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_4"
+		    android:text="D"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_5"
+		    android:text="C"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+
+		    />
+		
+		<TextView 
+		    android:id="@+id/game_guess_letter_6"
+		    android:text="D"
+		    android:textSize="20sp"
+		    android:gravity="center"
+		    android:layout_width="30dp"
+		    android:layout_height="30dp"
+		    android:padding="2dp"
+		    android:background="@drawable/border" 
+		    android:layout_marginLeft="10dp"
+		    />
+        
+    </LinearLayout>
+
+</LinearLayout>

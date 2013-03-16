@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".LoginActivity" >
+
+   
+    <TextView
+        android:id="@+id/login_text_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/app_name"
+        android:textSize="30sp" />
+    
+    <TextView
+        android:id="@+id/login_text_view_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_text_view_title"
+        android:layout_marginTop="50dp"
+        android:text="@string/login_email"
+        android:textSize="15sp" />
+   
+    <EditText
+        android:id="@+id/login_edit_text_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/login_text_view_email"
+        android:layout_alignBottom="@+id/login_text_view_email"
+        android:layout_alignParentRight="true"
+        android:ems="10"
+        android:inputType="textEmailAddress" >
+        
+        <requestFocus />
+	</EditText>
+    
+    <TextView
+        android:id="@+id/login_text_view_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/login_edit_text_password"
+        android:layout_alignBottom="@+id/login_edit_text_password"
+        android:layout_alignLeft="@+id/login_text_view_email"
+        android:text="@string/login_password"
+        android:textSize="15sp" />
+    
+    <EditText
+        android:id="@+id/login_edit_text_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/login_edit_text_email"
+        android:layout_below="@+id/login_edit_text_email"
+        android:layout_marginTop="49dp"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/login_button_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_edit_text_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:text="@string/login_button_start" />
+
+</RelativeLayout>
