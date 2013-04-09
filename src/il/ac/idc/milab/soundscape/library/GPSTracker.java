@@ -1,4 +1,4 @@
-package il.ac.idc.milab.soundscape;
+package il.ac.idc.milab.soundscape.library;
 
 import android.app.AlertDialog;
 import android.app.Service;
