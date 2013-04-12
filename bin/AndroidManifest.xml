@@ -7,11 +7,9 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="17" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.INTERNET" >
-    </uses-permission>
+    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +28,10 @@
         <activity
             android:name="il.ac.idc.milab.soundscape.GameLobbyActivity"
             android:label="@string/title_activity_game_lobby" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.LoginActivity"
+            android:label="@string/title_activity_login" >
         </activity>
     </application>
 
