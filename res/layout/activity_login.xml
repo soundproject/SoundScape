@@ -30,11 +30,10 @@
    
     <EditText
         android:id="@+id/login_edit_text_email"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/login_text_view_email"
-        android:layout_alignBottom="@+id/login_text_view_email"
-        android:layout_alignParentRight="true"
+		android:layout_below="@+id/login_text_view_email"
+		android:layout_alignLeft="@+id/login_text_view_email"
         android:ems="10"
         android:hint="@string/login_email_hint"
         android:inputType="textEmailAddress" >
@@ -46,30 +45,47 @@
         android:id="@+id/login_text_view_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/login_edit_text_password"
-        android:layout_alignBottom="@+id/login_edit_text_password"
+        android:layout_marginTop="30dp"
         android:layout_alignLeft="@+id/login_text_view_email"
+        android:layout_below="@+id/login_edit_text_email"
         android:text="@string/login_password"
         android:textSize="15sp" />
     
     <EditText
         android:id="@+id/login_edit_text_password"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/login_edit_text_email"
-        android:layout_below="@+id/login_edit_text_email"
-        android:layout_marginTop="49dp"
-        android:ems="10"
+        android:layout_alignLeft="@+id/login_text_view_password"
+        android:layout_below="@+id/login_text_view_password"
         android:hint="@string/login_password_hint"
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/login_button_start"
+        android:id="@+id/login_button_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/login_edit_text_password"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="39dp"
-        android:text="@string/login_button_start" />
+        android:layout_marginTop="40dp"
+        android:text="@string/login_button_login" />
+    
+    <TextView
+        android:id="@+id/login_text_view_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/login_button_login"
+        android:layout_marginTop="10dp"
+        android:text="Result Window"
+        android:textSize="15sp" />
+    
+    <Button
+        android:id="@+id/login_button_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_text_view_result"
+		android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/login_button_register" />
 
 </RelativeLayout>

@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="17" />
-    
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -32,6 +32,18 @@
         <activity
             android:name="il.ac.idc.milab.soundscape.LoginActivity"
             android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.RegistrationActivity"
+            android:label="@string/title_activity_registration" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.SoundRecordingActivity"
+            android:label="@string/title_activity_sound_recording" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.WordSelectionActivity"
+            android:label="@string/title_activity_word_selection" >
         </activity>
     </application>
 

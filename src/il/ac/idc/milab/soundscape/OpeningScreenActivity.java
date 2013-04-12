@@ -6,29 +6,73 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 
 public class OpeningScreenActivity extends Activity {
 
+	private Button m_UserNew;
+	private Button m_UserExisting;
+	private String m_Token;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_opening_screen);
 
 		// TODO: Change the following methods into a more secure method
-		String token = getSessionToken();
-		Log.i("TOKEN", "The token is: " + token);
+		m_Token = getSessionToken();
+		Log.i("TOKEN", "The token is: " + m_Token);
 		
 		// Check if token is available, if not that means it has either expired
 		// or it doesn't exist, both cases require the user to login
-		if(token == null) {
-			Log.i("LOGIN", "Starting Login Activity");
-			startLoginActivity();
+		if(m_Token != null) {
+			Log.i("GAME", "Starting Game Activity");
+			startGameLobbyActivity(m_Token);
 		}
-		
-		Log.i("GAME", "Starting Game Activity");
-		startGameLobbyActivity(token);
+		else {
+			setContentView(R.layout.activity_opening_screen);
+			m_UserNew = (Button)findViewById(R.id.opening_button_user_new);
+			m_UserNew.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Log.i("REGISTRATION", "Starting Registration Activity");
+					startRegistrationActivity();
+				}
+			});
+			
+			m_UserExisting = (Button)findViewById(R.id.opening_button_user_existing);
+			m_UserExisting.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Log.i("LOGIN", "Starting Login Activity");
+					startLoginActivity();
+				}
+			});
+			/*
+			// Move to main menu of the game
+			Intent main = new Intent(getApplicationContext(),
+					GameLobbyActivity.class);
+
+			// Clear non relevant activities from the activity class
+			main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(main);
+			*/
+
+		}
 	}
 	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// If the activity successfully finished
+		if(resultCode == Activity.RESULT_OK) {
+			startGameLobbyActivity(m_Token);
+		}
+		else if(resultCode == Activity.RESULT_FIRST_USER) {
+			startRegistrationActivity();
+		}
+	}
+
 	/**
 	 * This method returns an existing authentication token if present or null
 	 * @return a valid token or null if one does not exist
@@ -44,12 +88,21 @@ public class OpeningScreenActivity extends Activity {
 	}
 
 	/**
-	 * Start a new login process for the user
+	 * Starts the registration process for the user 
+	 */
+	protected void startRegistrationActivity() {
+		Intent registration = new Intent(getApplicationContext(), 
+				RegistrationActivity.class);
+		startActivityForResult(registration, 1);
+	}
+	
+	/**
+	 * Starts the login process for the user
 	 */
 	private void startLoginActivity() {
-		Intent intent = new Intent(this.getApplicationContext(), LoginActivity.class);
-		startActivity(intent);
-		finish();
+		Intent intent = new Intent(this.getApplicationContext(), 
+				LoginActivity.class);
+		startActivityForResult(intent, 2);
 	}
 	
 	/**
@@ -57,7 +110,8 @@ public class OpeningScreenActivity extends Activity {
 	 * @param token the authentication token of the user
 	 */
 	private void startGameLobbyActivity(String token) {
-		Intent intent = new Intent(this.getApplicationContext(), GameLobbyActivity.class);
+		Intent intent = new Intent(this.getApplicationContext(), 
+				GameLobbyActivity.class);
 		intent.putExtra("TOKEN", token);
 		startActivity(intent);
 		finish();

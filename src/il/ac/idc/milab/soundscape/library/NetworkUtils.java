@@ -22,7 +22,27 @@ public class NetworkUtils {
 
 	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
 	
-	public NetworkUtils() {}
+    // Client JSON request keys
+	public static final String k_JsonKeyTag = "tag";
+	public static final String k_JsonKeyToken = "token";
+	public static final String k_JsonKeyName = "name";
+	public static final String k_JsonKeyEmail = "email";
+	public static final String k_JsonKeyPassword = "password";
+    
+    // Client JSON request values
+	public static final String k_JsonValueTagLogin = "login";
+	public static final String k_JsonValueTagRegister = "register";
+    
+    // Server JSON response keys
+	public static final String k_JsonKeyError = "error";
+	public static final String k_JsonKeyErrorMessage = "error_msg";
+	public static final String k_JsonKeySuccess = "success";
+	
+	// Server Status codes
+	public static final int k_FlagOn = 1;
+	public static final int k_FlagOff = 0;
+	
+	private NetworkUtils() {}
  
     private static String convertStreamToString(InputStream is) {
         /*
@@ -56,18 +76,17 @@ public class NetworkUtils {
      */
     public static JSONObject sendJsonPostRequest(JSONObject json)
     {
- 
-        HttpClient httpclient = new DefaultHttpClient();
- 
+    	HttpClient httpclient = new DefaultHttpClient();
+   	 
         // Prepare a request object
         HttpPost httpPost = new HttpPost(k_ServerUrl);
         
-        String body = json.toString();
+        String requestBody = json.toString();
         
         // Set the POST request entity (body)
         StringEntity stringEntity;
 		try {
-			stringEntity = new StringEntity(body);
+			stringEntity = new StringEntity(requestBody);
 			httpPost.setEntity(stringEntity);
 		} catch (UnsupportedEncodingException e1) {
 			Log.e("sendJsonPostRequest", "Malformed body in StringEntity");
@@ -80,11 +99,9 @@ public class NetworkUtils {
     
         // Execute the request
         HttpResponse response = null;
-		//PostRequestTask task = new PostRequestTask().execute(httpPost);
+        String responseBody = "";
         try {
             response = httpclient.execute(httpPost);
-            // Examine the response status
-            Log.i("SERVER",response.getStatusLine().toString());
  
             // Get hold of the response entity
             HttpEntity entity = response.getEntity();
@@ -95,8 +112,7 @@ public class NetworkUtils {
  
                 // A Simple JSON Response Read
                 InputStream instream = entity.getContent();
-                String result = convertStreamToString(instream);
-                Log.i("SERVER",result);
+                responseBody = convertStreamToString(instream);
  
                 // Closing the input stream will trigger connection release
                 instream.close();
@@ -110,27 +126,14 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         
-        String responseEntity = response.getEntity().toString();
-        
 		try {
-			json = new JSONObject(responseEntity);
+			json = new JSONObject(responseBody);
 		} catch (JSONException e) {
-			Log.e("JSON", responseEntity);
+			Log.e("RESPONSE", "Malformed JSON string: " + responseBody);
 		}
 		
 		return json;
     }
-    
-    // JSON request keys
-    private static final String k_JsonKeyTag = "tag";
-    private static final String k_JsonKeyToken = "token";
-    private static final String k_JsonKeyName = "name";
-    private static final String k_JsonKeyEmail = "email";
-    private static final String k_JsonKeyPassword = "password";
-    
-    // JSON request values
-    private static final String k_JsonValueTagLogin = "login";
-    private static final String k_JsonValueTagRegister = "register";
  
     /**
      * This function is responsible for creating the Login Request JSON object
@@ -188,19 +191,9 @@ public class NetworkUtils {
 
         return sendJsonPostRequest(json);
     }
-    /*
-	private class PostRequestTask extends AsyncTask<JSONObject, Integer, HttpResponse> {
-	    protected JSONObject doInBackground(JSONObject... json) {
-	    	
-	    }
-
-	    protected void onProgressUpdate(Integer... progress) {
-	        setProgressPercent(progress[0]);
-	    }
-
-	    protected void onPostExecute(Long result) {
-	        
-	    }
+    
+	public static JSONObject getWords() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	*/
 }

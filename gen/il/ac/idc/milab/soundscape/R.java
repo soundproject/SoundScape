@@ -25,47 +25,81 @@ public final class R {
         public static final int sound=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f080007;
-        public static final int brand_logo=0x7f080006;
-        public static final int login_button_start=0x7f080005;
+        public static final int action_settings=0x7f08001b;
+        public static final int app_name=0x7f080008;
+        public static final int brand_logo=0x7f080009;
+        public static final int login_button_login=0x7f080005;
+        public static final int login_button_register=0x7f080007;
         public static final int login_edit_text_email=0x7f080002;
         public static final int login_edit_text_password=0x7f080004;
         public static final int login_text_view_email=0x7f080001;
         public static final int login_text_view_password=0x7f080003;
+        public static final int login_text_view_result=0x7f080006;
         public static final int login_text_view_title=0x7f080000;
+        public static final int opening_button_user_existing=0x7f08000a;
+        public static final int opening_button_user_new=0x7f08000b;
+        public static final int record_button=0x7f080017;
+        public static final int recording_time_text_view=0x7f080018;
+        public static final int recording_word_text_view=0x7f080019;
+        public static final int registration_button_register=0x7f080015;
+        public static final int registration_edit_text_email=0x7f080010;
+        public static final int registration_edit_text_name=0x7f08000e;
+        public static final int registration_edit_text_password=0x7f080012;
+        public static final int registration_edit_text_repassword=0x7f080014;
+        public static final int registration_text_view_email=0x7f08000f;
+        public static final int registration_text_view_name=0x7f08000d;
+        public static final int registration_text_view_password=0x7f080011;
+        public static final int registration_text_view_repassword=0x7f080013;
+        public static final int registration_text_view_result=0x7f080016;
+        public static final int registration_text_view_title=0x7f08000c;
+        public static final int word_list_layout=0x7f08001a;
     }
     public static final class layout {
         public static final int activity_game_lobby=0x7f030000;
         public static final int activity_login=0x7f030001;
         public static final int activity_opening_screen=0x7f030002;
+        public static final int activity_registration=0x7f030003;
+        public static final int activity_sound_recording=0x7f030004;
+        public static final int activity_word_selection=0x7f030005;
     }
     public static final class menu {
         public static final int game_lobby=0x7f070000;
         public static final int login=0x7f070001;
         public static final int opening_screen=0x7f070002;
+        public static final int registration=0x7f070003;
+        public static final int sound_recording=0x7f070004;
+        public static final int word_selection=0x7f070005;
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int game_button_audio_text=0x7f050013;
-        public static final int game_button_give_up=0x7f050014;
-        public static final int hello_world=0x7f050003;
-        public static final int login_button_start=0x7f050012;
-        public static final int login_email=0x7f05000e;
-        public static final int login_email_hint=0x7f05000f;
-        public static final int login_password=0x7f050010;
-        public static final int login_password_hint=0x7f050011;
-        public static final int main_btn_record=0x7f050006;
-        public static final int main_btn_recording=0x7f050007;
-        public static final int main_btn_show_location=0x7f050008;
-        public static final int main_button_new_game=0x7f050009;
-        public static final int menu_settings=0x7f050005;
+        public static final int game_button_audio_text=0x7f050017;
+        public static final int game_button_give_up=0x7f050018;
+        public static final int hello_world=0x7f05001a;
+        public static final int login_button_login=0x7f050014;
+        public static final int login_button_register=0x7f050015;
+        public static final int login_email=0x7f050010;
+        public static final int login_email_hint=0x7f050011;
+        public static final int login_message_auth_fail=0x7f050016;
+        public static final int login_password=0x7f050012;
+        public static final int login_password_hint=0x7f050013;
+        public static final int opening_button_user_existing=0x7f050005;
+        public static final int opening_button_user_new=0x7f050004;
+        public static final int registration_button_register=0x7f05000e;
+        public static final int registration_email=0x7f050008;
+        public static final int registration_email_hint=0x7f050009;
+        public static final int registration_message_auth_fail=0x7f05000f;
+        public static final int registration_name=0x7f050006;
+        public static final int registration_name_hint=0x7f050007;
+        public static final int registration_password=0x7f05000a;
+        public static final int registration_password_hint=0x7f05000b;
+        public static final int registration_repassword=0x7f05000c;
+        public static final int registration_repassword_hint=0x7f05000d;
         public static final int title_activity_game_lobby=0x7f050002;
-        public static final int title_activity_login=0x7f050004;
-        public static final int title_activity_main_game=0x7f05000d;
-        public static final int title_section1=0x7f05000c;
-        public static final int title_section2=0x7f05000b;
-        public static final int title_section3=0x7f05000a;
+        public static final int title_activity_login=0x7f050003;
+        public static final int title_activity_registration=0x7f050019;
+        public static final int title_activity_sound_recording=0x7f05001b;
+        public static final int title_activity_word_selection=0x7f05001c;
     }
     public static final class style {
         /** 
