@@ -22,6 +22,7 @@ public class SoundRecorder {
 
 	public SoundRecorder(File i_FileDirectory) {
 		this.m_FileDirectory = i_FileDirectory;
+		Log.i(TAG, "Setting directory to " + i_FileDirectory.toString());
 		this.initAudioRecorder();
 	}
 
@@ -42,7 +43,7 @@ public class SoundRecorder {
 		Log.i(TAG, "Audio Recorder intialized...");
 	}
 
-	public void startRecording() {
+	public File startRecording() {
 		// TODO Auto-generated method stub
 		m_Recording = true;
 		String filename = this.generateNextFile();
@@ -66,6 +67,7 @@ public class SoundRecorder {
 			m_mediaRecorder.reset();
 			// e.printStackTrace();
 		}
+		return new File(filename);
 	}
 
 	private String generateNextFile() {
@@ -90,6 +92,11 @@ public class SoundRecorder {
 
 	public boolean isRecording() {
 		return this.m_Recording;
+	}
+
+	public void release() {
+		// TODO Auto-generated method stub
+		this.m_mediaRecorder.release();
 	}
 
 }

@@ -47,22 +47,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int sound=0x7f020008;
     }
     public static final class id {
-        public static final int action_settings=0x7f090036;
+        public static final int action_settings=0x7f090039;
         public static final int app_name=0x7f09001c;
         public static final int brand_logo=0x7f09001d;
+        public static final int delete_sound_button=0x7f09002f;
         public static final int finduser_button_submit=0x7f090008;
         public static final int finduser_edit_text_email=0x7f090007;
         public static final int finduser_text_view_question=0x7f090006;
         public static final int finduser_text_view_result=0x7f090009;
         public static final int finduser_text_view_title=0x7f090005;
         public static final int header=0x7f09000a;
-        public static final int header_bomb_icon=0x7f090034;
-        public static final int header_button_map=0x7f090030;
-        public static final int header_button_settings=0x7f090031;
-        public static final int header_image_view_star_icon=0x7f090032;
-        public static final int header_text_view_bomb_number=0x7f090035;
-        public static final int header_text_view_score=0x7f090033;
-        public static final int header_text_view_title=0x7f09002f;
+        public static final int header_bomb_icon=0x7f090037;
+        public static final int header_button_map=0x7f090033;
+        public static final int header_button_settings=0x7f090034;
+        public static final int header_image_view_star_icon=0x7f090035;
+        public static final int header_text_view_bomb_number=0x7f090038;
+        public static final int header_text_view_score=0x7f090036;
+        public static final int header_text_view_title=0x7f090032;
         public static final int line_seperator=0x7f090001;
         public static final int lobby_button_create_game=0x7f09000c;
         public static final int login_button_login=0x7f090012;
@@ -86,8 +87,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int newgame_text_view_title=0x7f090000;
         public static final int opening_button_user_existing=0x7f09001e;
         public static final int opening_button_user_new=0x7f09001f;
-        public static final int record_button=0x7f09002b;
-        public static final int recording_time_text_view=0x7f09002c;
+        public static final int play_recording_button=0x7f09002e;
+        public static final int record_button=0x7f09002c;
+        public static final int recording_time_text_view=0x7f09002b;
         public static final int recording_word_text_view=0x7f09002d;
         public static final int registration_button_register=0x7f090029;
         public static final int registration_edit_text_email=0x7f090024;
@@ -100,8 +102,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int registration_text_view_repassword=0x7f090027;
         public static final int registration_text_view_result=0x7f09002a;
         public static final int registration_text_view_title=0x7f090020;
+        public static final int save_sound_button=0x7f090030;
         public static final int title_text_view_my_games=0x7f09000b;
-        public static final int word_list_layout=0x7f09002e;
+        public static final int word_list_layout=0x7f090031;
     }
     public static final class layout {
         public static final int activity_create_game=0x7f030000;

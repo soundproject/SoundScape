@@ -4,14 +4,6 @@
     android:layout_height="match_parent"
     tools:context=".SoundRecordingActivity" >
 
-    <Button
-        android:id="@+id/record_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="130dp" />
-
     <TextView
         android:id="@+id/recording_time_text_view"
         android:layout_width="wrap_content"
@@ -28,5 +20,37 @@
         android:layout_alignRight="@+id/recording_time_text_view"
         android:layout_marginBottom="54dp"
         android:text="TextView" />
+
+    <Button
+        android:id="@+id/play_recording_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/recording_time_text_view"
+        android:layout_toLeftOf="@+id/delete_sound_button"
+        android:text="Play" />
+
+    <Button
+        android:id="@+id/record_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/play_recording_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="54dp" />
+
+    <Button
+        android:id="@+id/delete_sound_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/play_recording_button"
+        android:layout_toRightOf="@+id/record_button"
+        android:text="Delete" />
+
+    <Button
+        android:id="@+id/save_sound_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/play_recording_button"
+        android:layout_toLeftOf="@+id/play_recording_button"
+        android:text="Save" />
 
 </RelativeLayout>
