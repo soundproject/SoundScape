@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class SoundRecordingActivity extends Activity {
 
-	private static final CharSequence MAX_RECORDING_TIME = "15";
+	private static final Integer MAX_RECORDING_TIME = SoundRecorder.MAXIMUM_RECORDING_LENGTH / 1000;
 	SoundRecorder soundRecorder;
 
 	@Override
@@ -38,7 +38,7 @@ public class SoundRecordingActivity extends Activity {
 
 		recordingButton.setText("Start Recording");
 		TextView availableTime = (TextView) findViewById(R.id.recording_time_text_view);
-		availableTime.setText(MAX_RECORDING_TIME);
+		availableTime.setText(MAX_RECORDING_TIME.toString());
 
 		recordingButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -52,7 +52,6 @@ public class SoundRecordingActivity extends Activity {
 				}
 			}
 		});
-
 	}
 
 	private void initSoundRecorder() {

@@ -20,7 +20,8 @@ import android.util.Log;
  
 public class NetworkUtils {
 
-	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
+//	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
+	public static final String k_ServerUrl = "http://10.0.0.4/index.php";
 	
     // Client JSON request keys
 	public static final String k_JsonKeyTag = "tag";
@@ -192,8 +193,25 @@ public class NetworkUtils {
         return sendJsonPostRequest(json);
     }
     
+	/**
+	 * Gets list of words from server
+	 * @return response containing list of words as JSONobject mapped to "words"
+	 */
 	public static JSONObject getWords() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		JSONObject result = new JSONObject();
+		JSONObject words = new JSONObject();
+		try {
+			words.put("1", "Cat");
+			words.put("2", "Dog");
+			words.put("3", "Laughter");
+			words.put("4", "Train");
+			result.put("words", words);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("WORDS_DEBUG", result.toString());
+		return result;
 	}
 }

@@ -12,7 +12,7 @@ import android.util.Log;
 public class SoundRecorder {
 
 	private static final String TAG = "SOUND_RECORDER";
-	private static final int MAXIMUM_RECORDING_LENGTH = 20000;
+	public static final int MAXIMUM_RECORDING_LENGTH = 20000;
 
 	private boolean m_Recording = false;
 

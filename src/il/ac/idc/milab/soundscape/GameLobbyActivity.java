@@ -1,7 +1,8 @@
 package il.ac.idc.milab.soundscape;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class GameLobbyActivity extends Activity {
@@ -15,6 +16,14 @@ public class GameLobbyActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		launchWordSelection();
+	}
+
+	private void launchWordSelection() {
+		// TODO Auto-generated method stub
+		
+		Intent intent = new Intent(getApplicationContext(), WordSelectionActivity.class);
+		startActivity(intent);
 		
 	}
 

@@ -59,19 +59,19 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 	private String[] getWords() {
 		// TODO Auto-generated method stub
 
-		String[] words = { "Hello", "Goodbye", "Cat", "Dog" };
+//		String[] words = { "Hello", "Goodbye", "Cat", "Dog" };
 
 		// Disabled for now - Assumes response is in format:
 		// {..... "words": {"1": word1, "2": word2 ....}}
 		// where 1 is easy, 2 is medium etc.
-		words = new String[NUMBER_OF_WORDS];
+		String[] words = new String[NUMBER_OF_WORDS];
 		JSONObject response = NetworkUtils.getWords();
 		try 
 		{
 			JSONObject jsonWords = response.getJSONObject("words");
 			for (int i = 0; i < jsonWords.length(); i++)
 			{
-				words[i] = (String)jsonWords.get(String.format("%d", i));
+				words[i] = (String)jsonWords.get(String.format("%d", i + 1));
 				Log.d(TAG, "Got word " + words[i]);
 			}
 		} catch (JSONException e) {
