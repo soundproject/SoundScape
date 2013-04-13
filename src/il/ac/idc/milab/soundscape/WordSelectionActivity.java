@@ -1,5 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
+import java.util.concurrent.ExecutionException;
+
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 
 import org.json.JSONException;
@@ -7,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +23,8 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "WordSelection";
 	private static final int NUMBER_OF_WORDS = 4;
+	public static final String k_FreeStyle = "freestyle";
+	private JSONObject m_jsonWords;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +42,32 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		wordListLayout.removeAllViews();
 
 		// get new list of words
-		String[] words = getWords();
+		String[] words = null;
+		try 
+		{
+			JSONObject result = new GetWordsTask().execute().get(); 
+			this.m_jsonWords = result.optJSONObject(NetworkUtils.k_JsonKeyWords);
+			
+			words = new String[m_jsonWords.length()];
+			for (int i = 0; i < m_jsonWords.length(); i++)
+			{
+				words[i] = (String)m_jsonWords.get(String.format("%d", i + 1));
+				Log.d(TAG, "Got word " + words[i]);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Generate button for freestyle words
 		Button wordButton = new Button(getApplicationContext());
-		wordButton.setText("FREE RECORDING");
+		wordButton.setText(k_FreeStyle);
 		wordButton.setOnClickListener(this);
 		wordListLayout.addView(wordButton, new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -56,7 +82,7 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private String[] getWords() {
+	private JSONObject getWords() {
 		// TODO Auto-generated method stub
 
 //		String[] words = { "Hello", "Goodbye", "Cat", "Dog" };
@@ -66,9 +92,10 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		// where 1 is easy, 2 is medium etc.
 		String[] words = new String[NUMBER_OF_WORDS];
 		JSONObject response = NetworkUtils.getWords();
+		JSONObject jsonWords = null;
 		try 
 		{
-			JSONObject jsonWords = response.getJSONObject("words");
+			jsonWords = response.getJSONObject("words");
 			for (int i = 0; i < jsonWords.length(); i++)
 			{
 				words[i] = (String)jsonWords.get(String.format("%d", i + 1));
@@ -79,7 +106,7 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 		Log.i(TAG, "List of words recieved");
-		return words;
+		return jsonWords;
 	}
 
 	@Override
@@ -96,12 +123,33 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		startRecordingActivity(button.getText().toString());
 	}
 
-	private void startRecordingActivity(String string) {
+	private void startRecordingActivity(String word) {
 		// TODO Auto-generated method stub
-		Log.d(TAG, "Selected word was: " + string);
+		Log.d(TAG, "Selected word was: " + word);
 		Intent intent = new Intent(getApplicationContext(),
 				SoundRecordingActivity.class);
-		intent.putExtra("word", string);
+		intent.putExtra("word", word);
+		int difficulty = 0;
+		
+		for (int i = 0; i < this.m_jsonWords.length(); i++)
+		{
+			if (this.m_jsonWords.opt(String.format("%d", i + 1)) == word)
+			{
+				difficulty = i + 1;
+				break;
+			}
+		}
+
+		intent.putExtra("difficulty", difficulty);
 		startActivity(intent);
+		finish();
+	}
+	
+	private class GetWordsTask extends AsyncTask<Void, Void, JSONObject> 
+	{		
+		@Override
+		protected JSONObject doInBackground(Void... params) {
+	    	return NetworkUtils.getWords();
+	    }
 	}
 }

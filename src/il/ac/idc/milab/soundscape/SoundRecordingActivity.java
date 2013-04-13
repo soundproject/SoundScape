@@ -7,6 +7,7 @@ import il.ac.idc.milab.soundscape.library.SoundRecorder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,12 +19,14 @@ import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class SoundRecordingActivity extends Activity implements OnClickListener {
@@ -37,6 +40,8 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 	private Button m_saveButton;
 	private Button m_playRecordingButton;
 	private TextView m_recordingWordTextView;
+	private TextView m_soundNameTextView;
+	private EditText m_soundNameEditText;
 	private File m_file;
 
 	@Override
@@ -50,8 +55,8 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		initButtons();
 
+		initButtons();
 
 		// init sound recorder:
 		initSoundRecorder();
@@ -67,22 +72,30 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 
 
 	private void initButtons() {
-		
+
 		// Get buttons
 		m_recordingButton = (Button) findViewById(R.id.record_button);
 		m_deleteButton = (Button) findViewById(R.id.delete_sound_button);
 		m_saveButton = (Button) findViewById(R.id.save_sound_button);
 		m_playRecordingButton = (Button) findViewById(R.id.play_recording_button);
 		m_recordingWordTextView = (TextView) findViewById(R.id.recording_word_text_view);
-		
+		m_soundNameEditText = (EditText) findViewById(R.id.sound_name_editText);
+		m_soundNameTextView = (TextView) findViewById(R.id.sound_name_textView);
+
 		// set text
 		String recordingWord = getIntent().getExtras().getString("word");
-		m_recordingWordTextView.setText(String.format("Try to record: %s", recordingWord));
+		m_recordingWordTextView.setText(String.format("You're now recording: %s", recordingWord));
+		this.m_isFreeStyleRecording = recordingWord.equals(WordSelectionActivity.k_FreeStyle);
+		
+		
+		Log.d(TAG, "Freestyle = " + this.m_isFreeStyleRecording);
 
 		// Hide appropriate buttons:
-		toggleButton(m_deleteButton);
-		toggleButton(m_playRecordingButton);
-		toggleButton(m_saveButton);
+		toggleControl(m_deleteButton);
+		toggleControl(m_playRecordingButton);
+		toggleControl(m_saveButton);
+		toggleControl(m_soundNameEditText);
+		toggleControl(m_soundNameTextView);
 
 		// Add listeners to buttons
 		this.m_playRecordingButton.setOnClickListener(new OnClickListener() {
@@ -111,24 +124,32 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 				}
 			}
 		});
-		
+
 		this.m_deleteButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				toggleSaveDeleteMode();				
 			}
 		});
-		
+
 		this.m_saveButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				saveAndSendFile();
-				Intent intent = new Intent(getApplicationContext(), GameLobbyActivity.class);
-				startActivity(intent);
-				finish();
+				Log.d("************", "STATUS: " + m_isFreeStyleRecording);
+				if (!m_isFreeStyleRecording || !m_soundNameEditText.getText().toString().trim().isEmpty())
+				{	
+					Log.d(TAG, "Text is " + m_soundNameEditText.getText().toString());
+					saveAndSendFile();
+					Intent intent = new Intent(getApplicationContext(), GameLobbyActivity.class);
+					startActivity(intent);
+					finish();
+				} else
+				{
+					Log.e(TAG, "Freestyle and name is empty");
+				}
 			}
 		});
 	}
@@ -136,35 +157,49 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 
 	private void saveAndSendFile() 
 	{
-		
+
 		this.m_mediaPlayer.release();
 		this.m_soundRecorder.release();
-		
+
 		// Build metadata
 		JSONObject fileMetaData = new JSONObject();
 		try {
-			fileMetaData.put("word", getIntent().getExtras().getString("word"));
+			String word = m_isFreeStyleRecording ? m_soundNameEditText.getText().toString() :
+				getIntent().getExtras().getString("word");
+			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);
+			fileMetaData.put(NetworkUtils.k_JsonKeyDifficulty, getIntent().getExtras().getInt("difficulty"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Get shared preferences
 		SharedPreferences prefs = getSharedPreferences("il.ac.idc.milab.soundscape", MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		editor.putString(this.m_file.getName(), fileMetaData.toString());
 		editor.commit();
-		
+
 		// Try to send:
-		if (NetworkUtils.sendFile(this.m_file))
-		{
-			editor.remove(this.m_file.getName());
-			deleteFile(this.m_file.getName());
-		} else
-		{
-			// TODO: what??
+		JSONObject result = null;
+		try {
+			result = new SendFileTask().execute(this.m_file.getAbsoluteFile().toString(), fileMetaData.toString()).get();
+
+			if (result.optInt(NetworkUtils.k_JsonKeySuccess) == NetworkUtils.k_FlagOn)
+			{
+				Log.i(TAG, "Removing file " + this.m_file.getName() + " and deleting metadata");
+				editor.remove(this.m_file.getName());
+				deleteFile(this.m_file.getName());
+				Log.i(TAG, "File " + this.m_file.getName() + " deleted");
+			}
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+
 	}
 
 
@@ -185,14 +220,15 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 	}
 
 	private boolean m_isPlayDeleteMode = false;
+	private boolean m_isFreeStyleRecording;
 
 	private void toggleSaveDeleteMode() 
 	{
 		m_isPlayDeleteMode = !m_isPlayDeleteMode;
 		// Add save/delete/play buttons
-		toggleButton(this.m_saveButton);
-		toggleButton(this.m_deleteButton);
-		toggleButton(this.m_playRecordingButton);
+		toggleControl(this.m_saveButton);
+		toggleControl(this.m_deleteButton);
+		toggleControl(this.m_playRecordingButton);
 
 		// Initialize sound recorder as needed
 		if(m_isPlayDeleteMode)
@@ -206,6 +242,14 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 					m_playRecordingButton.setText("Start");
 				}
 			});
+
+			if (m_isFreeStyleRecording)
+			{
+				toggleControl(m_soundNameEditText);
+				toggleControl(m_soundNameTextView);
+				m_soundNameTextView.setText("Please enter sound:");
+			}
+
 		} else 
 		{
 			Log.d(TAG, "Deleting file " + this.m_file.getName());
@@ -213,14 +257,14 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 		}
 
 		// toggle record button
-		toggleButton(this.m_recordingButton);
+		toggleControl(this.m_recordingButton);
 	}
 
-	private void toggleButton(Button i_button)
+	private void toggleControl(View i_control)
 	{
-		i_button.setEnabled(!i_button.isEnabled());
-		int visibility = i_button.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE;
-		i_button.setVisibility(visibility);
+		i_control.setEnabled(!i_control.isEnabled());
+		int visibility = i_control.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE;
+		i_control.setVisibility(visibility);
 	}
 
 	private void initSoundRecorder() {
@@ -233,6 +277,13 @@ public class SoundRecordingActivity extends Activity implements OnClickListener 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.sound_recording, menu);
 		return true;
+	}
+
+	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
+		@Override
+		protected JSONObject doInBackground(String... credentials) {
+			return NetworkUtils.sendFile(credentials[0], credentials[1]);
+		}
 	}
 
 }
