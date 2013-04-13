@@ -16,12 +16,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
  
 public class NetworkUtils {
 
 //	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
-	public static final String k_ServerUrl = "http://10.0.0.4/index.php";
+	public static final String k_ServerUrl = "http://10.0.0.16/miLab/index.php";
 	
     // Client JSON request keys
 	public static final String k_JsonKeyTag = "tag";
@@ -33,6 +35,7 @@ public class NetworkUtils {
     // Client JSON request values
 	public static final String k_JsonValueTagLogin = "login";
 	public static final String k_JsonValueTagRegister = "register";
+	public static final String k_JsonValueTagValidate = "validate";
     
     // Server JSON response keys
 	public static final String k_JsonKeyError = "error";
@@ -77,6 +80,7 @@ public class NetworkUtils {
      */
     public static JSONObject sendJsonPostRequest(JSONObject json)
     {
+    	Log.d("NETWORK", "Sending JSON to Server: " + json.toString());
     	HttpClient httpclient = new DefaultHttpClient();
    	 
         // Prepare a request object
@@ -90,7 +94,7 @@ public class NetworkUtils {
 			stringEntity = new StringEntity(requestBody);
 			httpPost.setEntity(stringEntity);
 		} catch (UnsupportedEncodingException e1) {
-			Log.e("sendJsonPostRequest", "Malformed body in StringEntity");
+			Log.e("NETWORK", "Malformed body in StringEntity");
 		}
         
         //sets a request header so the page receiving the request
@@ -98,15 +102,27 @@ public class NetworkUtils {
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-Type", "application/json");
     
+        Log.d("NETWORK", "The request line is: " + httpPost.getRequestLine().toString());
+		try {
+			Log.d("NETWORK", "The request body is: " + convertStreamToString(httpPost.getEntity().getContent()));
+		} catch (IllegalStateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
         // Execute the request
         HttpResponse response = null;
         String responseBody = "";
         try {
             response = httpclient.execute(httpPost);
- 
+            Log.d("NETWORK", "The response status line is: " + response.getStatusLine().toString());
+
             // Get hold of the response entity
             HttpEntity entity = response.getEntity();
-            
+
             // If the response does not enclose an entity, there is no need
             // to worry about connection release
             if (entity != null) {
@@ -114,23 +130,21 @@ public class NetworkUtils {
                 // A Simple JSON Response Read
                 InputStream instream = entity.getContent();
                 responseBody = convertStreamToString(instream);
- 
+                Log.d("NETWORK", "The response body: " + responseBody);
+                json = new JSONObject(responseBody);
                 // Closing the input stream will trigger connection release
                 instream.close();
             }
  
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
+        	Log.d("NETWORK", "HTTP protocol Error!");
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+        	Log.d("NETWORK", "The connection was aborted!");
             e.printStackTrace();
-        }
-        
-		try {
-			json = new JSONObject(responseBody);
-		} catch (JSONException e) {
-			Log.e("RESPONSE", "Malformed JSON string: " + responseBody);
+        } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return json;
@@ -141,7 +155,7 @@ public class NetworkUtils {
      * @param i_Email the email of the user
      * @param i_Password the password of the user
      * */
-    public static JSONObject UserLogin(String i_Email, String i_Password){
+    public static JSONObject userLogin(String i_Email, String i_Password){
         // Building Parameters
     	JSONObject json = new JSONObject();
     	try {
@@ -151,6 +165,7 @@ public class NetworkUtils {
     	}
     	catch(JSONException e) {
     		Log.e("UserLogin", "Got an unexpected error.");
+    		return null;
     	}
 
         return sendJsonPostRequest(json);
@@ -162,7 +177,7 @@ public class NetworkUtils {
      * @param i_Email the email address of the user
      * @param i_Password the password of the user
      * */
-    public static JSONObject UserRegister(String i_Name, String i_Email, String i_Password){
+    public static JSONObject userRegister(String i_Name, String i_Email, String i_Password){
     	JSONObject json = new JSONObject();
     	try {
     		json.put(k_JsonKeyTag, k_JsonValueTagRegister);
@@ -172,22 +187,7 @@ public class NetworkUtils {
     	}
     	catch(JSONException e) {
     		Log.e("UserRegister", "Got an unexpected error.");
-    	}
-
-        return sendJsonPostRequest(json);
-    }
-    
-    /**
-     * function make Login Request
-     * @param i_Token the token used for this session
-     * */
-    public static JSONObject MainMenu(String i_Token){
-    	JSONObject json = new JSONObject();
-    	try {
-    		json.put(k_JsonKeyTag, k_JsonKeyToken);
-    	}
-    	catch(JSONException e) {
-    		Log.e("MainMenu", "Got an unexpected error.");
+    		return null;
     	}
 
         return sendJsonPostRequest(json);
@@ -211,7 +211,26 @@ public class NetworkUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("WORDS_DEBUG", result.toString());
+		
 		return result;
+	}
+
+	public static JSONObject checkToken(String token, String email) {
+    	JSONObject json = new JSONObject();
+    	try {
+    		json.put(k_JsonKeyTag, k_JsonValueTagValidate);
+    		json.put(k_JsonKeyToken, token);
+    		json.put(k_JsonKeyEmail, email);
+    	}
+    	catch(JSONException e) {
+    		Log.e("CheckToken", "Got an unexpected error.");
+    	}
+    	
+    	return sendJsonPostRequest(json);
+	}
+	
+	public static boolean isNetworkAvailable(ConnectivityManager connectivityManager) {
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 }
