@@ -24,11 +24,27 @@
     <string name="login_button_login">Login</string>
     <string name="login_button_register">Not registered?</string>
     <string name="login_message_auth_fail">Username or Password are not valid.</string>
+    <string name="lobby_text_view_title">My Games</string>
+    <string name="lobby_button_create_game">Create game</string>
     <string name="game_button_audio_text">TAP TO HEAR</string>
     <string name="game_button_give_up">give up</string>
+    <string name="newgame_text_view_title">Create game</string>
+    <string name="newgame_text_view_question">How do you want to find your opponent?</string>
+    <string name="newgame_button_email">Email</string>
+    <string name="newgame_button_random">Random</string>
+    <string name="finduser_text_view_description">Enter your opponent\'s e-mail address</string>
+    <string name="finduser_button_submit">go</string>
     <string name="title_activity_registration">RegistrationActivity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_sound_recording">SoundRecordingActivity</string>
     <string name="title_activity_word_selection">WordSelectionActivity</string>
+    <string name="title_activity_new_game">NewGameActivity</string>
+    <string name="title_activity_find_user_to_play">FindUserToPlayActivity</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_match">MatchActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="match_text_view_title">Match</string>
+    <string name="match_text_view_vs">VS.</string>
+    <string name="match_text_view_turn">Turn</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

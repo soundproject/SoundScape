@@ -1,9 +1,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/game_header" />
+
+    <TextView
+        android:id="@+id/title_text_view_my_games"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="@string/lobby_text_view_title"
+        android:textSize="25sp" />
     
-    
+    <Button
+        android:id="@+id/lobby_button_create_game"
+        android:background="@drawable/button_green"
+        android:layout_marginTop="20dp"
+        style="@style/gamelobby_button_game"
+        android:text="@string/lobby_button_create_game" />
 
 </LinearLayout>

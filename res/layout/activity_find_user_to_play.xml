@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:orientation="vertical"
+    tools:context=".MatchActivity" >
+
+    <TextView 
+        android:id="@+id/finduser_text_view_title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/newgame_text_view_title"
+        android:textSize="30sp" />
+    
+    <TextView 
+        android:id="@+id/finduser_text_view_question"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/finduser_text_view_description"
+        android:textSize="15sp" />
+    
+    <EditText 
+        android:id="@+id/finduser_edit_text_email"
+        android:inputType="textEmailAddress"
+        style="@style/gamelobby_button_game"
+        android:layout_height="wrap_content"
+        android:hint="@string/registration_email_hint" />
+    
+    <Button
+        android:id="@+id/finduser_button_submit"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        style="@style/gamelobby_button_game"
+        android:text="@string/finduser_button_submit" />
+    
+    <TextView 
+        android:id="@+id/finduser_text_view_result"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textSize="15sp" />
+
+</LinearLayout>

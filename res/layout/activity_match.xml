@@ -1,0 +1,94 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MatchActivity" >
+
+    <TextView 
+        android:id="@+id/match_text_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="40sp"
+        android:text="@string/match_text_view_title" />
+    
+	<View
+	    android:id="@+id/line_seperator"
+    	android:layout_width="fill_parent"
+    	android:layout_height="1dp"
+    	android:background="@android:color/black"
+    	android:layout_marginTop="2dp" />"
+
+	<RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="40dp"
+	    android:background="@drawable/border_black"
+	    tools:context=".MatchActivity" >
+	    
+	    <TextView 
+	        android:id="@+id/match_text_view_left_player"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="30sp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignBottom="@+id/match_text_view_vs" />
+	    
+	    <TextView 
+	        android:id="@+id/match_text_view_vs"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="40sp"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/match_text_view_vs" />
+	    
+	    <TextView 
+	        android:id="@+id/match_text_view_right_player"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="30sp"
+	        android:layout_marginRight="10dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignBottom="@+id/match_text_view_vs" />
+	    
+	</RelativeLayout>
+
+	<RelativeLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:background="@drawable/border_black"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="20dp" >
+	    
+	    <TextView 
+	        android:id="@+id/match_text_view_turn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="30sp"
+	        android:text="@string/match_text_view_turn" />
+	    
+	    <TextView 
+	        android:id="@+id/match_text_view_turn_number"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/match_text_view_turn"
+	        android:layout_centerInParent="true"
+	        android:layout_marginTop="10dp"
+	        android:textSize="30sp"
+	        android:layout_marginRight="10dp" />
+	   
+	</RelativeLayout>
+	
+	<Button 
+	    android:id="@+id/match_button_go"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:text="@string/finduser_button_submit"
+	    android:layout_marginTop="20dp" />
+	
+	
+</LinearLayout>

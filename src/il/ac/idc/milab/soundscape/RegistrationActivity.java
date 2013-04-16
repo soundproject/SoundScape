@@ -56,10 +56,10 @@ public class RegistrationActivity extends Activity {
 		Log.d("REGISTRATION", "Starting input validation");
 		boolean isValid = true;
 		
-		String name = "name"; //m_FullName.getText().toString();
-		String email = "email"; //m_Email.getText().toString();
-		String password = "123456"; //m_Password.getText().toString();
-		String repassword = "123456"; //m_RePassword.getText().toString();
+		String name = m_FullName.getText().toString();
+		String email = m_Email.getText().toString();
+		String password = m_Password.getText().toString();
+		String repassword = m_RePassword.getText().toString();
 		
 		Log.d("REGISTRATION", "Input is:");
 		Log.d("REGISTRATION", "Name:" + name);

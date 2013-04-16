@@ -18,8 +18,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-public class OpeningScreenActivity extends Activity {
 
+public class OpeningScreenActivity extends Activity {
+	
 	private Button m_UserNew;
 	private Button m_UserExisting;
 	private String m_UserToken;
@@ -35,12 +36,17 @@ public class OpeningScreenActivity extends Activity {
 		// TODO: Change the following methods into a more secure method
 		boolean isValid = isUserCredentialsValid();
 
+		/***** DEBUG - REMOVE ******/
+		if(NetworkUtils.DEBUG_MODE) {
+			isValid = true;
+			m_UserEmail = "email";
+			m_UserToken = "wmr8+PWlDsjR6L6xlwWmH\\/DzNtoxYmFiMWRhM2U0";
+		}
+		/***** DEBUG - REMOVE ******/
+		
 		// Check if token is available, if not that means it has either expired
 		// or it doesn't exist, both cases require the user to login
 		if(isValid) {
-			Intent intent = getIntent();
-			intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
-			intent.putExtra(NetworkUtils.k_JsonKeyToken, m_UserToken);
 			startGameLobbyActivity();
 			finish();
 		}
@@ -90,11 +96,10 @@ public class OpeningScreenActivity extends Activity {
 			// Check credentials with the server
 			try {
 				Log.d("STARTUP", "Check if token is valid");
-				JSONObject userCredentials = new JSONObject();
-				userCredentials.put(NetworkUtils.k_JsonKeyToken, m_UserToken);
-				userCredentials.put(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
-				Log.d("STARTUP", "The json request is: " + userCredentials.toString());
-				JSONObject response = new CheckTokenTask().execute(m_UserToken, m_UserEmail).get();
+				JSONObject request = NetworkUtils.checkToken(m_UserToken, m_UserEmail);
+				Log.d("STARTUP", "The json request is: " + request.toString());
+				
+				JSONObject response = new CheckTokenTask().execute(request).get();
 				Log.d("STARTUP", "The json response is: " + response.toString());
 				isValid = response.getInt(NetworkUtils.k_JsonKeySuccess) == 
 						NetworkUtils.k_FlagOn;
@@ -103,7 +108,7 @@ public class OpeningScreenActivity extends Activity {
 				Log.d("STARTUP", "Couldn't put stuff in our JSON object!");
 				e.printStackTrace();
 			} catch (Exception e) {
-				Log.d("STARTUP", "Got an unexpected error.");
+				Log.d("STARTUP", "Got an unexpected error. Line 102");
 			}
 		}
 		return isValid;
@@ -209,11 +214,10 @@ public class OpeningScreenActivity extends Activity {
 		return true;
 	}
 	
-	private class CheckTokenTask extends AsyncTask<String, Void, JSONObject> {
+	private class CheckTokenTask extends AsyncTask<JSONObject, Void, JSONObject> {
 		@Override
-		protected JSONObject doInBackground(String... credentials) {
-	    	return NetworkUtils.checkToken(credentials[0], credentials[1]);
+		protected JSONObject doInBackground(JSONObject... credentials) {
+	    	return NetworkUtils.sendJsonPostRequest(credentials[0]);
 	    }
 	}
-
 }

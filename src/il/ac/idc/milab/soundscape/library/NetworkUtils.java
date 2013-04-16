@@ -22,6 +22,8 @@ import android.util.Log;
  
 public class NetworkUtils {
 
+	public static final boolean DEBUG_MODE = false; 
+	
 //	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
 	public static final String k_ServerUrl = "http://10.0.0.16/miLab/index.php";
 	
@@ -36,6 +38,8 @@ public class NetworkUtils {
 	public static final String k_JsonValueTagLogin = "login";
 	public static final String k_JsonValueTagRegister = "register";
 	public static final String k_JsonValueTagValidate = "validate";
+	public static final String k_JsonValueTagAction = "action";
+	public static final String k_JsonValueTagGet = "get";
     
     // Server JSON response keys
 	public static final String k_JsonKeyError = "error";
@@ -87,7 +91,7 @@ public class NetworkUtils {
         HttpPost httpPost = new HttpPost(k_ServerUrl);
         
         String requestBody = json.toString();
-        
+    	Log.d("NETWORK", "The request body is: " + requestBody);
         // Set the POST request entity (body)
         StringEntity stringEntity;
 		try {
@@ -103,15 +107,6 @@ public class NetworkUtils {
         httpPost.setHeader("Content-Type", "application/json");
     
         Log.d("NETWORK", "The request line is: " + httpPost.getRequestLine().toString());
-		try {
-			Log.d("NETWORK", "The request body is: " + convertStreamToString(httpPost.getEntity().getContent()));
-		} catch (IllegalStateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
         
         // Execute the request
         HttpResponse response = null;
@@ -126,7 +121,7 @@ public class NetworkUtils {
             // If the response does not enclose an entity, there is no need
             // to worry about connection release
             if (entity != null) {
- 
+            	Log.d("NETWORK", "Got an entity!");
                 // A Simple JSON Response Read
                 InputStream instream = entity.getContent();
                 responseBody = convertStreamToString(instream);
@@ -138,13 +133,13 @@ public class NetworkUtils {
  
         } catch (ClientProtocolException e) {
         	Log.d("NETWORK", "HTTP protocol Error!");
-            e.printStackTrace();
+        	json = null;
         } catch (IOException e) {
         	Log.d("NETWORK", "The connection was aborted!");
-            e.printStackTrace();
+        	e.printStackTrace();
+        	json = null;
         } catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        	json = null;
 		}
 		
 		return json;
@@ -208,8 +203,7 @@ public class NetworkUtils {
 			words.put("4", "Train");
 			result.put("words", words);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
 		
 		return result;
@@ -219,18 +213,33 @@ public class NetworkUtils {
     	JSONObject json = new JSONObject();
     	try {
     		json.put(k_JsonKeyTag, k_JsonValueTagValidate);
+    		json.put(k_JsonValueTagAction, k_JsonKeyToken);
     		json.put(k_JsonKeyToken, token);
     		json.put(k_JsonKeyEmail, email);
     	}
     	catch(JSONException e) {
-    		Log.e("CheckToken", "Got an unexpected error.");
+    		Log.d("NETWORK", "Got an unexpected error.");
+    		return null;
     	}
     	
-    	return sendJsonPostRequest(json);
+    	return json;
 	}
 	
 	public static boolean isNetworkAvailable(ConnectivityManager connectivityManager) {
 	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+
+	public static JSONObject getUserGameList(String email) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put(k_JsonKeyTag, "lobby");
+			json.put(k_JsonKeyEmail, email);
+		} catch (JSONException e) {
+			Log.d("NETWORK", "Got an unexpected error.");
+			return null;
+		}
+		
+		return json;
 	}
 }
