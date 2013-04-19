@@ -1,14 +1,12 @@
 package il.ac.idc.milab.soundscape;
 
-import java.util.concurrent.ExecutionException;
-
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
-
+import java.util.concurrent.ExecutionException;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 public class WordSelectionActivity extends Activity implements OnClickListener {
 
@@ -41,18 +40,32 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		// already here
 		wordListLayout.removeAllViews();
 
-		// get new list of words
-		String[] words = null;
+		// Generate button for freestyle words
+		Button wordButton = new Button(getApplicationContext());
+		wordButton.setText(k_FreeStyle);
+		wordButton.setOnClickListener(this);
+		wordListLayout.addView(wordButton, new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		wordListLayout.addView(new TextView(this));
+		wordListLayout.addView(new TextView(this));
+
 		try 
 		{
+			// get new list of words
 			JSONObject result = new GetWordsTask().execute().get(); 
 			this.m_jsonWords = result.optJSONObject(NetworkUtils.k_JsonKeyWords);
-			
-			words = new String[m_jsonWords.length()];
-			for (int i = 0; i < m_jsonWords.length(); i++)
+
+			for (int difficulty = 0; difficulty < m_jsonWords.length(); difficulty++)
 			{
-				words[i] = (String)m_jsonWords.get(String.format("%d", i + 1));
-				Log.d(TAG, "Got word " + words[i]);
+				
+				JSONObject jsonWords = m_jsonWords.getJSONObject(String.format("%d", difficulty + 1));
+				Log.d(TAG, "Got Words " + jsonWords.toString());
+				for (int i = 0; i < jsonWords.length(); i++ )
+				{
+					String currentWord = (String)jsonWords.get(String.format("%d", i));
+					Log.d(TAG, "Got word " + currentWord);
+					addWordButton(currentWord, difficulty);	
+				}
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -64,49 +77,25 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 
-		// Generate button for freestyle words
-		Button wordButton = new Button(getApplicationContext());
-		wordButton.setText(k_FreeStyle);
+	private void addWordButton(String i_Word, int i_difficulty) {
+
+		Button wordButton =  new Button(getApplicationContext());
+		LinearLayout wordListLayout = (LinearLayout) findViewById(R.id.word_list_layout);
+		
+		// get proper resource with number of stars. star_big_on is placeholder
+		Drawable stars = getResources().getDrawable((android.R.drawable.star_big_on));
+		
+		wordButton = new Button(getApplicationContext());
+		wordButton.setText(i_Word);
 		wordButton.setOnClickListener(this);
+		wordButton.setCompoundDrawablesWithIntrinsicBounds(null, null, stars, null);
+		wordButton.setTag(i_difficulty);
+		
 		wordListLayout.addView(wordButton, new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-		// Generate buttons for each word and add it to the layout
-		for (int i = 0; i < words.length; i++) {
-			wordButton = new Button(getApplicationContext());
-			wordButton.setText(words[i]);
-			wordButton.setOnClickListener(this);
-			wordListLayout.addView(wordButton, new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		}
-	}
-
-	private JSONObject getWords() {
-		// TODO Auto-generated method stub
-
-//		String[] words = { "Hello", "Goodbye", "Cat", "Dog" };
-
-		// Disabled for now - Assumes response is in format:
-		// {..... "words": {"1": word1, "2": word2 ....}}
-		// where 1 is easy, 2 is medium etc.
-		String[] words = new String[NUMBER_OF_WORDS];
-		JSONObject response = NetworkUtils.getWords();
-		JSONObject jsonWords = null;
-		try 
-		{
-			jsonWords = response.getJSONObject("words");
-			for (int i = 0; i < jsonWords.length(); i++)
-			{
-				words[i] = (String)jsonWords.get(String.format("%d", i + 1));
-				Log.d(TAG, "Got word " + words[i]);
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.i(TAG, "List of words recieved");
-		return jsonWords;
 	}
 
 	@Override
@@ -120,36 +109,30 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		Button button = (Button) v;
-		startRecordingActivity(button.getText().toString());
+		startRecordingActivity(button);
 	}
 
-	private void startRecordingActivity(String word) {
+	private void startRecordingActivity(Button button) {
 		// TODO Auto-generated method stub
+		
+		String word = button.getText().toString();
 		Log.d(TAG, "Selected word was: " + word);
 		Intent intent = new Intent(getApplicationContext(),
 				SoundRecordingActivity.class);
 		intent.putExtra("word", word);
-		int difficulty = 0;
-		
-		for (int i = 0; i < this.m_jsonWords.length(); i++)
-		{
-			if (this.m_jsonWords.opt(String.format("%d", i + 1)) == word)
-			{
-				difficulty = i + 1;
-				break;
-			}
-		}
+		Integer difficulty = (Integer) button.getTag();
 
-		intent.putExtra("difficulty", difficulty);
+		intent.putExtra("difficulty", difficulty.intValue());
+		
 		startActivity(intent);
-		finish();
+//		finish();
 	}
-	
+
 	private class GetWordsTask extends AsyncTask<Void, Void, JSONObject> 
 	{		
 		@Override
 		protected JSONObject doInBackground(Void... params) {
-	    	return NetworkUtils.getWords();
-	    }
+			return NetworkUtils.getWords();
+		}
 	}
 }

@@ -234,10 +234,19 @@ public class NetworkUtils {
 		//		result.put(k_JsonKeyTag, k_JsonValueTagGetWords);
 		JSONObject words = new JSONObject();
 		try {
-			words.put("1", "Cat");
-			words.put("2", "Dog");
-			words.put("3", "Laughter");
-			words.put("4", "Train");
+			JSONObject easy = new JSONObject();
+			easy.put("0", "Cat");
+			words.put("1", easy);
+			
+			JSONObject medium = new JSONObject();
+			medium.put("0", "Dog");
+			medium.put("1", "Laughter");
+			words.put("2", medium);
+			
+			JSONObject hard = new JSONObject();
+			hard.put("0", "Train");
+			hard.put("1", "Silence");
+			words.put("3", hard);
 			result.put("words", words);
 		} catch (JSONException e) {
 			return null;
