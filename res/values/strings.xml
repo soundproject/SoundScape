@@ -46,5 +46,8 @@
     <string name="match_text_view_vs">VS.</string>
     <string name="match_text_view_turn">Turn</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="you_are_recording">You are now recording</string>
+    <string name="tag_sound_text">Enter sound name:</string>
+    <string name="enter_difficuly_string">Enter Difficulty (1-3)</string>
 
 </resources>

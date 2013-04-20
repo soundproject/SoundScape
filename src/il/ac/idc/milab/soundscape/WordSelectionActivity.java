@@ -122,7 +122,10 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		intent.putExtra("word", word);
 		Integer difficulty = (Integer) button.getTag();
 
-		intent.putExtra("difficulty", difficulty.intValue());
+		if (difficulty != null)
+		{
+			intent.putExtra("difficulty", difficulty.intValue());
+		}
 		
 		startActivity(intent);
 //		finish();

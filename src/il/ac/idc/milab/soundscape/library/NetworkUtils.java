@@ -29,7 +29,7 @@ import android.util.Log;
 
 public class NetworkUtils {
 
-	public static final boolean DEBUG_MODE = false; 
+	public static final boolean DEBUG_MODE = true; 
 
 	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
 	//	public static final String k_ServerUrl = "http://10.0.0.16/miLab/index.php";

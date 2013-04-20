@@ -47,7 +47,8 @@ public class OpeningScreenActivity extends Activity {
 		// Check if token is available, if not that means it has either expired
 		// or it doesn't exist, both cases require the user to login
 		if(isValid) {
-			startGameLobbyActivity();
+			startGameActivity("gadi@gadi.com");
+//			startGameLobbyActivity();
 			finish();
 		}
 		else {
@@ -173,6 +174,14 @@ public class OpeningScreenActivity extends Activity {
 		setUserToken(m_UserEmail, m_UserToken);
 		
 		// send them to the next intent
+		startActivity(intent);
+		finish();
+	}
+	
+	private void startGameActivity(String email) {
+		Intent intent = new Intent(getApplicationContext(), MatchActivity.class);
+		intent.putExtra("opponent", email);
+		intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
 		startActivity(intent);
 		finish();
 	}
