@@ -5,7 +5,6 @@ import il.ac.idc.milab.soundscape.library.SoundRecorder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -39,10 +37,6 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 	private ImageButton m_playRecordingButton;
 	private ImageButton m_pauseButton;
 	private TextView m_recordingWordTextView;
-	private TextView m_soundNameTextView;
-	private EditText m_soundNameEditText;
-	private TextView m_difficultyTextView;
-	private EditText m_difficultyEditText;
 	private File m_file;
 
 	@Override
@@ -76,10 +70,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		m_playRecordingButton = (ImageButton) findViewById(R.id.play_recording_button);
 		m_pauseButton = (ImageButton) findViewById(R.id.pause_recording_button);
 		m_recordingWordTextView = (TextView) findViewById(R.id.recording_word_text_view);
-		m_soundNameEditText = (EditText) findViewById(R.id.sound_name_editText);
-		m_soundNameTextView = (TextView) findViewById(R.id.sound_name_textView);
-		m_difficultyEditText = (EditText) findViewById(R.id.enter_difficulty_editText);
-		m_difficultyTextView = (TextView) findViewById(R.id.enter_difficulty_textView);
+
 
 		Log.d(TAG, "Setting text");
 		// set text
@@ -90,19 +81,12 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		Log.d(TAG, "Freestyle = " + this.m_isFreeStyleRecording);
 
 		Log.d(TAG, "Hiding buttons");
+		
 		// Hide appropriate buttons:
 		toggleControl(m_deleteButton);
 		toggleControl(m_playRecordingButton);
 		toggleControl(m_pauseButton);
 		toggleControl(m_saveButton);
-		toggleControl(m_soundNameEditText);
-		toggleControl(m_soundNameTextView);
-		toggleControl(m_difficultyEditText);
-		toggleControl(m_difficultyTextView);
-		m_soundNameEditText.setVisibility(View.INVISIBLE);
-		m_soundNameTextView.setVisibility(View.INVISIBLE);
-		m_difficultyEditText.setVisibility(View.INVISIBLE);
-		m_difficultyTextView.setVisibility(View.INVISIBLE);
 
 		// Add listeners to buttons
 		Log.d(TAG, "Setting onClickListeners");
@@ -130,20 +114,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 
 			@Override
 			public void onClick(View v) {
-				//				Log.d("************", "STATUS: " + m_isFreeStyleRecording);
-				if (!m_isFreeStyleRecording || !m_soundNameEditText.getText().toString().trim().isEmpty() ||
-						!m_difficultyEditText.getText().toString().trim().isEmpty())
-				{	
-					Log.d(TAG, "Text is " + m_soundNameEditText.getText().toString());
-					saveAndSendFile();
-					Intent intent = new Intent(getApplicationContext(), GameLobbyActivity.class);
-					startActivity(intent);
-					finish();
-				} else
-				{
-					Log.e(TAG, "Freestyle and name is empty");
-					
-				}
+				saveAndSendFile();
 			}
 		});
 
@@ -167,23 +138,16 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 
 		this.m_mediaPlayer.release();
 		this.m_soundRecorder.release();
+		
+		Intent intent = new Intent(this, SoundTaggingActivity.class);
 
 		// Build metadata
 		JSONObject fileMetaData = new JSONObject();
 		try {
-			String word = m_isFreeStyleRecording ? m_soundNameEditText.getText().toString() :
+			String word = m_isFreeStyleRecording ? "freestyle" :
 				getIntent().getExtras().getString("word");
 			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);
-			int difficulty;
-			if (m_isFreeStyleRecording)
-			{
-				difficulty = Integer.parseInt(m_difficultyEditText.getText().toString());
-			} else
-			{
-				difficulty = getIntent().getExtras().getInt("difficulty");
-			}
-			Log.d(TAG, "Difficulty is " + difficulty);
-			fileMetaData.put(NetworkUtils.k_JsonKeyDifficulty, difficulty);
+			intent.putExtra("word", word);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -193,25 +157,13 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		Editor editor = prefs.edit();
 		editor.putString(this.m_file.getName(), fileMetaData.toString());
 		editor.commit();
-
-		// Try to send:
-		JSONObject result = null;
-		try {
-			result = new SendFileTask().execute(this.m_file.getAbsoluteFile().toString(), fileMetaData.toString()).get();
-
-			if (result.optInt(NetworkUtils.k_JsonKeySuccess) == NetworkUtils.k_FlagOn)
-			{
-				Log.i(TAG, "Removing file " + this.m_file.getName() + " and deleting metadata");
-				editor.remove(this.m_file.getName());
-				deleteFile(this.m_file.getName());
-				Log.i(TAG, "File " + this.m_file.getName() + " deleted");
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-
+		
+		intent.putExtra("filename", this.m_file.getAbsolutePath().toString());
+		intent.putExtra("difficulty", getIntent().getExtras().getInt("difficulty", 0));
+		
+		Log.d(TAG, "Starting soundTagging");
+		startActivity(intent);
+		finish();
 	}
 
 
@@ -247,35 +199,10 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		{
 			this.m_mediaPlayer = MediaPlayer.create(this, Uri.fromFile(this.m_file));
 			this.m_mediaPlayer.setOnCompletionListener(this);
-
-			if (m_isFreeStyleRecording)
-			{
-				toggleControl(m_soundNameEditText);
-				toggleControl(m_soundNameTextView);
-				toggleControl(m_difficultyEditText);
-				toggleControl(m_difficultyTextView);
-				m_soundNameEditText.setVisibility(View.VISIBLE);
-				m_soundNameTextView.setVisibility(View.VISIBLE);
-				m_difficultyEditText.setVisibility(View.VISIBLE);
-				m_difficultyTextView.setVisibility(View.VISIBLE);
-			}
-
 		} else 
 		{
 			Log.d(TAG, "Deleting file " + this.m_file.getName());
 			deleteFile(this.m_file.getName());
-
-			if (m_isFreeStyleRecording)
-			{
-				toggleControl(m_soundNameEditText);
-				toggleControl(m_soundNameTextView);
-				toggleControl(m_difficultyEditText);
-				toggleControl(m_difficultyTextView);
-				m_difficultyEditText.setVisibility(View.INVISIBLE);
-				m_difficultyTextView.setVisibility(View.INVISIBLE);
-				m_soundNameEditText.setVisibility(View.INVISIBLE);
-				m_soundNameTextView.setVisibility(View.INVISIBLE);
-			}
 		}
 
 		// toggle record button

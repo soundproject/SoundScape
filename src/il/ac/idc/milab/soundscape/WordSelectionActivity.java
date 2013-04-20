@@ -21,7 +21,6 @@ import android.widget.TextView;
 public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "WordSelection";
-	private static final int NUMBER_OF_WORDS = 4;
 	public static final String k_FreeStyle = "freestyle";
 	private JSONObject m_jsonWords;
 
@@ -125,6 +124,7 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		if (difficulty != null)
 		{
 			intent.putExtra("difficulty", difficulty.intValue());
+			Log.e(TAG, "**** DIFFICULTY IS " + intent.getExtras().getInt("difficulty"));
 		}
 		
 		startActivity(intent);

@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SoundTagginActivity" >
+
+    <include
+        android:id="@+id/include1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        layout="@layout/game_header" />
+
+    <TextView
+        android:id="@+id/emotion_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emotion_value_seekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="TextView"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/send_sound_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="22dp"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/sound_tag_editText"
+        android:layout_marginTop="14dp"
+        android:text="@string/tag_emotion_string"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/include1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/tag_sound_string"
+        android:textSize="25sp" />
+
+    <EditText
+        android:id="@+id/sound_tag_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <SeekBar
+        android:id="@+id/emotion_value_seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/textView2"
+        android:max="5" />
+
+    <TextView
+        android:id="@+id/difficulty_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emotion_name_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp"
+        android:text="@string/enter_difficuly_string"
+        android:textSize="25sp" />
+
+    <RatingBar
+        android:id="@+id/difficulty_RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/difficulty_textView"
+        android:layout_centerHorizontal="true"
+        android:numStars="3" />
+
+</RelativeLayout>

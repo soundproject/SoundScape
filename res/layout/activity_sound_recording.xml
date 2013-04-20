@@ -24,15 +24,6 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/sound_name_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/recording_word_text_view"
-        android:layout_below="@+id/recording_word_text_view"
-        android:layout_marginTop="14dp"
-        android:text="@string/tag_sound_text" />
-
-    <TextView
         android:id="@+id/recording_word_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,40 +33,13 @@
         android:text="@string/you_are_recording"
         android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/enter_difficulty_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/enter_difficuly_string" />
-
-    <EditText
-        android:id="@+id/sound_name_editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sound_name_textView"
-        android:layout_centerHorizontal="true"
-        android:ems="10" />
-
-    <EditText
-        android:id="@+id/enter_difficulty_editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/sound_name_editText"
-        android:layout_below="@+id/enter_difficulty_textView"
-        android:layout_marginTop="34dp"
-        android:ems="10"
-        android:inputType="number" />
-
     <GridLayout
         android:id="@+id/gridLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/enter_difficulty_editText"
-        android:layout_alignRight="@+id/enter_difficulty_editText"
-        android:layout_below="@+id/enter_difficulty_editText"
-        android:layout_marginTop="34dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="82dp"
         android:columnCount="5" >
 
         <ImageButton
@@ -123,7 +87,6 @@
             android:layout_gravity="left|top"
             android:layout_row="0"
             android:src="@android:drawable/ic_media_pause" />
-
     </GridLayout>
 
 </RelativeLayout>

@@ -10,7 +10,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -69,6 +69,11 @@
         <activity
             android:name="il.ac.idc.milab.soundscape.GameActivity"
             android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.SoundTaggingActivity"
+            android:label="@string/title_activity_sound_taggin"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
     </application>
 

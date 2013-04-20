@@ -44,6 +44,7 @@ public class NetworkUtils {
 	public static final String k_JsonKeyWord = "word";
 	public static final String k_JsonKeyDifficulty = "difficulty";
 	public static final String k_JsonKeyAction = "action";
+	public static final String k_JsonKeyEmotion = "emotion";
 
 	// Client JSON request values
 	public static final String k_JsonValueTagLogin = "login";
@@ -67,6 +68,8 @@ public class NetworkUtils {
 	// Server Status codes
 	public static final int k_FlagOn = 1;
 	public static final int k_FlagOff = 0;
+
+	
 
 
 	private NetworkUtils() {}

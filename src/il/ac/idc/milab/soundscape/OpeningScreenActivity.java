@@ -39,7 +39,7 @@ public class OpeningScreenActivity extends Activity {
 		/***** DEBUG - REMOVE ******/
 		if(NetworkUtils.DEBUG_MODE) {
 			isValid = true;
-			m_UserEmail = "email";
+			m_UserEmail = "tal@tal.com";
 			m_UserToken = "wmr8+PWlDsjR6L6xlwWmH\\/DzNtoxYmFiMWRhM2U0";
 		}
 		/***** DEBUG - REMOVE ******/
@@ -179,11 +179,11 @@ public class OpeningScreenActivity extends Activity {
 	}
 	
 	private void startGameActivity(String email) {
-		Intent intent = new Intent(getApplicationContext(), MatchActivity.class);
+		Intent intent = new Intent(getApplicationContext(), SoundTaggingActivity.class);
+		intent = new Intent(getApplicationContext(), MatchActivity.class);
 		intent.putExtra("opponent", email);
 		intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
 		startActivity(intent);
-		finish();
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
