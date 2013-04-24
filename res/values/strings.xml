@@ -53,5 +53,6 @@
     <string name="title_activity_sound_taggin">SoundTagginActivity</string>
     <string name="tag_sound_string">What did you just record?</string>
     <string name="tag_emotion_string">How did that make you feel?</string>
+    <string name="save_and_send_string">Send</string>
 
 </resources>
