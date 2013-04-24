@@ -112,8 +112,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int registration_text_view_title=0x7f090020;
         public static final int save_sound_button=0x7f09002f;
         public static final int send_sound_button=0x7f090036;
+        public static final int sound_name_textView=0x7f090039;
         public static final int sound_tag_editText=0x7f090038;
-        public static final int textView1=0x7f090039;
         public static final int textView2=0x7f090037;
         public static final int title_text_view_my_games=0x7f09000b;
         public static final int word_list_layout=0x7f09003c;
@@ -182,6 +182,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int registration_password_hint=0x7f06000b;
         public static final int registration_repassword=0x7f06000c;
         public static final int registration_repassword_hint=0x7f06000d;
+        public static final int save_and_send_string=0x7f060034;
         public static final int tag_emotion_string=0x7f060033;
         public static final int tag_sound_string=0x7f060032;
         public static final int tag_sound_text=0x7f06002e;

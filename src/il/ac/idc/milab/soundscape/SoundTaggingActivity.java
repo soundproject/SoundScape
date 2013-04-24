@@ -42,7 +42,9 @@ public class SoundTaggingActivity extends Activity {
 	private Button m_sendButton;
 	private eEmotions m_emotion = eEmotions.NEUTRAL;
 	private boolean m_freeStyle;
-	private EditText m_soundNameTextView;
+	private EditText m_soundNameEditText;
+	private TextView m_soundNameTextView;
+	private TextView m_difficultyTextView;
 
 	@Override
 	protected void onResume() {
@@ -58,10 +60,17 @@ public class SoundTaggingActivity extends Activity {
 		m_emotionsSeekBar = (SeekBar) findViewById(R.id.emotion_value_seekBar);
 		m_difficultyRatingBar = (RatingBar) findViewById(R.id.difficulty_RatingBar);
 		m_sendButton = (Button) findViewById(R.id.send_sound_button);
-		m_soundNameTextView = (EditText) findViewById(R.id.sound_tag_editText);
+		m_soundNameEditText = (EditText) findViewById(R.id.sound_tag_editText);
 		m_difficultyRatingBar = (RatingBar) findViewById(R.id.difficulty_RatingBar);
-
+		m_difficultyTextView = (TextView) findViewById(R.id.difficulty_textView);
+		m_soundNameTextView = (TextView) findViewById(R.id.sound_name_textView);
 		m_emotionsSeekBar.setMax(eEmotions.values().length - 1);
+		
+		if (!m_freeStyle)
+		{
+		
+		}
+		
 		m_emotionsSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -97,13 +106,19 @@ public class SoundTaggingActivity extends Activity {
 		
 		if (m_freeStyle)
 		{
-			m_soundNameTextView.setEnabled(true);
+			m_soundNameEditText.setEnabled(true);
 		} else
 		{
-			m_soundNameTextView.setText(getIntent().getExtras().getString("word"));
-			m_soundNameTextView.setEnabled(false);	
-			m_difficultyRatingBar.setEnabled(false);
-			m_difficultyRatingBar.setRating(getIntent().getExtras().getInt("difficulty"));
+//			m_difficultyRatingBar.setEnabled(false);
+//			m_difficultyRatingBar.setRating(getIntent().getExtras().getInt("difficulty"));
+			Log.i(TAG, "Hiding Buttons");
+			this.m_difficultyRatingBar.setVisibility(View.INVISIBLE);
+			this.m_difficultyRatingBar.setEnabled(false);
+			this.m_difficultyTextView.setVisibility(View.INVISIBLE);
+			this.m_difficultyTextView.setEnabled(false);
+			this.m_soundNameTextView.setText("You just recorded:");
+			m_soundNameEditText.setText(getIntent().getExtras().getString("word"));
+			m_soundNameEditText.setEnabled(false);	
 		}
 	}
 
@@ -111,7 +126,7 @@ public class SoundTaggingActivity extends Activity {
 
 		JSONObject fileMetaData = new JSONObject();
 		try {
-			String word = m_soundNameTextView.getText().toString();
+			String word = m_soundNameEditText.getText().toString();
 			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);			
 			int difficulty = (int)this.m_difficultyRatingBar.getRating();
 			Log.d(TAG, "Difficulty is " + difficulty);
