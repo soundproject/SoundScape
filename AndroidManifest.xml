@@ -88,6 +88,10 @@
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.GuessWordActivity"
+            android:label="@string/title_activity_guess_word" >
+        </activity>
     </application>
 
 </manifest>

@@ -36,8 +36,14 @@ public class OpeningScreenActivity extends Activity {
 		Log.d(TAG, "Starting Opening Screen Activity");
 		// Check if token is available, if not that means it has either expired
 		// or it doesn't exist, both cases require the user to login
+<<<<<<< HEAD
 		if(isUserCredentialsValid()) {
 			startGameLobbyActivity();
+//=======
+//		if(isValid) {
+//			startGuessWordActivity();
+////			startGameLobbyActivity();
+//>>>>>>> 8bf28e4... Guess Word
 			finish();
 		}
 		else {
@@ -64,6 +70,14 @@ public class OpeningScreenActivity extends Activity {
 		}
 	}
 	
+	private void startGuessWordActivity() {
+		Intent intent = new Intent(getApplicationContext(), GuessWordActivity.class);
+		intent.putExtra("word", "dog");
+		intent.putExtra("difficulty", 1);
+		startActivity(intent);
+		finish();
+	}
+
 	/**
 	 * This method checks if user credentials are valid
 	 * @return true if user is recognized or false if a new login is required

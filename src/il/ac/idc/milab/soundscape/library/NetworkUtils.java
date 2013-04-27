@@ -25,7 +25,51 @@ import android.util.Log;
 
 public class NetworkUtils {
 
+//<<<<<<< HEAD
 	public static final boolean DEBUG_MODE = false; 
+//=======
+//	public static final boolean DEBUG_MODE = true; 
+//
+//	//public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
+//	public static final String k_ServerUrl = "http://10.0.0.3/miLab/index.php";
+//
+//	// Client JSON request keys
+//	public static final String k_JsonKeyTag = "tag";
+//	public static final String k_JsonKeyToken = "token";
+//	public static final String k_JsonKeyName = "name";
+//	public static final String k_JsonKeyEmail = "email";
+//	public static final String k_JsonKeyPassword = "password";
+//	public static final String k_JsonKeyFile = "file";
+//	public static final String k_JsonKeyWord = "word";
+//	public static final String k_JsonKeyDifficulty = "difficulty";
+//	public static final String k_JsonKeyAction = "action";
+//	public static final String k_JsonKeyEmotion = "emotion";
+//
+//	// Client JSON request values
+//	public static final String k_JsonValueTagLogin = "login";
+//	public static final String k_JsonValueTagRegister = "register";
+//	public static final String k_JsonValueTagValidate = "validate";
+//	public static final String k_JsonValueTagAction = "action";
+//	public static final String k_JsonValueTagGet = "get";
+//	public static final String k_JsonValueTagGetGames = "games";
+//
+//	// Server JSON response keys
+//	public static final String k_JsonValueTagSendFile = "file";
+//	public static final String k_JsonValueTagGetWords = "words";
+//	public static final String k_JsonValueFileSend = "set";
+//	public static final String k_JsonValueFileGet = "get";
+//
+//	// Server JSON response keys
+//	public static final String k_JsonKeyError = "error";
+//	public static final String k_JsonKeyErrorMessage = "error_msg";
+//	public static final String k_JsonKeySuccess = "success";
+//	public static final String k_JsonKeyWords = "words";
+//
+//	// Server Status codes
+//	public static final int k_FlagOn = 1;
+//	public static final int k_FlagOff = 0;
+//
+//>>>>>>> 8bf28e4... Guess Word
 	
 	public static ServerRequests serverRequests;
 	public static NetworkInfo activeNetworkInfo;
