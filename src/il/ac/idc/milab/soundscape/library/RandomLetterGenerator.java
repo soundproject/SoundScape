@@ -40,9 +40,11 @@ public class RandomLetterGenerator {
 		return m_CharacterArray.toArray(new Character[1]);
 	}
 	
-	public Character[] RemoveRandomChars()
+	public int[] RemoveRandomChars()
 	{
-		int numberOfCharactersToRemove = this.m_CharacterArray.size() / 2;
+//		int numberOfCharactersToRemove = this.m_CharacterArray.size() / 2;
+		int numberOfCharactersToRemove = 4;
+		int[] result = new int[numberOfCharactersToRemove];
 		
 		while (numberOfCharactersToRemove > 0)
 		{
@@ -51,11 +53,13 @@ public class RandomLetterGenerator {
 			{
 				Log.d(TAG, "Removing Character " + this.m_CharacterArray.get(index));
 				this.m_CharacterArray.set(index, ' ');
+				result[result.length - numberOfCharactersToRemove] = index;
 				numberOfCharactersToRemove--;
 			}
 		}
 		
-		return this.m_CharacterArray.toArray(new Character[1]);
+//		return this.m_CharacterArray.toArray(new Character[1]);
+		return result;
 	}
 	
 	private Character generateRandomChar() {

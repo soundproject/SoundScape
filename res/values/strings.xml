@@ -57,7 +57,6 @@
     <string name="unpleasant_label">Unpleasant</string>
     <string name="pleasant_label">Pleasant</string>
     <string name="press_to_record_string">Press to Record:</string>
-    <string name="menu_settings">Settings</string>
     <string name="title_activity_guess_word">GuessWordActivity</string>
 
 </resources>

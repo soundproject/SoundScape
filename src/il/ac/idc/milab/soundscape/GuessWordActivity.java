@@ -1,42 +1,46 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.RandomLetterGenerator;
-
-import java.io.File;
-import java.util.List;
-
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class GuessWordActivity extends Activity {
 
-	private static final int NUMBER_OF_LETTERS = 14;
+	private static final int NUMBER_OF_LETTERS = 12;
 	private static final String TAG = "GuessWordActivity";
 	private String m_word;
 	private int m_difficulty;
 	private int m_nextFreeGuessLocation;
 	private RandomLetterGenerator m_letterGenerator;
 	private Character[] m_randomCharacters;
-	private GridLayout m_randomLettersgridLayout;
 	private ImageButton m_checkGuessButton;
 	private ImageButton m_playRecordingButton;
 	private LinearLayout m_layout1;
 	private Character[] m_guess;
 	private MediaPlayer m_MediaPlayer;
 	private Uri m_recording_file;
+	private int m_guessesLeft = 3;
+	private TextView m_guessesLeftTextView;
+
+	private boolean m_bombUsed = false;
+	private TextView m_bombNumbertextView;
+	private ImageButton m_useBombButton;
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +64,11 @@ public class GuessWordActivity extends Activity {
 		}
 		m_nextFreeGuessLocation = 0;
 
-		generateRandomLetters();		
+
+		generateRandomLetters();	
+
 		initButtons();		
+
 
 		populateLetters();
 
@@ -83,25 +90,26 @@ public class GuessWordActivity extends Activity {
 		//		this.m_recording_file = Uri.fromFile(new File(getFilesDir(), extras.getString("filename")));
 	}
 
+	private LinearLayout m_firstRowLayout;
+	private LinearLayout m_secondRowLayout;
+
 	private void populateLetters() {
+
 		int col = 0;
-		int row = 0;
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x / 6;
+
 		for (Character character : this.m_randomCharacters) {
 			Button button = new Button(this);			
 			Log.d(TAG, "Character is: " + character);
 			button.setText("" + character.toUpperCase(character));
-
-			// set the button to be in row and column as needed with GridLayout.spec
-			GridLayout.LayoutParams params = new GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(col));
-			this.m_randomLettersgridLayout.addView(button, params);
-
-			// Increment column - move to second row if needed
+			LinearLayout parent = col >= NUMBER_OF_LETTERS / 2? m_secondRowLayout : m_firstRowLayout;
+			parent.addView(button);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(button.getLayoutParams());
+			button.setWidth(width);
 			col++;
-			if (col > this.m_randomCharacters.length / 2)
-			{
-				row++;
-				col = 0;
-			}
 
 			button.setOnClickListener(new OnClickListener() {
 
@@ -117,7 +125,7 @@ public class GuessWordActivity extends Activity {
 				}
 			});
 		}
-		m_randomLettersgridLayout.setMinimumWidth(m_randomLettersgridLayout.getWidth());
+
 	}
 
 	protected void removeLetterFromGuess(Button clickedButton) {
@@ -154,18 +162,53 @@ public class GuessWordActivity extends Activity {
 		}
 	}
 
+	private ImageView m_bombButton;
+	private int m_bombsLeft = 3;
+
 	private void initButtons() {
-		this.m_randomLettersgridLayout = (GridLayout) findViewById(R.id.letters_layout);
+
+		initHeader();
+		
+		Log.d(TAG, "Initializing buttons");
 		this.m_playRecordingButton = (ImageButton) findViewById(R.id.play_sound_guess_button);
 		this.m_checkGuessButton = (ImageButton) findViewById(R.id.check_guess_imageButton);
 		this.m_layout1 = (LinearLayout) findViewById(R.id.linear1);
+		this.m_bombButton = (ImageView) findViewById(R.id.header_bomb_icon);
+		this.m_firstRowLayout = (LinearLayout) findViewById(R.id.random_letters_first_rowLayout);
+		this.m_secondRowLayout = (LinearLayout) findViewById(R.id.random_letters_second_rowLayout);
+		this.m_useBombButton  = (ImageButton) findViewById(R.id.use_bomb_guess_button);
+		this.m_guessesLeftTextView = (TextView) findViewById(R.id.guesses_left_textView);
+		Log.d(TAG, "Done initializing buttons");
+		
+		this.m_guessesLeftTextView.setText("Guesses Left: " + m_guessesLeft);
 
+
+		Log.d(TAG, "Setting onClickListeners");
+		// set Bomb onclickListener
+		this.m_useBombButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (!m_bombUsed && hasBombsLeft())
+				{
+					m_bombUsed = true;
+					useBomb();
+					// get character to remove
+					int[] charsToRemove = m_letterGenerator.RemoveRandomChars();
+
+					// remove characters:
+					removeCharacters(charsToRemove);
+				}
+
+			}
+		});
 
 
 		// set onclick listener for checkGuessButton
 		this.m_checkGuessButton.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
+				
 				if (m_letterGenerator.checkGuess(getGuess()))
 				{
 					startGuessSuccessActivity();
@@ -174,15 +217,23 @@ public class GuessWordActivity extends Activity {
 				else
 				{
 					showMessage();
+					m_guessesLeft--;
+					m_guessesLeftTextView.setText("Guesses Left: " + m_guessesLeft);
+					
+					if (m_guessesLeft == 0)
+					{
+						gameOver();
+					}
 				}
 			}
 		});
 
+		// Create guess letter buttons and
 		// set onclick listener for guess letter buttons
 		for(int i = 0; i < this.m_word.length(); i++)
 		{
 			Button button = new Button(this);
-			button.setBackgroundResource(R.drawable.border_black);
+			button.setBackgroundResource(R.drawable.border_black_button);
 			Object[] tags = new Object[2];
 			tags[0] = i;
 			button.setTag(tags);
@@ -198,9 +249,47 @@ public class GuessWordActivity extends Activity {
 
 			this.m_layout1.addView(button);
 		}
+		Log.d(TAG, "Done onClickListeners");
 	}
 
 
+
+	protected void gameOver() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void initHeader() {
+		this.m_bombNumbertextView = (TextView) findViewById(R.id.header_text_view_bomb_number);
+		this.m_bombsLeft = Integer.parseInt(this.m_bombNumbertextView.getText().toString());
+
+	}
+
+	protected boolean hasBombsLeft() {
+
+		return m_bombsLeft > 0;
+	}
+
+
+	protected void useBomb() {
+
+		m_bombsLeft--;
+		m_bombNumbertextView.setText(String.format("%d", m_bombsLeft));
+	}
+
+	protected void removeCharacters(int[] charsToRemove) {
+
+		for (int index : charsToRemove)
+		{
+			LinearLayout parent = index >= NUMBER_OF_LETTERS / 2? m_secondRowLayout : m_firstRowLayout;
+			int actualLocation = parent == m_firstRowLayout ? index : index - (NUMBER_OF_LETTERS / 2);
+			Log.i("******", "Remove Button " + actualLocation);
+			Button buttonToRemove = (Button) parent.getChildAt(actualLocation);
+			buttonToRemove.setEnabled(false);
+			buttonToRemove.setVisibility(View.INVISIBLE);
+		}
+
+	}
 
 	protected String getGuess() {
 		StringBuilder result = new StringBuilder();
