@@ -77,6 +77,10 @@
             android:label="@string/title_activity_sound_taggin"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.GuessWordActivity"
+            android:label="@string/title_activity_guess_word" >
+        </activity>
     </application>
 
 </manifest>
