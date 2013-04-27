@@ -64,11 +64,13 @@
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.MatchActivity"
-            android:label="@string/title_activity_match" >
+            android:label="@string/title_activity_match"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GameActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.SoundTaggingActivity"

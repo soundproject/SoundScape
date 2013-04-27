@@ -40,15 +40,14 @@ public class OpeningScreenActivity extends Activity {
 		if(NetworkUtils.DEBUG_MODE) {
 			isValid = true;
 			m_UserEmail = "tal@tal.com";
-			m_UserToken = "wmr8+PWlDsjR6L6xlwWmH\\/DzNtoxYmFiMWRhM2U0";
+			m_UserToken = "5dhbmDxP59NIbtKbi+u4nff1z/VlNmVjYWY5Y2Q3";
 		}
 		/***** DEBUG - REMOVE ******/
 		
 		// Check if token is available, if not that means it has either expired
 		// or it doesn't exist, both cases require the user to login
 		if(isValid) {
-			startGameActivity("gadi@gadi.com");
-//			startGameLobbyActivity();
+			startGameLobbyActivity();
 			finish();
 		}
 		else {
@@ -176,14 +175,6 @@ public class OpeningScreenActivity extends Activity {
 		// send them to the next intent
 		startActivity(intent);
 		finish();
-	}
-	
-	private void startGameActivity(String email) {
-		Intent intent = new Intent(getApplicationContext(), SoundTaggingActivity.class);
-		intent = new Intent(getApplicationContext(), MatchActivity.class);
-		intent.putExtra("opponent", email);
-		intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
-		startActivity(intent);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

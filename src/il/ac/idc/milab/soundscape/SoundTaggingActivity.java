@@ -28,13 +28,7 @@ import android.widget.TextView;
 
 public class SoundTaggingActivity extends Activity {
 
-	private static final String TAG = null;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sound_tagging);
-	}
+	private static final String TAG = "SoundTagging";
 
 	private SeekBar m_emotionsSeekBar;
 	private TextView m_emotionNameTextView;
@@ -43,13 +37,16 @@ public class SoundTaggingActivity extends Activity {
 	private eEmotions m_emotion = eEmotions.NEUTRAL;
 	private boolean m_freeStyle;
 	private EditText m_soundNameTextView;
-
+	
 	@Override
-	protected void onResume() {
-		super.onResume();
-		m_freeStyle = getIntent().getExtras().getString("word").equals("freestyle");
-		initButtons();
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "Started Sound Tagging Activity");
+		setContentView(R.layout.activity_sound_tagging);
 
+		m_freeStyle = getIntent().getExtras().getString("word").equals("freestyle");
+		Log.d(TAG, "Initializing buttons");
+		initButtons();
 	}
 
 	private void initButtons() {
@@ -108,7 +105,7 @@ public class SoundTaggingActivity extends Activity {
 	}
 
 	protected void sendFile() {
-
+		Log.d(TAG, "Sending File!");
 		JSONObject fileMetaData = new JSONObject();
 		try {
 			String word = m_soundNameTextView.getText().toString();

@@ -43,12 +43,6 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sound_recording);
-	}
-
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 
 		initButtons();
 
@@ -57,7 +51,6 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 
 		this.m_recordingButton.setOnClickListener(this);
 	}
-
 
 	private void initButtons() {
 
@@ -223,13 +216,6 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.sound_recording, menu);
 		return true;
-	}
-
-	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(String... credentials) {
-			return NetworkUtils.sendFile(credentials[0], credentials[1]);
-		}
 	}
 
 	@Override

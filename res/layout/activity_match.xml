@@ -24,7 +24,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="40dp"
-	    android:background="@drawable/border_black"
+	    android:background="@drawable/border_black_view"
 	    tools:context=".MatchActivity" >
 	    
 	    <TextView 
@@ -59,7 +59,7 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical"
-	    android:background="@drawable/border_black"
+	    android:background="@drawable/border_black_view"
 	    android:layout_gravity="center_horizontal"
 	    android:layout_marginTop="20dp" >
 	    

@@ -24,5 +24,15 @@
         android:layout_marginTop="20dp"
         style="@style/gamelobby_button_game"
         android:text="@string/lobby_button_create_game" />
+    
+    <LinearLayout 
+        android:id="@+id/lobby_list_view_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+    </LinearLayout>
 
 </LinearLayout>

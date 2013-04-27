@@ -16,6 +16,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +32,10 @@ import android.util.Log;
 
 public class NetworkUtils {
 
-	public static final boolean DEBUG_MODE = true; 
+	public static final boolean DEBUG_MODE = false; 
 
-	public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
-	//	public static final String k_ServerUrl = "http://10.0.0.16/miLab/index.php";
+	//public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
+	public static final String k_ServerUrl = "http://10.0.0.3/miLab/index.php";
 
 	// Client JSON request keys
 	public static final String k_JsonKeyTag = "tag";
@@ -52,6 +55,7 @@ public class NetworkUtils {
 	public static final String k_JsonValueTagValidate = "validate";
 	public static final String k_JsonValueTagAction = "action";
 	public static final String k_JsonValueTagGet = "get";
+	public static final String k_JsonValueTagGetGames = "games";
 
 	// Server JSON response keys
 	public static final String k_JsonValueTagSendFile = "file";
@@ -106,6 +110,10 @@ public class NetworkUtils {
 	 */
 	public static JSONObject sendJsonPostRequest(JSONObject json)
 	{
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, 5000);
+		HttpConnectionParams.setSoTimeout(httpParameters, 10000);
+		
 		Log.d("NETWORK", "Sending JSON to Server: " + json.toString());
 		HttpClient httpclient = new DefaultHttpClient();
 
@@ -233,29 +241,15 @@ public class NetworkUtils {
 	 */
 	public static JSONObject getWords() {
 
-		JSONObject result = new JSONObject();
-		//		result.put(k_JsonKeyTag, k_JsonValueTagGetWords);
-		JSONObject words = new JSONObject();
+		JSONObject request = new JSONObject();
 		try {
-			JSONObject easy = new JSONObject();
-			easy.put("0", "Cat");
-			words.put("1", easy);
-			
-			JSONObject medium = new JSONObject();
-			medium.put("0", "Dog");
-			medium.put("1", "Laughter");
-			words.put("2", medium);
-			
-			JSONObject hard = new JSONObject();
-			hard.put("0", "Train");
-			hard.put("1", "Silence");
-			words.put("3", hard);
-			result.put("words", words);
+			request.put(k_JsonKeyTag, k_JsonValueTagGet);
+			request.put(k_JsonKeyAction, k_JsonValueTagGetWords);
 		} catch (JSONException e) {
 			return null;
 		}
 
-		return result;
+		return request;
 	}
 
 	public static JSONObject checkToken(String token, String email) {
@@ -282,7 +276,8 @@ public class NetworkUtils {
 	public static JSONObject getUserGameList(String email) {
 		JSONObject json = new JSONObject();
 		try {
-			json.put(k_JsonKeyTag, "lobby");
+			json.put(k_JsonKeyTag, k_JsonValueTagGet);
+			json.put(k_JsonKeyAction, k_JsonValueTagGetGames);
 			json.put(k_JsonKeyEmail, email);
 		} catch (JSONException e) {
 			Log.d("NETWORK", "Got an unexpected error.");
@@ -308,8 +303,8 @@ public class NetworkUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("SEND_FILE_DEBUG", "Sending request: " + json.toString());
-		Log.d("FOR_TAL", "Length is" + fileEncoded.length());
+		Log.d("NETWORK", "Sending request: " + json.toString());
+		Log.d("NETWORK", "Length is" + fileEncoded.length());
 		return sendJsonPostRequest(json);
 	}
 

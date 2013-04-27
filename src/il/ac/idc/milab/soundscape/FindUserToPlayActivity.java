@@ -25,6 +25,7 @@ public class FindUserToPlayActivity extends Activity {
 	private EditText m_Email;
 	private Button m_Submit;
 	private TextView m_Result;
+	private String m_GameId;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

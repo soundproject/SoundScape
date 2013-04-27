@@ -1,6 +1,5 @@
 package il.ac.idc.milab.soundscape;
 
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,16 +13,23 @@ public class MatchActivity extends Activity {
 
 	private String m_UserEmail;
 	private String m_OpponentEmail;
+	private String m_Turn;
+	private String m_TurnCount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Get the user email
-		m_UserEmail = getIntent().getStringExtra(NetworkUtils.k_JsonKeyEmail);
+		m_UserEmail = getIntent().getStringExtra("user");
 		m_OpponentEmail = getIntent().getStringExtra("opponent");
+		m_Turn = getIntent().getStringExtra("turn");
+		m_TurnCount = getIntent().getStringExtra("turnCount");
+		
 		Log.d("MATCH", "Started new game, players are:");
 		Log.d("MATCH", "User: " + m_UserEmail);
 		Log.d("MATCH", "Opponent: " + m_OpponentEmail);
+		Log.d("MATCH", "Turn: " + m_Turn);
+		Log.d("MATCH", "Turn count: " + m_TurnCount);
 		setContentView(R.layout.activity_match);
 		
 		// Set the names
@@ -37,12 +43,11 @@ public class MatchActivity extends Activity {
 		TextView turn = (TextView)findViewById(R.id.match_text_view_turn_number);
 		
 		// Check if this is an existing game
-		String turnNumber = getIntent().getStringExtra("turn");
-		if(turnNumber == null) {
-			turnNumber = "1";
+		if(m_Turn == null) {
+			m_Turn = "1";
 		}
 		
-		turn.setText(turnNumber);
+		turn.setText(m_Turn);
 		
 		// Start the game!
 		Button go = (Button)findViewById(R.id.match_button_go);
