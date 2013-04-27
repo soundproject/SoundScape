@@ -54,5 +54,8 @@
     <string name="tag_sound_string">What did you just record?</string>
     <string name="tag_emotion_string">How did that make you feel?</string>
     <string name="save_and_send_string">Send</string>
+    <string name="unpleasant_label">Unpleasant</string>
+    <string name="pleasant_label">Pleasant</string>
+    <string name="press_to_record_string">Press to Record:</string>
 
 </resources>

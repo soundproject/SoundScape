@@ -37,6 +37,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 	private ImageButton m_playRecordingButton;
 	private ImageButton m_pauseButton;
 	private TextView m_recordingWordTextView;
+	private TextView m_recordingLabelTextView;
 	private File m_file;
 
 	@Override
@@ -63,6 +64,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		m_playRecordingButton = (ImageButton) findViewById(R.id.play_recording_button);
 		m_pauseButton = (ImageButton) findViewById(R.id.pause_recording_button);
 		m_recordingWordTextView = (TextView) findViewById(R.id.recording_word_text_view);
+		m_recordingLabelTextView = (TextView) findViewById(R.id.recording_word_label);
 
 
 		Log.d(TAG, "Setting text");
@@ -70,6 +72,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		String recordingWord = getIntent().getExtras().getString("word");
 		m_recordingWordTextView.setText(recordingWord);
 		this.m_isFreeStyleRecording = recordingWord.equals(WordSelectionActivity.k_FreeStyle);
+		m_recordingLabelTextView.setText(R.string.press_to_record_string);
 
 		Log.d(TAG, "Freestyle = " + this.m_isFreeStyleRecording);
 
@@ -168,8 +171,10 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 				m_soundRecorder.stopRecording();
 				//				this.m_recordingButton.setText("Start Recording");
 				toggleSaveDeleteMode();
+				m_recordingLabelTextView.setText(R.string.press_to_record_string);
 			} else {
 				m_file = m_soundRecorder.startRecording();
+				m_recordingLabelTextView.setText(R.string.you_are_recording);
 				//				this.m_recordingButton.setText("Stop Recording");
 				Log.i(TAG, "Current file is " + this.m_file);
 			}

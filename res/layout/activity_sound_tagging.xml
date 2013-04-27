@@ -12,16 +12,6 @@
         android:layout_alignParentTop="true"
         layout="@layout/game_header" />
 
-    <TextView
-        android:id="@+id/emotion_name_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/emotion_value_seekBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:text="TextView"
-        android:textSize="25sp" />
-
     <Button
         android:id="@+id/send_sound_button"
         android:layout_width="wrap_content"
@@ -58,25 +48,7 @@
         android:layout_alignLeft="@+id/sound_name_textView"
         android:layout_alignRight="@+id/sound_name_textView"
         android:layout_below="@+id/textView2"
-        android:max="5" />
-
-    <TextView
-        android:id="@+id/difficulty_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/emotion_name_textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
-        android:text="@string/enter_difficuly_string"
-        android:textSize="25sp" />
-
-    <RatingBar
-        android:id="@+id/difficulty_RatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/difficulty_textView"
-        android:layout_centerHorizontal="true"
-        android:numStars="3" />
+        android:max="100" />
 
     <EditText
         android:id="@+id/sound_tag_editText"
@@ -89,5 +61,23 @@
 
         <requestFocus />
     </EditText>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/emotion_value_seekBar"
+        android:text="@string/unpleasant_label"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/emotion_value_seekBar"
+        android:text="@string/pleasant_label"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

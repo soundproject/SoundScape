@@ -31,14 +31,14 @@ public class SoundTaggingActivity extends Activity {
 	private static final String TAG = "SoundTagging";
 
 	private SeekBar m_emotionsSeekBar;
-	private TextView m_emotionNameTextView;
-	private RatingBar m_difficultyRatingBar;
+
 	private Button m_sendButton;
-	private eEmotions m_emotion = eEmotions.NEUTRAL;
+
 	private boolean m_freeStyle;
 	private EditText m_soundNameEditText;
 	private TextView m_soundNameTextView;
-	private TextView m_difficultyTextView;
+	private int m_emotion;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +53,10 @@ public class SoundTaggingActivity extends Activity {
 
 	private void initButtons() {
 
-		m_emotionNameTextView = (TextView) findViewById(R.id.emotion_name_textView);
 		m_emotionsSeekBar = (SeekBar) findViewById(R.id.emotion_value_seekBar);
-		m_difficultyRatingBar = (RatingBar) findViewById(R.id.difficulty_RatingBar);
 		m_sendButton = (Button) findViewById(R.id.send_sound_button);
 		m_soundNameEditText = (EditText) findViewById(R.id.sound_tag_editText);
-		m_difficultyRatingBar = (RatingBar) findViewById(R.id.difficulty_RatingBar);
-		m_difficultyTextView = (TextView) findViewById(R.id.difficulty_textView);
+
 		m_soundNameTextView = (TextView) findViewById(R.id.sound_name_textView);
 		m_emotionsSeekBar.setMax(eEmotions.values().length - 1);
 		
@@ -85,12 +82,11 @@ public class SoundTaggingActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				m_emotion = eEmotions.parseEmotionFromInt(progress);
-				m_emotionNameTextView.setText(m_emotion.getLabel());
+				m_emotion = progress;
 			}
 		});
 
-		m_emotionsSeekBar.setProgress(this.m_emotion.getValue());
+		m_emotionsSeekBar.setProgress(m_emotionsSeekBar.getMax() / 2);
 
 
 		m_sendButton.setOnClickListener(new OnClickListener() {
@@ -106,13 +102,9 @@ public class SoundTaggingActivity extends Activity {
 			m_soundNameEditText.setEnabled(true);
 		} else
 		{
-//			m_difficultyRatingBar.setEnabled(false);
-//			m_difficultyRatingBar.setRating(getIntent().getExtras().getInt("difficulty"));
+
 			Log.i(TAG, "Hiding Buttons");
-			this.m_difficultyRatingBar.setVisibility(View.INVISIBLE);
-			this.m_difficultyRatingBar.setEnabled(false);
-			this.m_difficultyTextView.setVisibility(View.INVISIBLE);
-			this.m_difficultyTextView.setEnabled(false);
+
 			this.m_soundNameTextView.setText("You just recorded:");
 			m_soundNameEditText.setText(getIntent().getExtras().getString("word"));
 			m_soundNameEditText.setEnabled(false);	
@@ -125,10 +117,8 @@ public class SoundTaggingActivity extends Activity {
 		try {
 			String word = m_soundNameEditText.getText().toString();
 			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);			
-			int difficulty = (int)this.m_difficultyRatingBar.getRating();
-			Log.d(TAG, "Difficulty is " + difficulty);
-			fileMetaData.put(NetworkUtils.k_JsonKeyDifficulty, difficulty);
-			fileMetaData.put(NetworkUtils.k_JsonKeyEmotion, this.m_emotion.getValue());
+
+			fileMetaData.put(NetworkUtils.k_JsonKeyEmotion, this.m_emotion);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
