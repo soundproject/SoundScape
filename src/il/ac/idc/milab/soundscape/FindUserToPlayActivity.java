@@ -7,6 +7,7 @@ import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FindUserToPlayActivity extends Activity {
 
@@ -30,14 +32,21 @@ public class FindUserToPlayActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Get the user email
-		m_UserEmail = getIntent().getStringExtra(NetworkUtils.k_JsonKeyEmail);
 		
 		Log.d("FINDUSER", "Started FindUserToPlay activity");
 		if(isRandomGame()) {
 			Log.d("FINDUSER", "User wants a RANDOM game");
-			startGameActivity(getRandomEmail());
-			finish();
+			String email = getRandomEmail();
+			
+			// If we got an email
+			if(email != null) {
+				startGameActivity(email);
+				finish();
+			}
+			else {
+				String msg = "There was a problem getting a player.. :(";
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+			}
 		}
 		
 		Log.d("FINDUSER", "User wants to specify an email");
@@ -65,35 +74,18 @@ public class FindUserToPlayActivity extends Activity {
 	}
 
 	private String getRandomEmail() {
-		boolean isValid = false;
 		String opponentEmail = null;
-		JSONObject request = new JSONObject();
+		JSONObject response = new JSONObject();
 		try {
-			request.put(NetworkUtils.k_JsonKeyTag, NetworkUtils.k_JsonValueTagGet);
-			request.put(NetworkUtils.k_JsonValueTagAction, NetworkUtils.k_JsonKeyEmail);
-			request.put(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
-			
-			Log.d("FINDUSER", "The request is: " + request.toString());
-			JSONObject response = new GetEmailTask().execute(request).get();
-			Log.d("FINDUSER", "The response is: " + response.toString());
-			
-			isValid = response.getInt(NetworkUtils.k_JsonKeySuccess) ==
-					NetworkUtils.k_FlagOn;
-			
-			if(isValid) {
-				opponentEmail = response.getString("opponent");
+			response = NetworkUtils.serverRequests.getRandomPlayer();
+			if(response != null) {
+				opponentEmail = response.optString("opponent");
 			}
-			
-		} catch (JSONException e) {
-			Log.d("FINDUSER", "Got a JSON exception!");
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			Log.d("FINDUSER", "Got an Interrupted Exception!");
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			Log.d("FINDUSER", "Got an Execution Exception!");
+		} catch (NetworkErrorException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return opponentEmail;
 	}
 
@@ -103,28 +95,11 @@ public class FindUserToPlayActivity extends Activity {
 		String email = m_Email.getText().toString();
 		Log.d("FINDUSER", String.format("Checking if email '%s' is valid", email));
 		
-		JSONObject request = new JSONObject();
 		try {
-			request.put(NetworkUtils.k_JsonKeyTag, NetworkUtils.k_JsonValueTagValidate);
-			request.put(NetworkUtils.k_JsonValueTagAction, NetworkUtils.k_JsonKeyEmail);
-			request.put(NetworkUtils.k_JsonKeyEmail, email);
-			
-			Log.d("FINDUSER", "The request is: " + request.toString());
-			JSONObject response = new CheckEmailTask().execute(request).get();
-			Log.d("FINDUSER", "The response is: " + response.toString());
-			
-			isValid = response.getInt(NetworkUtils.k_JsonKeySuccess) ==
-					NetworkUtils.k_FlagOn;
-			
-		} catch (JSONException e) {
-			Log.d("FINDUSER", "Got a JSON exception!");
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			Log.d("FINDUSER", "Got an Interrupted Exception!");
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			Log.d("FINDUSER", "Got an Execution Exception!");
-			e.printStackTrace();
+			isValid = NetworkUtils.serverRequests.isValidUser(email, null);
+		} catch (NetworkErrorException e) {
+			String msg = "A network connection is required";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 		}
 
 		return isValid;
@@ -150,19 +125,5 @@ public class FindUserToPlayActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.find_user_to_play, menu);
 		return true;
-	}
-	
-	private class CheckEmailTask extends AsyncTask<JSONObject, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(JSONObject... credentials) {
-	    	return NetworkUtils.sendJsonPostRequest(credentials[0]);
-	    }
-	}
-	
-	private class GetEmailTask extends AsyncTask<JSONObject, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(JSONObject... credentials) {
-	    	return NetworkUtils.sendJsonPostRequest(credentials[0]);
-	    }
 	}
 }

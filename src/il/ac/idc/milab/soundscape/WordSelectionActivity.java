@@ -46,33 +46,35 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		wordListLayout.addView(new TextView(this));
 		wordListLayout.addView(new TextView(this));
 
-		try 
-		{
-			// get new list of words
-			JSONObject request = NetworkUtils.getWords();
-			Log.d(TAG, "The request is: " + request);
-			JSONObject response = new GetWordsTask().execute(request).get();
-			Log.d(TAG, "The response is: " + response);
-			this.m_jsonWords = response.optJSONObject(NetworkUtils.k_JsonKeyWords);
-			Log.d(TAG, "The words are: " + m_jsonWords);
-			Log.d(TAG, "The length is: " + this.m_jsonWords.length());
-			for (int i = 0; i < this.m_jsonWords.length(); i++)
-			{
-				String index = String.format("%d", i + 1);
-				String currentWord = m_jsonWords.getString(index);
-				Log.d(TAG, "Got word " + currentWord);
-				addWordButton(currentWord, index);	
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		// TODO: refactor
+//		try 
+//		{
+//			// get new list of words
+//			JSONObject request = NetworkUtils.serverRequests.getWords();
+//			Log.d(TAG, "The request is: " + request);
+//			JSONObject response = new GetWordsTask().execute(request).get();
+//			Log.d(TAG, "The response is: " + response);
+//			this.m_jsonWords = response.optJSONObject(NetworkUtils.k_JsonKeyWords);
+//			Log.d(TAG, "The words are: " + m_jsonWords);
+//			Log.d(TAG, "The length is: " + this.m_jsonWords.length());
+//			for (int i = 0; i < this.m_jsonWords.length(); i++)
+//			{
+//				String index = String.format("%d", i + 1);
+//				String currentWord = m_jsonWords.getString(index);
+//				Log.d(TAG, "Got word " + currentWord);
+//				addWordButton(currentWord, index);	
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	private void addWordButton(String i_Word, String i_Difficulty) {
@@ -128,11 +130,17 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 //		finish();
 	}
 
-	private class GetWordsTask extends AsyncTask<JSONObject, Void, JSONObject> 
-	{		
-		@Override
-		protected JSONObject doInBackground(JSONObject... params) {
-			return NetworkUtils.sendJsonPostRequest(params[0]);
-		}
-	}
+//	private class GetWordsTask extends AsyncTask<JSONObject, Void, JSONObject> 
+//	{		
+//		@Override
+//<<<<<<< HEAD
+//		protected JSONObject doInBackground(JSONObject... params) {
+//			return NetworkUtils.sendJsonPostRequest(params[0]);
+//=======
+//		protected JSONObject doInBackground(Void... params) {
+//			//return NetworkUtils.getWords();
+//			return null;
+//>>>>>>> c4ba1a5... Refactored the whole server-client process
+//		}
+//	}
 }

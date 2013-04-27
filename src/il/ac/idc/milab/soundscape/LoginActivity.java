@@ -1,12 +1,10 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
-
-import org.json.JSONObject;
-
+import il.ac.idc.milab.soundscape.library.ServerRequests;
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,9 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 
+	private static final String TAG = "LOGIN";
+	
 	private Button m_ButtonLogin;
 	private Button m_ButtonRegister;
 	private TextView m_Result;
@@ -25,7 +26,7 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("LOGIN", "Started the login activity");
+		Log.d(TAG, "Started the login activity");
 		setContentView(R.layout.activity_login);
 
 		m_Result = (TextView)findViewById(R.id.login_text_view_result);
@@ -37,6 +38,9 @@ public class LoginActivity extends Activity {
 				if (isValidCredentials()) {
 					setResult(Activity.RESULT_OK, m_Intent);
 					finish();
+				}
+				else {
+					m_Result.setText("Incorrect email or password!");
 				}
 			}
 		});
@@ -52,48 +56,39 @@ public class LoginActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Check user credentials
+	 * @return true is user credentials are valid, false otherwise
+	 */
 	protected boolean isValidCredentials() {
-		Log.d("LOGIN", "Checking if credentials are valid");
-		boolean isValid = true;
+		Log.d(TAG, "Checking if credentials are valid");
+		boolean isValid = false;
 		m_Result.setText("");
 		
-		String userEmail = getUserEmail();
+		String m_UserEmail = getUserEmail();
 		String userHashedPassword = getUserPassword();
-		Log.d("LOGIN", "Login information is:");
-		Log.d("LOGIN", "Email: " + userEmail);
-		Log.d("LOGIN", "Password: " + userHashedPassword);
-		if(userEmail.length() == 0 || userHashedPassword.length() == 0) {
+		Log.d(TAG, "Login information is:");
+		Log.d(TAG, "Email: " + m_UserEmail);
+		Log.d(TAG, "Password: " + userHashedPassword);
+		if(m_UserEmail.length() == 0 || userHashedPassword.length() == 0) {
 			m_Result.setText(R.string.login_message_auth_fail);
-			Log.d("LOGIN", "Input is invalid!");
-			isValid = false;
+			Log.d(TAG, "Input is invalid!");
 		}
 		else {
-			Log.d("LOGIN", "Input is valid, sending request to server");
-			JSONObject response = null;
+			Log.d(TAG, "Input is valid, sending request to server");
+
+			// Check credentials with the server
+			Log.d(TAG, "Check if user email and password are valid");
 			try {
-				response = new UserLoginTask().execute(
-						userEmail, userHashedPassword).get();
-				Log.d("LOGIN", "Got the response: " + response.toString());
-				if(response.getInt(NetworkUtils.k_JsonKeySuccess) == 
-						NetworkUtils.k_FlagOn) {
-					String token = response.getString(NetworkUtils.k_JsonKeyToken);
-					Log.d("LOGIN", "Login was successful!");
-					Log.d("LOGIN", "Got back: ");
-					Log.d("LOGIN", "Email: " + userEmail);
-					Log.d("LOGIN", "Token: " + token);
-					m_Intent = getIntent();
-					m_Intent.putExtra(NetworkUtils.k_JsonKeyEmail, userEmail);
-					m_Intent.putExtra(NetworkUtils.k_JsonKeyToken, token);
-					isValid = true;
+				isValid = NetworkUtils.serverRequests.isValidUser(m_UserEmail, userHashedPassword);
+				
+				if(isValid) {
+					ServerRequests.setUserEmail(m_UserEmail);
 				}
-				else {
-					Log.d("LOGIN", "Login failed!");
-					isValid = false;
-					m_Result.setText(response.getString(NetworkUtils.k_JsonKeyErrorMessage));
-				}
-			} catch (Exception e) {
-				Log.d("LOGIN", "Error, response is:" + response);
-			} 
+			} catch (NetworkErrorException e) {
+				String msg = "A network connection is required";
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+			}
 		}
 		
 		return isValid;
@@ -125,12 +120,5 @@ public class LoginActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.login, menu);
 		return true;
-	}
-	
-	private class UserLoginTask extends AsyncTask<String, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(String... credentials) {
-	    	return NetworkUtils.userLogin(credentials[0], credentials[1]);
-	    }
 	}
 }

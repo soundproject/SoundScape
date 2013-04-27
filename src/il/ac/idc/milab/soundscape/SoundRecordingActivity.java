@@ -223,6 +223,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		return true;
 	}
 
+
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		// TODO Auto-generated method stub
@@ -236,10 +237,18 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		toggleControl(m_pauseButton);
-		toggleControl(m_playRecordingButton);
-
 	}
+//	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
+//		@Override
+//		protected JSONObject doInBackground(String... credentials) {
+//			//return NetworkUtils.sendFile(credentials[0], credentials[1]);
+//			return null;
+//
+//		}
+//
+//		toggleControl(m_pauseButton);
+//		toggleControl(m_playRecordingButton);
+//
+//	}
 
 }

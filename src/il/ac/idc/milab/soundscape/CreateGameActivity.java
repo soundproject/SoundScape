@@ -11,15 +11,13 @@ import android.widget.Button;
 
 public class CreateGameActivity extends Activity {
 
-	private String m_UserEmail;
+	private boolean m_RandomGame = false;
 	private Button m_ButtonEmail;
 	private Button m_ButtonRandom;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Get the user email
-		m_UserEmail = getIntent().getStringExtra(NetworkUtils.k_JsonKeyEmail);
 		Log.d("CREATE", "Started the CreateGame activity");
 		setContentView(R.layout.activity_create_game);
 
@@ -29,7 +27,8 @@ public class CreateGameActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.d("CREATE", "User wants to search for a player");
-				startFindUserToPlayActivity(false);
+				m_RandomGame = false;
+				startFindUserToPlayActivity(m_RandomGame);
 				finish();
 			}
 		});
@@ -40,7 +39,8 @@ public class CreateGameActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.d("CREATE", "User wants to pick a random player");
-				startFindUserToPlayActivity(true);
+				m_RandomGame = true;
+				startFindUserToPlayActivity(m_RandomGame);
 				finish();
 			}
 		});
@@ -49,7 +49,6 @@ public class CreateGameActivity extends Activity {
 	protected void startFindUserToPlayActivity(boolean random) {
 		Intent intent = new Intent(this, FindUserToPlayActivity.class);
 		intent.putExtra("random", random);
-		intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
 		startActivity(intent);
 		finish();
 	}

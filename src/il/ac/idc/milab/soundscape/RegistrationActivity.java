@@ -1,15 +1,10 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
-
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import il.ac.idc.milab.soundscape.library.ServerRequests;
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RegistrationActivity extends Activity {
 
+	private String m_UserEmail;
+	private String m_UserToken;
 	private EditText m_FullName;
 	private EditText m_Email;
 	private EditText m_Password;
@@ -47,6 +45,9 @@ public class RegistrationActivity extends Activity {
 				if(isRegistrationValid()) {
 					setResult(Activity.RESULT_OK, m_Intent);
 					finish();
+				}
+				else {
+					m_Result.setText("Registration failed, please try again.");
 				}
 			}
 		});
@@ -81,39 +82,12 @@ public class RegistrationActivity extends Activity {
 		}
 		else {
 			Log.d("REGISTRATION", "Input is valid, starting registration process");
-			JSONObject response = null;
 			try {
-				response = new UserRegisterTask().execute(
-						name, email, password).get();
-				Log.d("REGISTRATION", "Response is: " + response.toString());
-				if(response.getInt(NetworkUtils.k_JsonKeySuccess) == 
-						NetworkUtils.k_FlagOn) {
-					Log.d("REGISTRATION", "Registration was successful!");
-					// Store the token that was created for the user
-					String token = response.getString(NetworkUtils.k_JsonKeyToken);
-					Log.d("REGISTRATION", "Got back: ");
-					Log.d("REGISTRATION", "Email: " + email);
-					Log.d("REGISTRATION", "Token: " + token);
-					m_Intent = getIntent();
-					m_Intent.putExtra(NetworkUtils.k_JsonKeyEmail, email);
-					m_Intent.putExtra(NetworkUtils.k_JsonKeyToken, token);
-					isValid = true;
-				}
-				else {
-					Log.d("REGISTRATION", "Registration failed!");
-					isValid = false;
-					this.m_Result.setText(response.getString(NetworkUtils.k_JsonKeyErrorMessage));
-				}
-			} catch (InterruptedException e) {
-				Log.d("REGISTRATION", "Interrupted Exception");
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				Log.d("REGISTRATION", "Execution Exception");
-				e.printStackTrace();
-			} catch (JSONException e) {
-				Log.d("REGISTRATION", "JSON Exception!");
-				e.printStackTrace();
-			} 
+				isValid = NetworkUtils.serverRequests.isValidRegisteration(name, email, password);
+			} catch (NetworkErrorException e) {
+				String msg = "A network connection is required";
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+			}
 		}
 		
 		return isValid;
@@ -125,12 +99,4 @@ public class RegistrationActivity extends Activity {
 		getMenuInflater().inflate(R.menu.registration, menu);
 		return true;
 	}
-
-	private class UserRegisterTask extends AsyncTask<String, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(String... credentials) {
-	    	return NetworkUtils.userRegister(credentials[0], credentials[1], credentials[2]);
-	    }
-	}
-	
 }

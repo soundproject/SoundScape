@@ -25,7 +25,7 @@
         style="@style/gamelobby_button_game"
         android:text="@string/lobby_button_create_game" />
     
-    <LinearLayout 
+    <LinearLayout
         android:id="@+id/lobby_list_view_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

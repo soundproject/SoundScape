@@ -1,5 +1,6 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.ServerRequests;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +21,8 @@ public class MatchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Get the user email
-		m_UserEmail = getIntent().getStringExtra("user");
+
+		m_UserEmail = ServerRequests.getUserEmail();
 		m_OpponentEmail = getIntent().getStringExtra("opponent");
 		m_Turn = getIntent().getStringExtra("turn");
 		m_TurnCount = getIntent().getStringExtra("turnCount");

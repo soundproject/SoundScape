@@ -129,23 +129,25 @@ public class SoundTaggingActivity extends Activity {
 
 		// Try to send:
 		JSONObject result = null;
-		try {
-			File file = new File(getIntent().getExtras().getString("filename"));
-			result = new SendFileTask().execute(file.getAbsoluteFile().toString(), fileMetaData.toString()).get();
-
-			if (result.optInt(NetworkUtils.k_JsonKeySuccess) == NetworkUtils.k_FlagOn)
-			{
-				Log.i(TAG, "Removing file " + file.getName() + " and deleting metadata");
-				editor.remove(file.getName());
-				deleteFile(file.getName());
-				Log.i(TAG, "File " + file.getName() + " deleted");
-				editor.commit();
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
+		
+		// TODO: refactor
+//		try {
+//			File file = new File(getIntent().getExtras().getString("filename"));
+//			result = new SendFileTask().execute(file.getAbsoluteFile().toString(), fileMetaData.toString()).get();
+//
+//			if (result.optInt(NetworkUtils.k_JsonKeySuccess) == NetworkUtils.k_FlagOn)
+//			{
+//				Log.i(TAG, "Removing file " + file.getName() + " and deleting metadata");
+//				editor.remove(file.getName());
+//				deleteFile(file.getName());
+//				Log.i(TAG, "File " + file.getName() + " deleted");
+//				editor.commit();
+//			}
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -154,10 +156,10 @@ public class SoundTaggingActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_sound_tagging, menu);
 		return true;
 	}
-	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
-		@Override
-		protected JSONObject doInBackground(String... credentials) {
-			return NetworkUtils.sendFile(credentials[0], credentials[1]);
-		}
-	}
+//	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
+//		@Override
+//		protected JSONObject doInBackground(String... credentials) {
+//			return NetworkUtils.serverRequests.sendFile(credentials[0], credentials[1]);
+//		}
+//	}
 }
