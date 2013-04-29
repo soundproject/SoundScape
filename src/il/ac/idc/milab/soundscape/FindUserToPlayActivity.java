@@ -1,16 +1,13 @@
 package il.ac.idc.milab.soundscape;
 
-import java.util.concurrent.ExecutionException;
-
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import il.ac.idc.milab.soundscape.library.ServerRequests;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -32,11 +29,16 @@ public class FindUserToPlayActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		Log.d("FINDUSER", "Started FindUserToPlay activity");
 		if(isRandomGame()) {
 			Log.d("FINDUSER", "User wants a RANDOM game");
-			String email = getRandomEmail();
+
+			String email = getPlayer(null);
 			
 			// If we got an email
 			if(email != null) {
@@ -60,7 +62,9 @@ public class FindUserToPlayActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if(isValidEmail()) {
+				String email = m_Email.getText().toString();
+				Log.d("FINDUSER", String.format("Checking if email '%s' is valid", email));
+				if(getPlayer(email) != null) {
 					startGameActivity(m_Email.getText().toString());
 				}
 				else {
@@ -70,45 +74,28 @@ public class FindUserToPlayActivity extends Activity {
 		});
 		
 		m_Result = (TextView)findViewById(R.id.finduser_text_view_result);
-		
 	}
 
-	private String getRandomEmail() {
+	private String getPlayer(String i_Email) {
 		String opponentEmail = null;
 		JSONObject response = new JSONObject();
 		try {
-			response = NetworkUtils.serverRequests.getRandomPlayer();
+			response = NetworkUtils.serverRequests.getPlayer(i_Email);
 			if(response != null) {
 				opponentEmail = response.optString("opponent");
 			}
 		} catch (NetworkErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String msg = "This application requires an Internet connection.";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 		}
 		
 		return opponentEmail;
 	}
 
-	protected boolean isValidEmail() {
-		boolean isValid = false;
-		
-		String email = m_Email.getText().toString();
-		Log.d("FINDUSER", String.format("Checking if email '%s' is valid", email));
-		
-		try {
-			isValid = NetworkUtils.serverRequests.isValidUser(email, null);
-		} catch (NetworkErrorException e) {
-			String msg = "A network connection is required";
-			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-		}
-
-		return isValid;
-	}
-
-	private void startGameActivity(String email) {
+	private void startGameActivity(String i_OpponentEmail) {
 		Intent intent = new Intent(getApplicationContext(), MatchActivity.class);
-		intent.putExtra("opponent", email);
-		intent.putExtra(NetworkUtils.k_JsonKeyEmail, m_UserEmail);
+		intent.putExtra(ServerRequests.REQUEST_FIELD_OPPONENT, i_OpponentEmail);
+		intent.putExtra(ServerRequests.REQUEST_FIELD_EMAIL, m_UserEmail);
 		startActivity(intent);
 		finish();
 	}

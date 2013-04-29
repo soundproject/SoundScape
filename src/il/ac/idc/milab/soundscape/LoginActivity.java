@@ -80,7 +80,7 @@ public class LoginActivity extends Activity {
 			// Check credentials with the server
 			Log.d(TAG, "Check if user email and password are valid");
 			try {
-				isValid = NetworkUtils.serverRequests.isValidUser(m_UserEmail, userHashedPassword);
+				isValid = NetworkUtils.serverRequests.isValidLogin(m_UserEmail, userHashedPassword);
 				
 				if(isValid) {
 					ServerRequests.setUserEmail(m_UserEmail);

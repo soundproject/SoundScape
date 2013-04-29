@@ -1,6 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.eEmotions;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.R.bool;
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -114,40 +117,30 @@ public class SoundTaggingActivity extends Activity {
 	protected void sendFile() {
 		Log.d(TAG, "Sending File!");
 		JSONObject fileMetaData = new JSONObject();
-		try {
-			String word = m_soundNameEditText.getText().toString();
-			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);			
-
-			fileMetaData.put(NetworkUtils.k_JsonKeyEmotion, this.m_emotion);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		String word = m_soundNameEditText.getText().toString();
 
 		// Get shared preferences
 		SharedPreferences prefs = getSharedPreferences("il.ac.idc.milab.soundscape", MODE_PRIVATE);
 		Editor editor = prefs.edit();
-
-		// Try to send:
-		JSONObject result = null;
 		
-		// TODO: refactor
-//		try {
-//			File file = new File(getIntent().getExtras().getString("filename"));
-//			result = new SendFileTask().execute(file.getAbsoluteFile().toString(), fileMetaData.toString()).get();
-//
-//			if (result.optInt(NetworkUtils.k_JsonKeySuccess) == NetworkUtils.k_FlagOn)
-//			{
-//				Log.i(TAG, "Removing file " + file.getName() + " and deleting metadata");
-//				editor.remove(file.getName());
-//				deleteFile(file.getName());
-//				Log.i(TAG, "File " + file.getName() + " deleted");
-//				editor.commit();
-//			}
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			File file = new File(getIntent().getExtras().getString("filename"));
+			String fileName = file.getAbsoluteFile().toString();
+
+			if (NetworkUtils.serverRequests.sendFile(fileName, word, m_emotion)) {
+				Log.d(TAG, "Removing file " + file.getName() + 
+						" and deleting metadata");
+				editor.remove(file.getName());
+				deleteFile(file.getName());
+				Log.d(TAG, "File " + file.getName() + " deleted");
+				editor.commit();
+				finish();
+			}
+		} 
+		catch (NetworkErrorException e) {
+			String msg = "This application requires an Internet connection.";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
@@ -156,10 +149,4 @@ public class SoundTaggingActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_sound_tagging, menu);
 		return true;
 	}
-//	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
-//		@Override
-//		protected JSONObject doInBackground(String... credentials) {
-//			return NetworkUtils.serverRequests.sendFile(credentials[0], credentials[1]);
-//		}
-//	}
 }

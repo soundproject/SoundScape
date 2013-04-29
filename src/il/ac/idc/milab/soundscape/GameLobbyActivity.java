@@ -5,31 +5,14 @@ import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import android.R.string;
-import android.app.ActionBar.LayoutParams;
-
 import android.accounts.NetworkErrorException;
-
 import android.app.Activity;
 import android.content.Intent;
-
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.os.AsyncTask;
-
-import android.graphics.Color;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -37,14 +20,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 
 public class GameLobbyActivity extends Activity {
@@ -57,6 +35,11 @@ public class GameLobbyActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "Starting Game Lobby Activity");
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		setContentView(R.layout.activity_game_lobby);
 
 		m_ButtonCreateGame = (Button) findViewById(R.id.lobby_button_create_game);
@@ -67,54 +50,17 @@ public class GameLobbyActivity extends Activity {
 				startNewGameActivity();
 			}
 		});
-//<<<<<<< HEAD
-//		
-//		ConnectivityManager connectivityManager 
-//        = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//		Log.d(TAG, "Checking for Internet");
-//		if(NetworkUtils.isNetworkAvailable(connectivityManager) == false) {
-//			Log.d(TAG, "No Intternet found!");
-//			String message = "This activity requires an Internet connection.";
-//			Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-//		}
-//		else {
-//			Log.d(TAG, "We have internet!");
-//			// Get the User name and token
-//			
-//			Bundle extras = getIntent().getExtras();
-//			Log.d(TAG, "Get the user email and token");
-//			if(extras == null) {
-//				Log.d(TAG, "Somehow I got into the game lobby without credentials..");
-//				finish();
-//			}
-//			
-//			m_UserToken = extras.getString(NetworkUtils.k_JsonKeyToken);
-//			Log.d(TAG, "We got:");
-//			Log.d(TAG, "Email: " + m_UserEmail);
-//			Log.d(TAG, "Token: " + m_UserToken);
-//			
-//			JSONObject request = NetworkUtils.getUserGameList(m_UserEmail);
-//			Log.d(TAG, "The request: " + request);
-//			try {
-//				JSONObject gameList = new GetGameListTask().execute(request).get();
-//				Log.d(TAG, "The response: " + gameList);
-//				populateLobbyWithGames(gameList);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			} catch (ExecutionException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			
-//=======
-
+		
 		JSONObject gameList;
 		try {
 			gameList = NetworkUtils.serverRequests.getUserGameList();
-			populateLobbyWithGames(gameList);
+			
+			if(gameList != null) {
+				populateLobbyWithGames(gameList);	
+			}
 		} catch (NetworkErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String msg = "This application requires an Internet connection.";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -149,7 +95,7 @@ public class GameLobbyActivity extends Activity {
 			}
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			Log.d(TAG, "JSON Error in GameLobby");
 			e.printStackTrace();
 		}
 	}

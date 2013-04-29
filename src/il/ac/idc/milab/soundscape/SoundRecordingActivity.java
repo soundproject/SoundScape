@@ -1,6 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundRecorder;
 
 import java.io.File;
@@ -141,9 +142,9 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		JSONObject fileMetaData = new JSONObject();
 		try {
 			String word = m_isFreeStyleRecording ? "freestyle" :
-				getIntent().getExtras().getString("word");
-			fileMetaData.put(NetworkUtils.k_JsonKeyWord, word);
-			intent.putExtra("word", word);
+				getIntent().getExtras().getString(ServerRequests.REQUEST_FIELD_WORD);
+			fileMetaData.put(ServerRequests.REQUEST_FIELD_WORD, word);
+			intent.putExtra(ServerRequests.REQUEST_FIELD_WORD, word);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -238,17 +239,4 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 			e.printStackTrace();
 		}
 	}
-//	private class SendFileTask extends AsyncTask<String, Void, JSONObject> {
-//		@Override
-//		protected JSONObject doInBackground(String... credentials) {
-//			//return NetworkUtils.sendFile(credentials[0], credentials[1]);
-//			return null;
-//
-//		}
-//
-//		toggleControl(m_pauseButton);
-//		toggleControl(m_playRecordingButton);
-//
-//	}
-
 }

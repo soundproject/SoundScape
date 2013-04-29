@@ -14,7 +14,7 @@ public class MatchActivity extends Activity {
 
 	private String m_UserEmail;
 	private String m_OpponentEmail;
-	private String m_Turn;
+	private String m_State;
 	private String m_TurnCount;
 	
 	@Override
@@ -23,33 +23,37 @@ public class MatchActivity extends Activity {
 		// Get the user email
 
 		m_UserEmail = ServerRequests.getUserEmail();
-		m_OpponentEmail = getIntent().getStringExtra("opponent");
-		m_Turn = getIntent().getStringExtra("turn");
-		m_TurnCount = getIntent().getStringExtra("turnCount");
+		m_OpponentEmail = getIntent().getStringExtra(ServerRequests.REQUEST_FIELD_OPPONENT);
+		m_State = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_STATE);
+		m_TurnCount = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_TURNCOUNT);
 		
 		Log.d("MATCH", "Started new game, players are:");
 		Log.d("MATCH", "User: " + m_UserEmail);
 		Log.d("MATCH", "Opponent: " + m_OpponentEmail);
-		Log.d("MATCH", "Turn: " + m_Turn);
+		Log.d("MATCH", "State: " + m_State);
 		Log.d("MATCH", "Turn count: " + m_TurnCount);
 		setContentView(R.layout.activity_match);
 		
 		// Set the names
 		TextView playerUser = (TextView)findViewById(R.id.match_text_view_left_player);
-		playerUser.setText(m_UserEmail.split("@")[0]);
+		String user = m_UserEmail.split("@")[0];
+		user = user.length() > 5 ? user.substring(0, 5) : user;
+		playerUser.setText(user);
 		
 		TextView playerOpponent = (TextView)findViewById(R.id.match_text_view_right_player);
-		playerOpponent.setText(m_OpponentEmail.split("@")[0]);
+		String opponent = m_OpponentEmail.split("@")[0];
+		opponent = opponent.length() > 5 ? opponent.substring(0, 5) : opponent;
+		playerOpponent.setText(opponent);
 		
 		// Set the turn
-		TextView turn = (TextView)findViewById(R.id.match_text_view_turn_number);
+		TextView turnCount = (TextView)findViewById(R.id.match_text_view_turn_number);
 		
 		// Check if this is an existing game
-		if(m_Turn == null) {
-			m_Turn = "1";
+		if(m_TurnCount == null) {
+			m_TurnCount = "1";
 		}
 		
-		turn.setText(m_Turn);
+		turnCount.setText(m_TurnCount);
 		
 		// Start the game!
 		Button go = (Button)findViewById(R.id.match_button_go);

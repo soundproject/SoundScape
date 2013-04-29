@@ -1,6 +1,5 @@
 package il.ac.idc.milab.soundscape;
 
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

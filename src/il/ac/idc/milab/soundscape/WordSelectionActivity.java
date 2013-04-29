@@ -1,15 +1,16 @@
 package il.ac.idc.milab.soundscape;
 
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import java.util.Locale;
 
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import org.json.JSONException;
+import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import il.ac.idc.milab.soundscape.library.ServerRequests;
+
 import org.json.JSONObject;
+
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,14 +18,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class WordSelectionActivity extends Activity implements OnClickListener {
 
-	private static final String TAG = "WordSelection";
+	private static final String TAG = "WORD_SELECTION";
 	public static final String k_FreeStyle = "freestyle";
-	private JSONObject m_jsonWords;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,35 +47,26 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		wordListLayout.addView(new TextView(this));
 		wordListLayout.addView(new TextView(this));
 
-		
-		// TODO: refactor
-//		try 
-//		{
-//			// get new list of words
-//			JSONObject request = NetworkUtils.serverRequests.getWords();
-//			Log.d(TAG, "The request is: " + request);
-//			JSONObject response = new GetWordsTask().execute(request).get();
-//			Log.d(TAG, "The response is: " + response);
-//			this.m_jsonWords = response.optJSONObject(NetworkUtils.k_JsonKeyWords);
-//			Log.d(TAG, "The words are: " + m_jsonWords);
-//			Log.d(TAG, "The length is: " + this.m_jsonWords.length());
-//			for (int i = 0; i < this.m_jsonWords.length(); i++)
-//			{
-//				String index = String.format("%d", i + 1);
-//				String currentWord = m_jsonWords.getString(index);
-//				Log.d(TAG, "Got word " + currentWord);
-//				addWordButton(currentWord, index);	
-//			}
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		JSONObject response = new JSONObject();
+		try {
+			response = NetworkUtils.serverRequests.getRandomWords();
+			if(response != null) {
+				JSONObject words = response.optJSONObject(ServerRequests.RESPONSE_FIELD_WORDS);
+				Log.d(TAG, "The words are: " + words);
+				Log.d(TAG, "The length is: " + words.length());
+				
+				for (int i = 0; i < words.length(); i++)
+				{
+					String index = String.format(Locale.US, "%d", i + 1);
+					String currentWord = words.optString(index);
+					Log.d(TAG, "Got word " + currentWord);
+					addWordButton(currentWord, index);	
+				}
+			}
+		} catch (NetworkErrorException e) {
+			String msg = "This application requires an Internet connection.";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	private void addWordButton(String i_Word, String i_Difficulty) {
@@ -105,42 +97,27 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		Button button = (Button) v;
 		startRecordingActivity(button);
 	}
 
 	private void startRecordingActivity(Button button) {
-		// TODO Auto-generated method stub
 		
 		String word = button.getText().toString();
 		Log.d(TAG, "Selected word was: " + word);
 		Intent intent = new Intent(getApplicationContext(),
 				SoundRecordingActivity.class);
 		intent.putExtra("word", word);
-		/*Integer difficulty = (Integer) button.getTag();
+		Log.d(TAG, "The TAG is: " + button.getTag());
+		Integer difficulty = Integer.getInteger((String) button.getTag());
 
 		if (difficulty != null)
 		{
 			intent.putExtra("difficulty", difficulty.intValue());
-			Log.e(TAG, "**** DIFFICULTY IS " + intent.getExtras().getInt("difficulty"));
+			Log.d(TAG, "**** DIFFICULTY IS " + intent.getExtras().getInt("difficulty"));
 		}
-		*/
+		
 		startActivity(intent);
-//		finish();
+		finish();
 	}
-
-//	private class GetWordsTask extends AsyncTask<JSONObject, Void, JSONObject> 
-//	{		
-//		@Override
-//<<<<<<< HEAD
-//		protected JSONObject doInBackground(JSONObject... params) {
-//			return NetworkUtils.sendJsonPostRequest(params[0]);
-//=======
-//		protected JSONObject doInBackground(Void... params) {
-//			//return NetworkUtils.getWords();
-//			return null;
-//>>>>>>> c4ba1a5... Refactored the whole server-client process
-//		}
-//	}
 }

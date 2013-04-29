@@ -1,12 +1,18 @@
 package il.ac.idc.milab.soundscape.library;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 
 public class ServerRequests {
@@ -17,29 +23,41 @@ public class ServerRequests {
 	private static String m_UserToken;
 	
 	// Server request actions
-	private static final String REQUEST_ACTION = "action";
-	private static final String REQUEST_ACTION_VALIDATE = "validate";
-	private static final String REQUEST_ACTION_LOGIN = "login";
-	private static final String REQUEST_ACTION_REGISTER = "register";
-	private static final String REQUEST_ACTION_GET = "get";
-	private static final String REQUEST_ACTION_SET = "set";
+	public static final String REQUEST_ACTION = "action";
+	public static final String REQUEST_ACTION_VALIDATE = "validate";
+	public static final String REQUEST_ACTION_LOGIN = "login";
+	public static final String REQUEST_ACTION_REGISTER = "register";
+	public static final String REQUEST_ACTION_GET = "get";
+	public static final String REQUEST_ACTION_SET = "set";
 	
 	// Server request subjects
-	private static final String REQUEST_SUBJECT = "subject";
-	private static final String REQUEST_SUBJECT_EMAIL = "email";
-	private static final String REQUEST_SUBJECT_TOKEN = "token";
-	private static final String REQUEST_SUBJECT_GAMES = "games";
+	public static final String REQUEST_SUBJECT = "subject";
+	public static final String REQUEST_SUBJECT_EMAIL = "email";
+	public static final String REQUEST_SUBJECT_TOKEN = "token";
+	public static final String REQUEST_SUBJECT_GAMES = "games";
+	public static final String REQUEST_SUBJECT_WORDS = "words";
+	public static final String REQUEST_SUBJECT_FILE = "file";
 	
 	// Server request Fields
-	private static final String REQUEST_FIELD_EMAIL = "email";
-	private static final String REQUEST_FIELD_PASSWORD = "password";
-	private static final String REQUEST_FIELD_NAME = "name";
-	private static final String REQUEST_FIELD_TOKEN = "token";
+	public static final String REQUEST_FIELD_EMAIL = "email";
+	public static final String REQUEST_FIELD_PASSWORD = "password";
+	public static final String REQUEST_FIELD_NAME = "name";
+	public static final String REQUEST_FIELD_TOKEN = "token";
+	public static final String REQUEST_FIELD_OPPONENT = "opponent";
+	public static final String REQUEST_FIELD_FILE = "file";
+	public static final String REQUEST_FIELD_FILE_META = "meta";
+	public static final String REQUEST_FIELD_WORD = "word";
+	public static final String REQUEST_FIELD_EMOTION = "emotion";
+	public static final String REQUEST_FIELD_RANDOM = "random";
+
+	public static final String RESPONSE_FIELD_SUCCESS = "success";
+	public static final String RESPONSE_FIELD_TOKEN = "token";
+	public static final String RESPONSE_FIELD_STATE = "gState";
+	public static final String RESPONSE_FIELD_TURNCOUNT = "turnCount";
+	public static final String RESPONSE_FIELD_WORDS = "words";
 	
-	private static final String RESPONSE_FIELD_SUCCESS = "success";
-	private static final String RESPONSE_FIELD_TOKEN = "token";
-	private static final int RESPONSE_VALUE_SUCCESS = 1;
-	private static final int RESPONSE_VALUE_FAIL = 0;
+	public static final int RESPONSE_VALUE_SUCCESS = 1;
+	public static final int RESPONSE_VALUE_FAIL = 0;
 	
 	
 	// Client JSON request keys
@@ -79,21 +97,24 @@ public class ServerRequests {
 	 * @param i_Request a JSONObject representing the JSON request
 	 * @throws NetworkErrorException if no network connection available
 	 * */
-	public boolean isValidResponse(JSONObject i_Response) throws NetworkErrorException{
+	public boolean isValidResponse(JSONObject i_Response) {
+		Log.d(TAG, "Is valid response?");
 		boolean isValid = false;
-		try {
-			int test = i_Response.getInt(RESPONSE_FIELD_SUCCESS);
-			isValid = i_Response.getInt(RESPONSE_FIELD_SUCCESS) == 
-					RESPONSE_VALUE_SUCCESS;
-			Log.d(TAG, "From server: " + test);
-			Log.d(TAG, "From client: " + RESPONSE_VALUE_SUCCESS);
-		} 
-		catch (JSONException e) {
-			Log.d(TAG, "Couldn't get the response string!");
-			e.printStackTrace();
+		if(i_Response != null) {
+			try {
+				int test = i_Response.getInt(RESPONSE_FIELD_SUCCESS);
+				isValid = i_Response.getInt(RESPONSE_FIELD_SUCCESS) == 
+						RESPONSE_VALUE_SUCCESS;
+				Log.d(TAG, "From server: " + test);
+				Log.d(TAG, "From client: " + RESPONSE_VALUE_SUCCESS);
+			} 
+			catch (JSONException e) {
+				Log.d(TAG, "Couldn't get the response string!");
+				e.printStackTrace();
+			}
+		
+			Log.d(TAG, "Is valid request?: " + isValid);
 		}
-	
-		Log.d(TAG, "Is valid request?: " + isValid);
 		return isValid;
 	}
 	
@@ -104,7 +125,7 @@ public class ServerRequests {
 	 * @throws NetworkErrorException if no network connection available
 	 */
 	public JSONObject getServerResponse(JSONObject i_Request) throws NetworkErrorException{
-
+		Log.d(TAG, "Get server response");
 		Log.d(TAG, "The request is: " + i_Request);
 		JSONObject response = new JSONObject();
 		try {
@@ -135,6 +156,7 @@ public class ServerRequests {
 	 * @throws NetworkErrorException if no network connection available
 	 */
 	public boolean isValidToken(String i_Email, String i_Token) throws NetworkErrorException {
+		Log.d(TAG, "Is valid token?");
 		boolean isValid = false;
 		
 		JSONObject request = new JSONObject();
@@ -157,6 +179,7 @@ public class ServerRequests {
 
 		return isValid;
 	}
+
 	
 	/**
 	 * This function checks is a user given credentials are valid
@@ -165,8 +188,13 @@ public class ServerRequests {
 	 * @return true if credentials are valid, false otherwise 
 	 * @throws NetworkErrorException if no network connection available
 	 * */
-	public boolean isValidUser(String i_Email, String i_Password) throws NetworkErrorException{
+	public boolean isValidLogin(String i_Email, String i_Password) throws NetworkErrorException{
+		Log.d(TAG, "Is valid login?");
 		boolean isValid = false;
+		
+		Log.d(TAG, "User email is: " + m_UserEmail);
+		Log.d(TAG, "Requested email is: " + i_Email);
+		
 		// Building Parameters
 		JSONObject request = new JSONObject();
 		try {
@@ -201,6 +229,7 @@ public class ServerRequests {
 	 * @throws NetworkErrorException if no network connection available
 	 * */
 	public boolean isValidRegisteration(String i_Name, String i_Email, String i_Password) throws NetworkErrorException{
+		Log.d(TAG, "Is valid registration?");
 		boolean isValid = false;
 		JSONObject request = new JSONObject();
 		try {
@@ -227,7 +256,14 @@ public class ServerRequests {
 		return isValid;
 	}
 
+	/**
+	 * This function gets the user active game list
+	 * @return a JSON object representing the user game list or null if 
+	 * response was not valid
+	 * @throws NetworkErrorException if no network connection available
+	 */
 	public JSONObject getUserGameList() throws NetworkErrorException {
+		Log.d(TAG, "Get user game list");
 		JSONObject request = new JSONObject();
 		JSONObject response = new JSONObject();
 		try {
@@ -254,13 +290,32 @@ public class ServerRequests {
 		return response;
 	}
 	
-	public JSONObject getRandomPlayer() throws NetworkErrorException {
+	/**
+	 * This function gets a random player from the DB that is not our player
+	 * @return a JSON object representing the opponent e-mail or null if 
+	 * response was not valid
+	 * @throws NetworkErrorException if no network connection available
+	 */
+	public JSONObject getPlayer(String i_Email) throws NetworkErrorException {
+		Log.d(TAG, "Get player");
+		if(i_Email != null && i_Email.equalsIgnoreCase(m_UserEmail)) {
+			return null;
+		}
+		
 		JSONObject request = new JSONObject();
 		JSONObject response = new JSONObject();
 		try {
 			request.put(REQUEST_ACTION, REQUEST_ACTION_GET);
 			request.put(REQUEST_SUBJECT, REQUEST_SUBJECT_EMAIL);
 			request.put(REQUEST_FIELD_EMAIL, m_UserEmail);
+			
+			// If random player needed
+			if(i_Email == null) {
+				request.put(REQUEST_FIELD_OPPONENT, REQUEST_FIELD_RANDOM);
+			}
+			else {
+				request.put(REQUEST_FIELD_OPPONENT, i_Email);
+			}
 			request.put(REQUEST_FIELD_TOKEN, m_UserToken);
 			
 			response = getServerResponse(request);
@@ -274,41 +329,72 @@ public class ServerRequests {
 		}
 		return response;
 	}
-/*
-	public JSONObject getWords() {
 
+	/**
+	 * This function gets a random set of words from the server by difficulty
+	 * @return a JSON object representing a random set of words with difficulty 
+	 * tags or null if response was not valid
+	 * @throws NetworkErrorException if no network connection available
+	 */
+	public JSONObject getRandomWords() throws NetworkErrorException {
+		Log.d(TAG, "Get random words");
 		JSONObject request = new JSONObject();
+		JSONObject response = new JSONObject();
 		try {
-			request.put(k_JsonKeyTag, k_JsonValueTagGet);
-			request.put(k_JsonKeyAction, k_JsonValueTagGetWords);
+			request.put(REQUEST_ACTION, REQUEST_ACTION_GET);
+			request.put(REQUEST_SUBJECT, REQUEST_SUBJECT_WORDS);
+			
+			response = getServerResponse(request);
+			if(isValidResponse(response) == false) {
+				response = null;
+			}
 		} catch (JSONException e) {
-			return null;
-		}
-
-		return request;
-	}
-	
-	public JSONObject sendFile(String i_fileName, String i_metadata) throws NetworkErrorException {
-		// TODO Auto-generated method stub
-		byte[] encodedFile = encodeFile(new File(i_fileName));
-		JSONObject json = null;
-		String fileEncoded = null;
-		try 
-		{
-			json = new JSONObject(i_metadata);
-			json.put(k_JsonKeyTag, k_JsonValueTagSendFile);
-			json.put(k_JsonKeyAction, k_JsonValueFileSend);
-			json.put(k_JsonKeyFile, Base64.encodeToString(encodedFile, Base64.DEFAULT));
-			fileEncoded = Base64.encodeToString(encodedFile, Base64.DEFAULT);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			Log.d(TAG, "Couldn't put stuff in our JSON object!");
 			e.printStackTrace();
 		}
-		Log.d("NETWORK", "Sending request: " + json.toString());
-		Log.d("NETWORK", "Length is" + fileEncoded.length());
-		return NetworkUtils.sendJsonPostRequest(json);
+
+		return response;
+	}
+	
+	/**
+	 * This function sends the recorded sound to the server
+	 * @param i_FileName the name of the sound file we recorder earlier
+	 * @param i_metadata the meta data of the sound file
+	 * @return True if upload was successful, false otherwise
+	 * @throws NetworkErrorException if no network connection available
+	 */
+	public boolean sendFile(String i_FileName, String i_Word, int i_Emotion) throws NetworkErrorException {
+		Log.d(TAG, "Sending file");
+		boolean isValid = false;
+		byte[] encodedFile = encodeFile(new File(i_FileName));
+		String fileEncoded = Base64.encodeToString(encodedFile, Base64.DEFAULT);
+		JSONObject request = new JSONObject();
+		JSONObject response = new JSONObject();
+		try 
+		{
+			request.put(REQUEST_ACTION, REQUEST_ACTION_SET);
+			request.put(REQUEST_SUBJECT, REQUEST_SUBJECT_FILE);
+			request.put(REQUEST_FIELD_FILE, fileEncoded);
+			request.put(REQUEST_FIELD_WORD, i_Word);			
+			request.put(REQUEST_FIELD_EMOTION, i_Emotion);
+			request.put(REQUEST_FIELD_EMAIL, m_UserEmail);
+			
+			response = getServerResponse(request);
+			isValid = isValidResponse(response);
+		} 
+		catch (JSONException e) {
+			Log.d(TAG, "Couldn't put stuff in our JSON object!");
+			e.printStackTrace();
+		}
+
+		return isValid;
 	}
 
+	/**
+	 * A helper function that returns a given file as a byte array
+	 * @param i_file the file descriptor
+	 * @return a byte array representing the file content
+	 */
 	private byte[] encodeFile(File i_file) {
 
 		int bytesRead, bytesAvailable, bufferSize;
@@ -343,25 +429,43 @@ public class ServerRequests {
 
 		return result.toByteArray();
 	}
-
-	*/
 	
+	/**
+	 * Getter
+	 * @return the user email address
+	 */
 	public static String getUserEmail() {
 		return m_UserEmail;
 	}
 	
+	/**
+	 * Getter
+	 * @return the user Token
+	 */
 	public static String getUserToken() {
 		return m_UserToken;
 	}
 	
+	/**
+	 * Setter
+	 * @param i_Email sets the user E-mail address
+	 */
 	public static void setUserEmail(String i_Email) {
 		m_UserEmail = i_Email;
 	}
 	
+	/**
+	 * Setter
+	 * @param i_Token sets the user Token
+	 */
 	public static void setUserToken(String i_Token) {
 		m_UserToken = i_Token;
 	}
 	
+	/**
+	 * A Helper class that does the asynchronic task of communication with the
+	 * server
+	 */
 	private class ServerRequestTask extends AsyncTask<JSONObject, Void, JSONObject> {
 		@Override
 		protected void onPreExecute() {
