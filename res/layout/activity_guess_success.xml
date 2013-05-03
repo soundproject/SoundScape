@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GuessSuccessActivity" >
+
+    <include
+        android:id="@+id/include1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        layout="@layout/game_header" />
+
+    <TextView
+        android:id="@+id/guess_success_correct_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/include1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="@string/guess_correct_label_string"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/guess_succcess_thank_you_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/guess_success_correct_textView"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:lines="2"
+        android:text="@string/guess_success_mapping_thanks_string"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/guess_success_you_recieve_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/guess_succcess_thank_you_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp"
+        android:text="@string/you_receive_string"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/guess_success_star_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/guess_success_you_recieve_textView"
+        android:layout_marginTop="23dp"
+        android:layout_toLeftOf="@+id/guess_success_correct_textView"
+        android:adjustViewBounds="true"
+        android:scaleType="center"
+        android:src="@android:drawable/btn_star_big_on" />
+
+    <ImageView
+        android:id="@+id/guess_success_bomb_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/guess_success_star_imageView"
+        android:layout_alignTop="@+id/guess_success_star_imageView"
+        android:layout_toRightOf="@+id/guess_success_correct_textView"
+        android:src="@drawable/ic_bomb" />
+
+    <TextView
+        android:id="@+id/guess_success_stars_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/guess_success_star_imageView"
+        android:layout_toRightOf="@+id/guess_success_star_imageView"
+        android:text="1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/guess_success_bomb_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/guess_success_bomb_imageView"
+        android:layout_alignLeft="@+id/guess_success_bomb_imageView"
+        android:text="1"
+        android:textSize="18sp" />
+
+    <ProgressBar
+        android:id="@+id/guess_success_progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/guess_success_star_imageView"
+        android:layout_marginTop="29dp" />
+
+    <Button
+        android:id="@+id/guess_success_back_to_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/guess_success_progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="OK" />
+
+</RelativeLayout>

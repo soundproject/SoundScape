@@ -58,5 +58,13 @@
     <string name="pleasant_label">Pleasant</string>
     <string name="press_to_record_string">Press to Record:</string>
     <string name="title_activity_guess_word">GuessWordActivity</string>
+    <string name="title_activity_guess_success">GuessSuccessActivity</string>
+    <string name="guess_correct_label_string">You got it right!</string>
+    <string name="guess_success_mapping_thanks_string">You\'ve helped us map out Tel Aviv\'s sound map and</string>
+    <string name="you_receive_string">YOU RECEIVE</string>
+    <string name="title_activity_game_over">GameOverActivity</string>
+    <string name="time_up_string">No more guesses left!</string>
+    <string name="answer_was_string">The correct answer was:</string>
+    <string name="better_luck_string">Better luck next time...</string>
 
 </resources>
