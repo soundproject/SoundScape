@@ -19,8 +19,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="il.ac.idc.milab.soundscape.OpeningScreenActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -31,80 +31,94 @@
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GameLobbyActivity"
-            android:label="@string/title_activity_game_lobby"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_game_lobby"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.LoginActivity"
-            android:label="@string/title_activity_login"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.RegistrationActivity"
-            android:label="@string/title_activity_registration"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_registration"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.SoundRecordingActivity"
-            android:label="@string/title_activity_sound_recording"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_sound_recording"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.WordSelectionActivity"
-            android:label="@string/title_activity_word_selection"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_word_selection"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.CreateGameActivity"
-            android:label="@string/title_activity_new_game"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_new_game"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.FindUserToPlayActivity"
-            android:label="@string/title_activity_find_user_to_play"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_find_user_to_play"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.MatchActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/title_activity_match"
-			android:configChanges="orientation|keyboardHidden|keyboard"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GameActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/title_activity_main"
-			android:configChanges="orientation|keyboardHidden|keyboard"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.SoundTaggingActivity"
-            android:label="@string/title_activity_sound_taggin"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
             android:configChanges="orientation|keyboardHidden|keyboard"
-            android:screenOrientation="portrait" >
+            android:label="@string/title_activity_sound_taggin"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GuessWordActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_guess_word"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:label="@string/title_activity_guess_word" >
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.GuessSuccessActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_guess_success"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.GameOverActivity"
+            android:label="@string/title_activity_game_over" 
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
     </application>
 

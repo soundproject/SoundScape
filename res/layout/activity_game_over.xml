@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameOverActivity" >
+
+    <include
+        android:id="@+id/include1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        layout="@layout/game_header" />
+
+    <TextView
+        android:id="@+id/game_over_time_up_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/include1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:text="@string/time_up_string"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/game_over_answer_was_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/game_over_time_up_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:text="@string/answer_was_string"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/game_over_answer_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="TextView"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/game_over_better_luck_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/game_over_answer_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/better_luck_string"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/game_over_ok_button"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/game_over_better_luck_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
+        android:text="OK" />
+
+</RelativeLayout>

@@ -2,6 +2,7 @@ package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.RandomLetterGenerator;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -255,7 +256,12 @@ public class GuessWordActivity extends Activity {
 
 
 	protected void gameOver() {
-		// TODO Auto-generated method stub
+		
+		Intent intent = new Intent(this, GameOverActivity.class);
+		intent.putExtra("word", this.m_word);
+		
+		startActivity(intent);
+		finish();
 		
 	}
 
@@ -275,6 +281,8 @@ public class GuessWordActivity extends Activity {
 
 		m_bombsLeft--;
 		m_bombNumbertextView.setText(String.format("%d", m_bombsLeft));
+		
+		// TODO: tell server bomb was used
 	}
 
 	protected void removeCharacters(int[] charsToRemove) {
@@ -283,7 +291,6 @@ public class GuessWordActivity extends Activity {
 		{
 			LinearLayout parent = index >= NUMBER_OF_LETTERS / 2? m_secondRowLayout : m_firstRowLayout;
 			int actualLocation = parent == m_firstRowLayout ? index : index - (NUMBER_OF_LETTERS / 2);
-			Log.i("******", "Remove Button " + actualLocation);
 			Button buttonToRemove = (Button) parent.getChildAt(actualLocation);
 			buttonToRemove.setEnabled(false);
 			buttonToRemove.setVisibility(View.INVISIBLE);
@@ -308,8 +315,13 @@ public class GuessWordActivity extends Activity {
 	}
 
 	protected void startGuessSuccessActivity() {
-		// TODO Auto-generated method stub
-
+		// TODO TAL: send success to server
+		
+		Intent intent = new Intent(this, GuessSuccessActivity.class);
+		
+		intent.putExtra("difficulty", this.m_difficulty);
+		startActivity(intent);
+		finish();
 	}
 
 	private void generateRandomLetters() 
