@@ -5,6 +5,7 @@ import java.util.Locale;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.NetworkErrorException;
@@ -26,11 +27,14 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "WORD_SELECTION";
 	public static final String k_FreeStyle = "freestyle";
+	private String m_GameDetails = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_word_selection);
+		
+		m_GameDetails = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_GAME);
 		
 		LinearLayout wordListLayout = (LinearLayout) findViewById(R.id.word_list_layout);
 
@@ -117,6 +121,7 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 			Log.d(TAG, "**** DIFFICULTY IS " + intent.getExtras().getInt("difficulty"));
 		}
 		
+		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, m_GameDetails);
 		startActivity(intent);
 		finish();
 	}

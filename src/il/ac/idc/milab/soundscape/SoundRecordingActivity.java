@@ -1,6 +1,5 @@
 package il.ac.idc.milab.soundscape;
 
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundRecorder;
 
@@ -17,7 +16,6 @@ import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -40,12 +38,13 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 	private TextView m_recordingWordTextView;
 	private TextView m_recordingLabelTextView;
 	private File m_file;
+	private String m_GameDetails = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sound_recording);
-
+		m_GameDetails = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_GAME);
 		initButtons();
 
 		// init sound recorder:
@@ -159,6 +158,8 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 		intent.putExtra("difficulty", getIntent().getExtras().getInt("difficulty", 0));
 		
 		Log.d(TAG, "Starting soundTagging");
+
+		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, m_GameDetails);
 		startActivity(intent);
 		finish();
 	}

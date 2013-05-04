@@ -49,46 +49,29 @@ public class ServerRequests {
 	public static final String REQUEST_FIELD_WORD = "word";
 	public static final String REQUEST_FIELD_EMOTION = "emotion";
 	public static final String REQUEST_FIELD_RANDOM = "random";
+	public static final String REQUEST_FIELD_GAMEID = "gid";
 
 	public static final String RESPONSE_FIELD_SUCCESS = "success";
 	public static final String RESPONSE_FIELD_TOKEN = "token";
-	public static final String RESPONSE_FIELD_STATE = "gState";
-	public static final String RESPONSE_FIELD_TURNCOUNT = "turnCount";
 	public static final String RESPONSE_FIELD_WORDS = "words";
+	public static final String RESPONSE_FIELD_GAME = "game";
+	public static final String RESPONSE_FIELD_OPPONENT = "opponent";
+	public static final String RESPONSE_FIELD_GAMES = "games";
+	public static final String RESPONSE_FIELD_EMAIL = "uEmail";
+	public static final String RESPONSE_FIELD_FILE = "file";
+	
+	
+	public static final String RESPONSE_FIELD_GAME_USER = "gUserEmail";
+	public static final String RESPONSE_FIELD_GAME_OPPONENT = "gOpponentEmail";
+	public static final String RESPONSE_FIELD_GAME_TURNCOUNT = "gTurnCount";
+	public static final String RESPONSE_FIELD_GAME_STATE = "gState";
+	public static final String RESPONSE_FIELD_GAME_WHOSTURN = "gWhosTurn";
+	public static final String RESPONSE_FIELD_GAME_WORD = "gCurrentWord";
+	public static final String RESPONSE_FIELD_GAME_ID = "gid";
 	
 	public static final int RESPONSE_VALUE_SUCCESS = 1;
 	public static final int RESPONSE_VALUE_FAIL = 0;
 	
-	
-	// Client JSON request keys
-	public static final String k_JsonKeyName = "name";
-	public static final String k_JsonKeyEmail = "email";
-	public static final String k_JsonKeyPassword = "password";
-	public static final String k_JsonKeyFile = "file";
-	public static final String k_JsonKeyWord = "word";
-	public static final String k_JsonKeyDifficulty = "difficulty";
-	public static final String k_JsonKeyAction = "action";
-	public static final String k_JsonKeyEmotion = "emotion";
-
-	// Client JSON request values
-	public static final String k_JsonValueTagLogin = "login";
-	public static final String k_JsonValueTagRegister = "register";
-	public static final String k_JsonValueTagValidate = "validate";
-	public static final String k_JsonValueTagAction = "action";
-	public static final String k_JsonValueTagGet = "get";
-	public static final String k_JsonValueTagGetGames = "games";
-
-	// Server JSON response keys
-	public static final String k_JsonValueTagSendFile = "file";
-	public static final String k_JsonValueTagGetWords = "words";
-	public static final String k_JsonValueFileSend = "set";
-	public static final String k_JsonValueFileGet = "get";
-
-	// Server JSON response keys
-	public static final String k_JsonKeyError = "error";
-	public static final String k_JsonKeyErrorMessage = "error_msg";
-	public static final String k_JsonKeySuccess = "success";
-	public static final String k_JsonKeyWords = "words";
 	
 	public ServerRequests(){}
 	
@@ -363,7 +346,7 @@ public class ServerRequests {
 	 * @return True if upload was successful, false otherwise
 	 * @throws NetworkErrorException if no network connection available
 	 */
-	public boolean sendFile(String i_FileName, String i_Word, int i_Emotion) throws NetworkErrorException {
+	public boolean sendFile(String i_FileName, String i_Word, int i_Emotion, String i_GameID) throws NetworkErrorException {
 		Log.d(TAG, "Sending file");
 		boolean isValid = false;
 		byte[] encodedFile = encodeFile(new File(i_FileName));
@@ -378,6 +361,7 @@ public class ServerRequests {
 			request.put(REQUEST_FIELD_WORD, i_Word);			
 			request.put(REQUEST_FIELD_EMOTION, i_Emotion);
 			request.put(REQUEST_FIELD_EMAIL, m_UserEmail);
+			request.put(REQUEST_FIELD_GAMEID, i_GameID);
 			
 			response = getServerResponse(request);
 			isValid = isValidResponse(response);
@@ -388,6 +372,33 @@ public class ServerRequests {
 		}
 
 		return isValid;
+	}
+	
+	public byte[] getGameFile(String i_GameID) throws NetworkErrorException {
+		Log.d(TAG, "Geting the game file");
+		byte[] decodedFile = null;
+		JSONObject request = new JSONObject();
+		JSONObject response = new JSONObject();
+		
+		try 
+		{
+			request.put(REQUEST_ACTION, REQUEST_ACTION_GET);
+			request.put(REQUEST_SUBJECT, REQUEST_SUBJECT_FILE);
+			request.put(REQUEST_FIELD_GAMEID, i_GameID);
+			
+			response = getServerResponse(request);
+			if(isValidResponse(response)) {
+				String encodedFile = response.optString(ServerRequests.RESPONSE_FIELD_FILE);
+				Log.d(TAG, "Encoded file: " + encodedFile);
+				decodedFile = Base64.decode(encodedFile, Base64.DEFAULT);
+			}
+		} 
+		catch (JSONException e) {
+			Log.d(TAG, "Couldn't put stuff in our JSON object!");
+			e.printStackTrace();
+		}
+		
+		return decodedFile;
 	}
 
 	/**

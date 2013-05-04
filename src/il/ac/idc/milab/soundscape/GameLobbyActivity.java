@@ -1,9 +1,10 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.JSONHelper;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
+import il.ac.idc.milab.soundscape.library.ServerRequests;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,9 +29,8 @@ import android.widget.Toast;
 public class GameLobbyActivity extends Activity {
 
 	private static final String TAG = "GAMELOBBY";
-	private static final String SERVER_RESPONSE_FIELD_GAMES = "games";
 	private Button m_ButtonCreateGame;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,9 +77,9 @@ public class GameLobbyActivity extends Activity {
 		try {
 			// Extract all games from response and convert to hash map
 			Log.d(TAG, "Converting response to rawMap");
-			HashMap<String, String> rawMap = getMapFromJson(gameListObject);
+			HashMap<String, String> rawMap = JSONHelper.getMapFromJson(gameListObject);
 
-			String gamesString = rawMap.get(SERVER_RESPONSE_FIELD_GAMES);
+			String gamesString = rawMap.get(ServerRequests.RESPONSE_FIELD_GAMES);
 			Log.d(TAG, "Extracting the games from the map: " + gamesString);
 			Log.d(TAG, "Converting the The games into an array");
 			JSONArray gameListArray = new JSONArray(gamesString);
@@ -89,8 +89,8 @@ public class GameLobbyActivity extends Activity {
 
 			for (int i = 0; i < gameListArray.length(); i++) {
 				JSONObject game = gameListArray.getJSONObject(i);
-
-				gameButton = createGameLayoutInstance(getMapFromJson(game));
+				Log.d(TAG, "Converting the following game: " + game.toString());
+				gameButton = createGameLayoutInstance(JSONHelper.getMapFromJson(game));
 				buttonContainer.addView(gameButton);
 			}
 
@@ -125,7 +125,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.setMargins(10, 0, 0, 0);
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		String turnCount = map.get("gTurnCount");
+		String turnCount = map.get(ServerRequests.RESPONSE_FIELD_GAME_TURNCOUNT);
 		tvTurnCount.setText(turnCount);
 		tvTurnCount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 		tvTurnCount.setTextColor(Color.BLACK);
@@ -138,7 +138,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
 		params.addRule(RelativeLayout.LEFT_OF, tvVersus.getId());
-		String opponent = map.get("opponent");
+		String opponent = map.get(ServerRequests.RESPONSE_FIELD_GAME_OPPONENT);
 		opponent = opponent.split("@")[0];
 		tvOpponentName.setText(opponent);
 		tvOpponentName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -164,7 +164,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.addRule(RelativeLayout.RIGHT_OF, tvVersus.getId());
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		String user = map.get("uEmail");
+		String user = map.get(ServerRequests.RESPONSE_FIELD_GAME_USER);
 		user = user.split("@")[0];
 		tvMyName.setText(user);
 		tvMyName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -177,27 +177,47 @@ public class GameLobbyActivity extends Activity {
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		String myTurn = map.get("gState");
-		if (myTurn.equalsIgnoreCase("1")) {
-			myTurn = "Play";
-		} else {
-			myTurn = "Waiting";
+		
+		String state = map.get(ServerRequests.RESPONSE_FIELD_GAME_STATE);
+		String whosTurn = map.get(ServerRequests.RESPONSE_FIELD_GAME_WHOSTURN);
+		String buttonText = null;
+		
+		// If my turn 
+		Log.d(TAG, "Current user: " + ServerRequests.getUserEmail());
+		if(whosTurn.equalsIgnoreCase(ServerRequests.getUserEmail())) {
+			if (state.equalsIgnoreCase("1")) {
+				buttonText = "Record";				
+			}
+			else if(state.equalsIgnoreCase("0")) {
+				buttonText = "Listen";
+			}
+			else {
+				Log.d(TAG, "SERVER ERROR! Somehow I got here!");
+			}
+		}
+		else {
+			buttonText = "Waiting";
+			button.setEnabled(false);
 		}
 
-		button.setText(myTurn);
+		button.setText(buttonText);
 		button.setLayoutParams(params);
 
 		button.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Click!");
 				Intent intent = new Intent(getApplicationContext(),
 						MatchActivity.class);
-				intent.putExtra("turn", map.get("gState"));
-				intent.putExtra("turnCount", map.get("gTurnCount"));
-
-				intent.putExtra("opponent", map.get("opponent"));
+				String game = null;
+				try {
+					game = JSONHelper.getJsonFromMap(map).toString();
+				} catch (JSONException e) {
+					Log.d(TAG, "Failed to convert map to JSON");
+					e.printStackTrace();
+				}
+				Log.d(TAG, "Game details: " + game);
+				intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, game);
 				Log.d(TAG, "Starting match!");
 				startActivity(intent);
 			}
@@ -211,17 +231,6 @@ public class GameLobbyActivity extends Activity {
 		game.addView(button);
 
 		return game;
-	}
-
-	private HashMap<String, String> getMapFromJson(JSONObject object) throws JSONException {
-		HashMap<String, String> map = new HashMap<String, String>();
-		Iterator keys = object.keys();
-			while (keys.hasNext()) {
-			String key = (String) keys.next();
-			map.put(key, object.getString(key));
-		}
-		
-		return map;
 	}
 	
 	@Override

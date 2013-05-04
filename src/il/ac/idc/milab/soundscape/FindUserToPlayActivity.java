@@ -1,8 +1,12 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.JSONHelper;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 
+import java.util.HashMap;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.NetworkErrorException;
@@ -19,12 +23,12 @@ import android.widget.Toast;
 
 public class FindUserToPlayActivity extends Activity {
 
+	private static final String TAG = "FIND_USER";
 	private boolean m_IsRandom = false;
-	private String m_UserEmail;
 	private EditText m_Email;
 	private Button m_Submit;
 	private TextView m_Result;
-	private String m_GameId;
+	private String m_Game;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +38,12 @@ public class FindUserToPlayActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("FINDUSER", "Started FindUserToPlay activity");
+		Log.d(TAG, "Started FindUserToPlay activity");
 		if(isRandomGame()) {
-			Log.d("FINDUSER", "User wants a RANDOM game");
+			Log.d(TAG, "User wants a RANDOM game");
 
 			String email = getPlayer(null);
-			
+			Log.d(TAG, "Got random player: " + email);
 			// If we got an email
 			if(email != null) {
 				startGameActivity(email);
@@ -51,7 +55,7 @@ public class FindUserToPlayActivity extends Activity {
 			}
 		}
 		
-		Log.d("FINDUSER", "User wants to specify an email");
+		Log.d(TAG, "User wants to specify an email");
 		// If not random
 		setContentView(R.layout.activity_find_user_to_play);
 		
@@ -63,7 +67,7 @@ public class FindUserToPlayActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String email = m_Email.getText().toString();
-				Log.d("FINDUSER", String.format("Checking if email '%s' is valid", email));
+				Log.d(TAG, String.format("Checking if email '%s' is valid", email));
 				if(getPlayer(email) != null) {
 					startGameActivity(m_Email.getText().toString());
 				}
@@ -82,11 +86,19 @@ public class FindUserToPlayActivity extends Activity {
 		try {
 			response = NetworkUtils.serverRequests.getPlayer(i_Email);
 			if(response != null) {
-				opponentEmail = response.optString("opponent");
+				HashMap<String, String> map = JSONHelper.getMapFromJson(response);
+				m_Game = map.get(ServerRequests.RESPONSE_FIELD_GAME);
+				Log.d(TAG, "Got game details: " + m_Game);
+				JSONObject gameDetails = new JSONObject(m_Game);
+				map = JSONHelper.getMapFromJson(gameDetails);
+				opponentEmail = map.get(ServerRequests.RESPONSE_FIELD_GAME_OPPONENT);
 			}
 		} catch (NetworkErrorException e) {
 			String msg = "This application requires an Internet connection.";
 			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			Log.d(TAG, "Unable to parse game details!");
+			e.printStackTrace();
 		}
 		
 		return opponentEmail;
@@ -94,8 +106,7 @@ public class FindUserToPlayActivity extends Activity {
 
 	private void startGameActivity(String i_OpponentEmail) {
 		Intent intent = new Intent(getApplicationContext(), MatchActivity.class);
-		intent.putExtra(ServerRequests.REQUEST_FIELD_OPPONENT, i_OpponentEmail);
-		intent.putExtra(ServerRequests.REQUEST_FIELD_EMAIL, m_UserEmail);
+		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, m_Game);
 		startActivity(intent);
 		finish();
 	}

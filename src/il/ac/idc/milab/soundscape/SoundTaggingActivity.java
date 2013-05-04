@@ -1,21 +1,20 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.JSONHelper;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.eEmotions;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.bool;
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,11 +22,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SoundTaggingActivity extends Activity {
 
@@ -41,6 +39,7 @@ public class SoundTaggingActivity extends Activity {
 	private EditText m_soundNameEditText;
 	private TextView m_soundNameTextView;
 	private int m_emotion;
+	private String m_GameDetails = null;
 
 
 	@Override
@@ -49,6 +48,7 @@ public class SoundTaggingActivity extends Activity {
 		Log.d(TAG, "Started Sound Tagging Activity");
 		setContentView(R.layout.activity_sound_tagging);
 
+		m_GameDetails = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_GAME);
 		m_freeStyle = getIntent().getExtras().getString("word").equals("freestyle");
 		Log.d(TAG, "Initializing buttons");
 		initButtons();
@@ -126,8 +126,11 @@ public class SoundTaggingActivity extends Activity {
 		try {
 			File file = new File(getIntent().getExtras().getString("filename"));
 			String fileName = file.getAbsoluteFile().toString();
-
-			if (NetworkUtils.serverRequests.sendFile(fileName, word, m_emotion)) {
+			JSONObject gameDetails = null;
+			gameDetails = new JSONObject(m_GameDetails);
+			HashMap<String, String> game = JSONHelper.getMapFromJson(gameDetails);
+			String gameID = game.get(ServerRequests.RESPONSE_FIELD_GAME_ID);
+			if (NetworkUtils.serverRequests.sendFile(fileName, word, m_emotion, gameID)) {
 				Log.d(TAG, "Removing file " + file.getName() + 
 						" and deleting metadata");
 				editor.remove(file.getName());
@@ -140,6 +143,9 @@ public class SoundTaggingActivity extends Activity {
 		catch (NetworkErrorException e) {
 			String msg = "This application requires an Internet connection.";
 			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		} catch (JSONException e) {
+			Log.d(TAG, "Couldn't create MAP from JSON");
+			e.printStackTrace();
 		}
 	}
 
