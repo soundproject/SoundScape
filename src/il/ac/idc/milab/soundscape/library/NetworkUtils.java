@@ -31,8 +31,8 @@ public class NetworkUtils {
 	public static NetworkInfo activeNetworkInfo;
 
 	//public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
-	//public static final String k_ServerUrl = "http://10.0.0.5/miLab/index.php";
-	public static final String k_ServerUrl = "http://soundscape.milab.idc.ac.il/index.php";
+	public static final String k_ServerUrl = "http://10.0.0.5/miLab/index.php";
+	//public static final String k_ServerUrl = "http://soundscape.milab.idc.ac.il/index.php";
 
 	private NetworkUtils() {}
 

@@ -46,7 +46,7 @@
     <string name="match_text_view_vs">VS.</string>
     <string name="match_text_view_turn">Turn</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="you_are_recording">You are now recording</string>
+    <string name="recording_text_view_title">You are now recording</string>
     <string name="tag_sound_text">Enter sound name:</string>
     <string name="enter_difficuly_string">Select difficulty</string>
     <string name="menu_settings">Settings</string>
@@ -66,5 +66,6 @@
     <string name="time_up_string">No more guesses left!</string>
     <string name="answer_was_string">The correct answer was:</string>
     <string name="better_luck_string">Better luck next time...</string>
+    <string name="title_activity_recording">RecordingActivity</string>
 
 </resources>

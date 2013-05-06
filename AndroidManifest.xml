@@ -94,15 +94,15 @@
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.SoundTaggingActivity"
-            android:label="@string/title_activity_sound_taggin"            
             android:configChanges="orientation|keyboardHidden|keyboard"
-            android:screenOrientation="portrait" 
+            android:label="@string/title_activity_sound_taggin"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GuessWordActivity"
-            android:label="@string/title_activity_guess_word" 
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_guess_word"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
@@ -115,9 +115,14 @@
         </activity>
         <activity
             android:name="il.ac.idc.milab.soundscape.GameOverActivity"
-            android:label="@string/title_activity_game_over" 
             android:configChanges="orientation|keyboardHidden|keyboard"
+            android:label="@string/title_activity_game_over"
             android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="il.ac.idc.milab.soundscape.RecordingActivity"
+            android:label="@string/title_activity_recording"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
     </application>

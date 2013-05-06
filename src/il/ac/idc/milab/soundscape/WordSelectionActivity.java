@@ -111,6 +111,10 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		Log.d(TAG, "Selected word was: " + word);
 		Intent intent = new Intent(getApplicationContext(),
 				SoundRecordingActivity.class);
+		
+		intent = new Intent(getApplicationContext(),
+				RecordingActivity.class);
+		
 		intent.putExtra("word", word);
 		Log.d(TAG, "The TAG is: " + button.getTag());
 		Integer difficulty = Integer.getInteger((String) button.getTag());

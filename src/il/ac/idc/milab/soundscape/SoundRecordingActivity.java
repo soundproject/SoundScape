@@ -176,7 +176,7 @@ public class SoundRecordingActivity extends Activity implements OnClickListener,
 				m_recordingLabelTextView.setText(R.string.press_to_record_string);
 			} else {
 				m_file = m_soundRecorder.startRecording();
-				m_recordingLabelTextView.setText(R.string.you_are_recording);
+				m_recordingLabelTextView.setText(R.string.recording_text_view_title);
 				//				this.m_recordingButton.setText("Stop Recording");
 				Log.i(TAG, "Current file is " + this.m_file);
 			}

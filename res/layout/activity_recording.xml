@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RecordingActivity" >
+
+    <!-- Header -->
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/game_header" />
+    
+    <!-- Body Container for title -->
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+	    
+	    <!-- title -->
+	    <TextView 
+	        android:id="@+id/body_title"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/recording_text_view_title"
+	        android:textSize="20sp"
+	        android:gravity="center_horizontal" />
+	    
+	    <!-- custom title container -->
+	    <LinearLayout 
+	        android:id="@+id/recording_linear_layout_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical">
+
+		    <include
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        layout="@layout/recording_freestyle_header" />
+	        
+		</LinearLayout>
+    	
+        <ImageView
+	        android:id="@+id/recording_image_view_pic"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="10dp"
+	        android:layout_marginBottom="20dp"
+	        android:src="@drawable/ic_microphone" />
+    	
+	    <!-- progress recording bar -->
+        <ProgressBar
+            android:id="@+id/recording_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="visible" />
+        
+        <!-- buttons container -->
+	    <LinearLayout 
+	        android:id="@+id/recording_linear_layout_buttons_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:orientation="horizontal">
+	        
+		    <ImageButton
+		        android:id="@+id/recording_button_record"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"
+		        android:layout_weight="1"
+		        android:src="@drawable/btn_record" />
+		
+		    <ImageButton
+		        android:id="@+id/recording_button_play"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"
+		        android:layout_weight="1"
+		        android:src="@drawable/btn_play" />
+	        
+    	</LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
