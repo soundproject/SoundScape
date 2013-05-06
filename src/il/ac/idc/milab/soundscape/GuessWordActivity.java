@@ -53,6 +53,7 @@ public class GuessWordActivity extends Activity {
 	private ImageButton m_useBombButton;
 	private String m_GameDetails = null;
 	private String fileName = "GuessSound";
+	private String m_GameID = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class GuessWordActivity extends Activity {
 			gameDetails = new JSONObject(m_GameDetails);
 			Log.d(TAG, "Game details: " + gameDetails);
 			m_word = gameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
+			m_GameID = gameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_ID);
 			Log.d(TAG, "Got word: " + m_word);
 			byte[] gameFile = NetworkUtils.serverRequests
 					.getGameFile(gameDetails
@@ -161,15 +163,11 @@ public class GuessWordActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					Button clickedButton = (Button) v;
-
 					clickedButton.setTag(clickedButton.getLayoutParams());
-
 					addLetterToGuess(clickedButton);
-
 				}
 			});
 		}
-
 	}
 
 	protected void removeLetterFromGuess(Button clickedButton) {
@@ -262,6 +260,7 @@ public class GuessWordActivity extends Activity {
 			public void onClick(View v) {
 
 				if (m_letterGenerator.checkGuess(getGuess())) {
+					sendParamsToServer();
 					startGuessSuccessActivity();
 					finish();
 				} else {
@@ -298,6 +297,17 @@ public class GuessWordActivity extends Activity {
 			this.m_layout1.addView(button);
 		}
 		Log.d(TAG, "Done onClickListeners");
+	}
+
+	protected void sendParamsToServer() {
+		try {
+			NetworkUtils.serverRequests.updateGameStatus(m_GameID);
+		} 
+		catch (NetworkErrorException e) {
+			String msg = "This application requires an Internet connection.";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		}
+		
 	}
 
 	protected void gameOver() {

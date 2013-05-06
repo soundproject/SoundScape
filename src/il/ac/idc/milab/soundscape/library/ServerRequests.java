@@ -37,6 +37,7 @@ public class ServerRequests {
 	public static final String REQUEST_SUBJECT_GAMES = "games";
 	public static final String REQUEST_SUBJECT_WORDS = "words";
 	public static final String REQUEST_SUBJECT_FILE = "file";
+	public static final String REQUEST_SUBJECT_GAME = "game";
 	
 	// Server request Fields
 	public static final String REQUEST_FIELD_EMAIL = "email";
@@ -389,7 +390,6 @@ public class ServerRequests {
 			response = getServerResponse(request);
 			if(isValidResponse(response)) {
 				String encodedFile = response.optString(ServerRequests.RESPONSE_FIELD_FILE);
-				Log.d(TAG, "Encoded file: " + encodedFile);
 				decodedFile = Base64.decode(encodedFile, Base64.DEFAULT);
 			}
 		} 
@@ -399,6 +399,29 @@ public class ServerRequests {
 		}
 		
 		return decodedFile;
+	}
+	
+
+	public void updateGameStatus(String i_GameID) throws NetworkErrorException {
+		JSONObject request = new JSONObject();
+		JSONObject response = new JSONObject();
+		
+		try 
+		{
+			request.put(REQUEST_ACTION, REQUEST_ACTION_SET);
+			request.put(REQUEST_SUBJECT, REQUEST_SUBJECT_GAME);
+			request.put(REQUEST_FIELD_EMAIL, ServerRequests.getUserEmail());
+			request.put(REQUEST_FIELD_GAMEID, i_GameID);
+			
+			response = getServerResponse(request);
+			if(isValidResponse(response)) {
+				
+			}
+		} 
+		catch (JSONException e) {
+			Log.d(TAG, "Couldn't put stuff in our JSON object!");
+			e.printStackTrace();
+		}
 	}
 
 	/**

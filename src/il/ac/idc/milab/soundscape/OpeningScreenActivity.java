@@ -83,7 +83,16 @@ public class OpeningScreenActivity extends Activity {
 		Log.d(TAG, "Checking if email and token are present");
 		String token = getSessionToken("token");
 		String email = getSessionEmail("email");
-		
+		/*
+		if(NetworkUtils.DEBUG_MODE) {
+			email = "tal@tal.com";
+			token = "5dhbmDxP59NIbtKbi+u4nff1z/VlNmVjYWY5Y2Q3";
+		}
+		else {
+			email = "gadi@gadi.com";
+			token = "wmr8+PWlDsjR6L6xlwWmH/DzNtoxYmFiMWRhM2U0";
+		}
+		*/
 		Log.d(TAG, "Email :" + email);
 		Log.d(TAG, "Token :" + token);
 		

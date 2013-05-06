@@ -24,11 +24,7 @@ public class GuessSuccessActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
-		
 		super.onResume();
-		
-		
-		
 		initButtons();
 		
 	}
