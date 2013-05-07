@@ -30,16 +30,11 @@
 	    
 	    <!-- custom title container -->
 	    <LinearLayout 
-	        android:id="@+id/recording_linear_layout_container"
+	        android:id="@+id/recording_linear_layout_title_container"
 	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
+	        android:layout_height="200dp"
 	        android:orientation="vertical">
 
-		    <include
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        layout="@layout/recording_freestyle_header" />
-	        
 		</LinearLayout>
     	
         <ImageView

@@ -105,14 +105,12 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		startRecordingActivity(button);
 	}
 
+	
 	private void startRecordingActivity(Button button) {
 		
 		String word = button.getText().toString();
 		Log.d(TAG, "Selected word was: " + word);
 		Intent intent = new Intent(getApplicationContext(),
-				SoundRecordingActivity.class);
-		
-		intent = new Intent(getApplicationContext(),
 				RecordingActivity.class);
 		
 		intent.putExtra("word", word);

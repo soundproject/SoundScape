@@ -6,6 +6,7 @@ import il.ac.idc.milab.soundscape.library.ServerRequests;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,7 +129,13 @@ public class GuessWordActivity extends Activity {
                 @Override
                 public void onCompletion(MediaPlayer m_MediaPlayer) {
                     // TODO Auto-generated method stub
-                	m_MediaPlayer.release();
+                	try {
+						m_MediaPlayer.prepare();
+					} catch (IllegalStateException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
                 }
 
             });   

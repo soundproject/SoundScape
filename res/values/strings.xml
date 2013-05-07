@@ -47,6 +47,9 @@
     <string name="match_text_view_turn">Turn</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="recording_text_view_title">You are now recording</string>
+    <string name="recording_alert_title">Send recording?</string>
+    <string name="recording_alert_save">send</string>
+    <string name="recording_alert_cancel">cancel</string>
     <string name="tag_sound_text">Enter sound name:</string>
     <string name="enter_difficuly_string">Select difficulty</string>
     <string name="menu_settings">Settings</string>

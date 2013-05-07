@@ -123,6 +123,7 @@
         <activity
             android:name="il.ac.idc.milab.soundscape.RecordingActivity"
             android:label="@string/title_activity_recording"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
     </application>
