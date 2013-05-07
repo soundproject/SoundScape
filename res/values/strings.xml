@@ -6,7 +6,11 @@
     <string name="title_activity_game_lobby">GameLobbyActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="opening_button_user_new">New user</string>
-    <string name="opening_button_user_existing">Existing user</string>
+    <string name="opening_dialog_user_existing">Existing User:</string>
+    <string name="opening_dialog_user_email">example@domain.com</string>
+    <string name="opening_dialog_user_password">Your password</string>
+    <string name="opening_dialog_login">Login</string>
+    <string name="opening_dialog_cancel">Cancel</string>
     <string name="registration_name">Full name:</string>
     <string name="registration_name_hint">John Doe</string>
     <string name="registration_email">Email:</string>
@@ -16,6 +20,7 @@
     <string name="registration_repassword">Re-enter Password:</string>
     <string name="registration_repassword_hint">Your password.</string>
     <string name="registration_button_register">Register</string>
+    <string name="registration_button_existing_user">Existing user?</string>
     <string name="registration_message_auth_fail">Username or Password are not valid.</string>
     <string name="login_email">Email:</string>
     <string name="login_email_hint">example@domain.com</string>

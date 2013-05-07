@@ -32,7 +32,7 @@
 	    <LinearLayout 
 	        android:id="@+id/recording_linear_layout_title_container"
 	        android:layout_width="fill_parent"
-	        android:layout_height="200dp"
+	        android:layout_height="150dp"
 	        android:orientation="vertical">
 
 		</LinearLayout>
@@ -79,6 +79,14 @@
 		        android:src="@drawable/btn_play" />
 	        
     	</LinearLayout>
+        
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/recording_button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/btn_save" />
 
 </LinearLayout>
