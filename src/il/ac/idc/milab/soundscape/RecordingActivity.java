@@ -2,11 +2,13 @@ package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,6 +21,7 @@ import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.AudioSource;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -38,8 +41,6 @@ public class RecordingActivity extends Activity {
 	private static final String TEMP_DIR = "temp";
 	private static final int MAX_RECORDING_TIME = 20;
 	
-	private SaveFileDialogFragment confirmSave;
-	
 	private MediaRecorder m_MediaRecorder = null;
 	private MediaPlayer m_MediaPlayer = null;
 	private String m_TempFile = null;
@@ -48,7 +49,7 @@ public class RecordingActivity extends Activity {
 	private CountDownTimer m_Timer;
 	
 	private ImageButton m_ButtonRecord = null;
-	private ImageButton m_ButtonStop = null;
+	private ImageButton m_ButtonSave = null;
 	private ImageButton m_ButtonPlay = null;
 	
 	private boolean m_IsRecording = true;
@@ -62,9 +63,6 @@ public class RecordingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recording);
 		Log.d(TAG, "Init progress bar");
-		
-		// Init confirm dialog
-		confirmSave = new SaveFileDialogFragment();
 		
 		// Init progress bar
 		m_ProgressBar = (ProgressBar)findViewById(R.id.recording_progressBar);
@@ -168,9 +166,14 @@ public class RecordingActivity extends Activity {
 		m_MediaRecorder.setAudioSource(AudioSource.MIC);
 		m_MediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 		
-		m_TempFile = getDir(TEMP_DIR, MODE_PRIVATE).getAbsolutePath() + TEMP_FILE;
-		m_MediaRecorder.setOutputFile(m_TempFile);
-		m_MediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+		try {
+			File tempFile =  File.createTempFile(TEMP_FILE, "", getCacheDir());
+			m_TempFile = tempFile.getAbsolutePath();
+			m_MediaRecorder.setOutputFile(m_TempFile);
+			m_MediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void initMediaPlayer() {
@@ -210,6 +213,18 @@ public class RecordingActivity extends Activity {
 				m_IsPlaying = !m_IsPlaying;
 			}
 		});
+		m_ButtonPlay.setVisibility(View.INVISIBLE);
+		
+		m_ButtonSave = (ImageButton)findViewById(R.id.recording_button_save);
+		m_ButtonSave.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Save button pressed!");
+				saveAndSendFile();
+			}
+		});
+		m_ButtonSave.setVisibility(View.INVISIBLE);
 	}
 
     private void starteProgressBar() {
@@ -231,7 +246,6 @@ public class RecordingActivity extends Activity {
         	m_ButtonRecord.setImageDrawable(getResources().getDrawable(R.drawable.btn_record));
         	m_Timer.cancel();
             stopRecording();
-            confirmSave.show(getFragmentManager(), "dialog");
         }
     }
 
@@ -258,11 +272,16 @@ public class RecordingActivity extends Activity {
         } catch (IOException e) {
             Log.e(TAG, "prepare() failed");
         }
+        
+        m_ButtonSave.setVisibility(View.INVISIBLE);
+        m_ButtonRecord.setVisibility(View.INVISIBLE);
     }
 
     private void stopPlaying() {
     	m_MediaPlayer.release();
     	m_MediaPlayer = null;
+        m_ButtonSave.setVisibility(View.VISIBLE);
+        m_ButtonRecord.setVisibility(View.VISIBLE);
     }
 
     private void startRecording() {
@@ -275,12 +294,16 @@ public class RecordingActivity extends Activity {
         }
 
         m_MediaRecorder.start();
+        m_ButtonSave.setVisibility(View.INVISIBLE);
+        m_ButtonPlay.setVisibility(View.INVISIBLE);
     }
 
     private void stopRecording() {
     	m_MediaRecorder.stop();
     	m_MediaRecorder.release();
     	m_MediaRecorder = null;
+        m_ButtonSave.setVisibility(View.VISIBLE);
+        m_ButtonPlay.setVisibility(View.VISIBLE);
     }
 
 	@Override
@@ -319,26 +342,4 @@ public class RecordingActivity extends Activity {
 		startActivity(intent);
 		finish();
 	}
-	
-	public class SaveFileDialogFragment extends DialogFragment {
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	        // Use the Builder class for convenient dialog construction
-	        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	        builder.setMessage(R.string.recording_alert_title)
-	               .setPositiveButton(R.string.recording_alert_save, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   saveAndSendFile();
-	                   }
-	               })
-	               .setNegativeButton(R.string.recording_alert_cancel, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                       // User cancelled the dialog
-	                   }
-	               });
-	        // Create the AlertDialog object and return it
-	        return builder.create();
-	    }
-	}
-
 }

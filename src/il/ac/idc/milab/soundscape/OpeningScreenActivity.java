@@ -64,14 +64,6 @@ public class OpeningScreenActivity extends Activity {
 			});
 		}
 	}
-	
-	private void startGuessWordActivity() {
-		Intent intent = new Intent(getApplicationContext(), GuessWordActivity.class);
-		intent.putExtra("word", "dog");
-		intent.putExtra("difficulty", 1);
-		startActivity(intent);
-		finish();
-	}
 
 	/**
 	 * This method checks if user credentials are valid

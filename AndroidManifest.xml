@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="il.ac.idc.milab.soundscape.OpeningScreenActivity"
+            android:name="il.ac.idc.milab.soundscape.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -47,13 +47,6 @@
             android:name="il.ac.idc.milab.soundscape.RegistrationActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/title_activity_registration"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
-        </activity>
-        <activity
-            android:name="il.ac.idc.milab.soundscape.SoundRecordingActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard"
-            android:label="@string/title_activity_sound_recording"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>

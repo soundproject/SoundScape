@@ -5,6 +5,8 @@ import il.ac.idc.milab.soundscape.library.ServerRequests;
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +21,6 @@ public class LoginActivity extends Activity {
 	private static final String TAG = "LOGIN";
 	
 	private Button m_ButtonLogin;
-	private Button m_ButtonRegister;
 	private TextView m_Result;
 	private Intent m_Intent;
 
@@ -36,22 +37,12 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (isValidCredentials()) {
-					setResult(Activity.RESULT_OK, m_Intent);
+					startGameLobbyActivity();
 					finish();
 				}
 				else {
 					m_Result.setText("Incorrect email or password!");
 				}
-			}
-		});
-		
-		m_ButtonRegister = (Button)findViewById(R.id.login_button_register);
-		m_ButtonRegister.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				setResult(Activity.RESULT_FIRST_USER);
-				finish();
 			}
 		});
 	}
@@ -113,6 +104,33 @@ public class LoginActivity extends Activity {
 		EditText userEmail = (EditText) findViewById(
 				R.id.login_edit_text_email);
 		return userEmail.getText().toString();
+	}
+	
+	/**
+	 * Starts the game for the existing user
+	 * @param token the authentication token of the user
+	 */
+	private void startGameLobbyActivity() {
+		Intent intent = new Intent(this.getApplicationContext(), 
+				GameLobbyActivity.class);
+		
+		// Save the token and user locally
+		setUserToken();
+		
+		// send them to the next intent
+		startActivity(intent);
+		finish();
+	}
+	
+	/**
+	 * Saves the user details locally to remember the user in future sessions
+	 */
+	private void setUserToken() {
+		SharedPreferences settings = getSharedPreferences("il.ac.idc.milab.soundscape", MODE_PRIVATE);
+		Editor editor = settings.edit();
+		editor.putString("email", ServerRequests.getUserEmail());
+		editor.putString("token", ServerRequests.getUserToken());
+		editor.commit();
 	}
 
 	@Override
