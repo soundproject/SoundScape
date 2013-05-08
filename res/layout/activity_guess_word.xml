@@ -1,86 +1,150 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".GuessWordActivity" >
 
-    <include
-        android:id="@+id/include1"
-        android:layout_width="wrap_content"
+    <!-- Screen header container -->
+    <LinearLayout 
+        android:id="@+id/guessword_header_container"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        layout="@layout/game_header" />
-
-    <ImageButton
-        android:id="@+id/play_sound_guess_button"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_below="@+id/include1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/sound" />
-
-    <ImageButton
-        android:id="@+id/check_guess_imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@android:drawable/presence_online" />
-
-    <LinearLayout
-        android:id="@+id/linear1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/check_guess_imageButton"
-        android:layout_centerHorizontal="true" >
+        android:orientation="vertical" >
+        
+	    <!-- screen header -->
+	    <include
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        layout="@layout/game_header" />
+	    
+	    <!-- title header -->
+	    <LinearLayout 
+	        android:id="@+id/guessword_title"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_marginTop="10dp">
+	        
+	        <TextView 
+	            android:id="@+id/guessword_leftPlayerName"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:layout_weight="1"
+	            android:textSize="20sp"
+	            android:text="Player 1" />
+	        
+	        <TextView 
+	            android:id="@+id/guessword_vs"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:layout_weight="1"
+	            android:textSize="30sp"
+	            android:text="@string/match_text_view_vs" />
+	        
+	        <TextView 
+	            android:id="@+id/guessword_rightPlayerName"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:layout_weight="1"
+	            android:textSize="20sp"
+	            android:text="Player 2" />
+	    </LinearLayout>
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/use_bomb_guess_button"
-        android:layout_width="match_parent"
+    <!-- Screen body container -->
+    <LinearLayout 
+        android:id="@+id/guessword_body_container"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:orientation="vertical" >
+        
+	    <!-- Play sound button -->
+	    <ImageButton
+	        android:id="@+id/guessword_play_sound"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_marginTop="10dp"
+	        android:layout_marginBottom="10dp"
+	        android:src="@drawable/btn_play" />
+	
+	    <!-- progress recording bar -->
+	    <ProgressBar
+	        android:id="@+id/guessword_progressBar"
+	        style="?android:attr/progressBarStyleHorizontal"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginBottom="10dp"
+	        android:visibility="visible" />
+	    
+	    <!-- 3 strikes images -->
+	    <LinearLayout 
+	        android:id="@+id/guessword_strike_container"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal" >
+			
+			<TextView 
+			    android:id="@+id/guessword_text_view_strike1"
+			    android:layout_width="50dp"
+			    android:layout_height="50dp"
+			    android:text="1"
+			    android:textStyle="bold"
+			    android:layout_marginRight="10dp"
+			    style="@style/three_strikes" />
+			
+			<TextView 
+			    android:id="@+id/guessword_text_view_strike2"
+			    android:layout_width="50dp"
+			    android:layout_height="50dp"
+			    android:text="2"
+			    android:textStyle="bold"
+			    android:layout_marginRight="10dp"
+			    style="@style/three_strikes" />
+			
+			<TextView 
+			    android:id="@+id/guessword_text_view_strike3"
+			    android:layout_width="50dp"
+			    android:layout_height="50dp"
+			    android:text="3"
+			    android:textStyle="bold"
+			    style="@style/three_strikes" />
+			
+	    </LinearLayout>
+
+	</LinearLayout>
+
+    <!-- Screen footer container -->
+    <LinearLayout 
         android:layout_weight="1"
-        android:src="@drawable/ic_bomb" />
-
-    <LinearLayout
-        android:id="@+id/random_letters_containerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/linear1"
-        android:layout_marginTop="20dp"
-        android:gravity="fill_horizontal"
-        android:measureWithLargestChild="true"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
         android:orientation="vertical"
-        android:weightSum="1" >
-
-        <LinearLayout
-            android:id="@+id/random_letters_first_rowLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="fill_horizontal" >
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/random_letters_second_rowLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="fill_horizontal" >
-        </LinearLayout>
+        android:background="@color/blue_base">
+	    
+   		<!-- Word to guess -->	    
+   		<il.ac.idc.milab.soundscape.library.FlowLayout
+   		    android:id="@+id/guessword_footer_word_container"
+   		    android:layout_width="wrap_content"
+   		    android:layout_height="0dip"
+   		    android:background="@color/black_overlay"
+   		    android:layout_weight="1" >
+   		    
+   		</il.ac.idc.milab.soundscape.library.FlowLayout>
+		
+		<!-- Random letters to guess from -->
+	    <il.ac.idc.milab.soundscape.library.FlowLayout
+   		    android:id="@+id/guessword_footer_letters_container"
+   		    android:layout_width="wrap_content"
+   		    android:layout_height="0dip"
+   		    android:layout_weight="1" >
+   		    
+   		</il.ac.idc.milab.soundscape.library.FlowLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/guesses_left_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:text="TextView" />
-
-</RelativeLayout>
+</LinearLayout>

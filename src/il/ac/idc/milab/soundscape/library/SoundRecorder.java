@@ -92,6 +92,13 @@ public class SoundRecorder {
 		return m_IsRecording;
 	}
 	
+	public void release() {
+        if (m_MediaRecorder != null) {
+        	m_MediaRecorder.release();
+        	m_MediaRecorder = null;
+        }
+	}
+	
 	public String getFile() {
 		return m_FileName;
 	}

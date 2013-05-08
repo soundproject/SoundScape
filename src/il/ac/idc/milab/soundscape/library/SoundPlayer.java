@@ -9,14 +9,13 @@ public class SoundPlayer {
 	
 	private static final String TAG = "SOUND_PLAYER";
 	private MediaPlayer m_MediaPlayer = null;
+	private String m_FilePathToPlay;
 	
-	public SoundPlayer() {
-		
-	}
+	public SoundPlayer() {}
 
     public void startPlaying(String m_FilePathToPlay) {
     	m_MediaPlayer = new MediaPlayer();
-    	
+    	Log.d(TAG, "File to play: " + m_FilePathToPlay);
         try {
         	m_MediaPlayer.setDataSource(m_FilePathToPlay);
             m_MediaPlayer.prepare();
@@ -29,5 +28,12 @@ public class SoundPlayer {
     public void stopPlaying() {
     	m_MediaPlayer.release();
     	m_MediaPlayer = null;
+    }
+    
+    public void release() {
+        if (m_MediaPlayer != null) {
+        	m_MediaPlayer.release();
+        	m_MediaPlayer = null;
+        }
     }
 }

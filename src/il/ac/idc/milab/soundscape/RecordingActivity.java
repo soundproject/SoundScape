@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -33,9 +34,6 @@ public class RecordingActivity extends Activity {
 	
 	private SoundRecorder m_SoundRecorder = null;
 	private SoundPlayer m_SoundPlayer = null;
-	
-	private MediaRecorder m_MediaRecorder = null;
-	private MediaPlayer m_MediaPlayer = null;
 	
 	private ProgressBar m_ProgressBar = null;
 	private CountDownTimer m_Timer;
@@ -102,15 +100,8 @@ public class RecordingActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-        if (m_MediaRecorder != null) {
-        	m_MediaRecorder.release();
-        	m_MediaRecorder = null;
-        }
-
-        if (m_MediaPlayer != null) {
-        	m_MediaPlayer.release();
-        	m_MediaPlayer = null;
-        }
+        m_SoundRecorder.release();
+        m_SoundPlayer.release();
     }
 
 	private LinearLayout createCustomTitleFromWord(String selectedWord) {
@@ -253,7 +244,6 @@ public class RecordingActivity extends Activity {
 	
 	private void saveAndSendFile() 
 	{
-
 		Intent intent = new Intent(this, SoundTaggingActivity.class);
 
 		// Build metadata
