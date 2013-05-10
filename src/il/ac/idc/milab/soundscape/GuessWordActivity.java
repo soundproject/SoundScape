@@ -1,6 +1,5 @@
 package il.ac.idc.milab.soundscape;
 
-import il.ac.idc.milab.soundscape.library.FlowLayout;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundPlayer;
@@ -21,27 +20,31 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class GuessWordActivity extends Activity {
 	
 	private static final String TAG = "GUESS_WORD";
-	private static final int MAX_NUMBER_OF_LETTERS = 14;
+	private static final int MAX_NUMBER_OF_LETTERS = 16;
 	private static final int MAX_ALLOWED_STRIKES = 3;
 	
 	private SoundPlayer m_SoundPlayer = null;
+	private boolean m_IsPlaying = false;
 	private ProgressBar m_ProgressBar = null;
 	private CountDownTimer m_Timer = null;
 	private int m_CurrentStrike = 1;
+	private int m_WordLength = 0;
+	private int m_CurrentGuessLength = 0;
 	
 	private JSONObject m_GameDetails;
-	private String m_SoundFileName;
+	private String m_SoundFileAbsPath;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,12 @@ public class GuessWordActivity extends Activity {
 		
 		// Request the sound file from the server
 		String gameId = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_ID);
-		m_SoundFileName = getFilesDir() + "/temp" + gameId;
-		Log.i(TAG, "File path: " + m_SoundFileName);
+		String soundFileName = "temp" + gameId;
+		m_SoundFileAbsPath = getFilesDir() + "/" + soundFileName;
+		Log.i(TAG, "File path: " + m_SoundFileAbsPath);
 		try {
 			byte[] soundFile = NetworkUtils.serverRequests.getGameFile(gameId);
-			FileOutputStream fileOutputStream = openFileOutput(m_SoundFileName, Context.MODE_PRIVATE);
+			FileOutputStream fileOutputStream = openFileOutput(soundFileName, Context.MODE_PRIVATE);
 			fileOutputStream.write(soundFile);
 			fileOutputStream.close();
 		} 
@@ -89,6 +93,12 @@ public class GuessWordActivity extends Activity {
 		super.onResume();
 	}
 	
+    @Override
+    public void onPause() {
+        super.onPause();
+        m_SoundPlayer.release();
+    }
+	
 	private void initUIWithDetails() {
 		// Init title with player names
 		TextView userView = (TextView)findViewById(R.id.guessword_leftPlayerName);
@@ -105,7 +115,17 @@ public class GuessWordActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				m_SoundPlayer.startPlaying(m_SoundFileName);
+				ImageButton button = (ImageButton)v;
+				if(m_IsPlaying) {
+					button.setImageResource(R.drawable.btn_stop);
+					m_SoundPlayer.stopPlaying();
+				}
+				else {
+					button.setImageResource(R.drawable.btn_play);
+					m_SoundPlayer.startPlaying(m_SoundFileAbsPath);
+				}
+				
+				m_IsPlaying = !m_IsPlaying;
 			}
 		});
 		
@@ -132,8 +152,8 @@ public class GuessWordActivity extends Activity {
 		});
 		
 		//TODO: finish this
-		//generateGuessWordLayout();
-		generateLettersLayout();
+		generateGuessWordLayout();
+		generateGuessLettersLayout();
 	}
 	
 	protected void addStrike() {
@@ -150,22 +170,27 @@ public class GuessWordActivity extends Activity {
 		m_CurrentStrike++;
 	}
 
+	/**
+	 * This method generates the layout of the word we want to guess
+	 */
 	private void generateGuessWordLayout() {
-		LinearLayout wordLayout = (LinearLayout)findViewById(R.id.guessword_footer_word_container);
 		String phrase = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
 		String[] words = phrase.split(" ");
 		Log.d(TAG, "Length: " + words.length);
 
 		// For every 
 		for(int i = 0; i < words.length; i++) {
-			//String layoutName = "guessword_footer_letters_row" + i + 1;
-			//int layoutId = getResources().getIdentifier(layoutName, "id", getPackageName());
-			//LinearLayout row = (LinearLayout)findViewById(layoutId);
-			LinearLayout row = new LinearLayout(getApplicationContext());
+			String layoutName = "guessword_footer_word_letters_row" + (i + 1);
+			Log.i(TAG, "Layout name: " + layoutName);
+			int layoutId = getResources().getIdentifier(layoutName, "id", getPackageName());
+			Log.i(TAG, "Layout id: " + layoutId);
+			LinearLayout row = (LinearLayout)findViewById(layoutId);
+
 			row.setOrientation(LinearLayout.HORIZONTAL);
+			
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-					50, // Width
-					50 // Height
+					57, // Width
+					LayoutParams.WRAP_CONTENT // Height
 					);
 			params.rightMargin = 5;
 
@@ -174,8 +199,9 @@ public class GuessWordActivity extends Activity {
 			Log.d(TAG, "Word is: " + word);
 			for (int j = 0; j < word.length(); j++) {
 				TextView letter = new TextView(this);
-				letter.setId(100 + j);
+				letter.setId(100 + i*100 + j);
 				letter.setGravity(Gravity.CENTER);
+				letter.setTextSize(20);
 				letter.setBackgroundResource(R.drawable.border_black_letter);
 				letter.setLayoutParams(params);
 				letter.setOnClickListener(new View.OnClickListener() {
@@ -187,34 +213,47 @@ public class GuessWordActivity extends Activity {
 				});
 				row.addView(letter);
 			}
-			
-			wordLayout.addView(row);
 		}
 	}
 
-	private void generateLettersLayout() {
-
-		String[] letters = generateRandomLetters(m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD));
-		TextView[] letterBoxes = getGuessLetters(letters); // TODO: This can
+	private void generateGuessLettersLayout() {
+		String phrase = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
+		String[] words = phrase.split(" ");
+		String word = words.length > 1 ? words[0] + words[1] : words[0];
+		m_WordLength = word.length();
+		Log.i(TAG, word);
+		Log.i(TAG, "Length: " + word.length());
+		String[] letters = generateRandomLetters(word);
+		Button[] letterBoxes = getGuessLetters(letters); // TODO: This can
 																// be merged
 																// with
 																// populateWordLetters()
 
-		FlowLayout guessLettersContainerLayout = (FlowLayout)findViewById(R.id.guessword_footer_letters_container);
+		// Row 1
+		LinearLayout guessLettersRow1Layout = (LinearLayout)findViewById(R.id.guessword_footer_guess_letters_row1);
+		
+		// Row 2
+		LinearLayout guessLettersRow2Layout = (LinearLayout)findViewById(R.id.guessword_footer_guess_letters_row2);
 
 
 		Log.v("LETTERS", "Populating the guess letters");
 		// Populate the guess letters
 		for (int i = 0; i < letterBoxes.length; i++) {
-			guessLettersContainerLayout.addView(letterBoxes[i]);
+			Log.d(TAG, "Adding letter: " + letterBoxes[i].getText());
+			if(i < MAX_NUMBER_OF_LETTERS / 2) {
+				guessLettersRow1Layout.addView(letterBoxes[i]);	
+			}
+			else {
+				guessLettersRow2Layout.addView(letterBoxes[i]);	
+			}
 		}
 	}
 
-	private TextView[] getGuessLetters(String[] letters) {
+	private Button[] getGuessLetters(String[] letters) {
 
-		TextView[] lettersBoxes = new TextView[MAX_NUMBER_OF_LETTERS];
+		Button[] lettersBoxes = new Button[MAX_NUMBER_OF_LETTERS];
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, // Width
+				57, // Width
 				LayoutParams.WRAP_CONTENT // Height
 		);
 
@@ -222,10 +261,10 @@ public class GuessWordActivity extends Activity {
 		Log.v("LETTERS", "Creating the guess letters");
 
 		for (int i = 0; i < letters.length; i++) {
-			TextView letter = new TextView(this);
+			Button letter = new Button(this);
 
 			letter.setText(letters[i]);
-			letter.setTextSize(30);
+			letter.setTextSize(26);
 			letter.setGravity(Gravity.CENTER);
 			letter.setBackgroundResource(R.drawable.border_black_letter);
 			letter.setLayoutParams(params);
@@ -233,17 +272,8 @@ public class GuessWordActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					FlowLayout parent = (FlowLayout)(v.getParent());
-					parent.removeView(v);
-					FlowLayout newParent;
-					if(parent.getId() == R.id.guessword_footer_word_container) {
-						newParent = (FlowLayout)findViewById(R.id.guessword_footer_letters_container);
-					}
-					else {
-						newParent = (FlowLayout)findViewById(R.id.guessword_footer_word_container);	
-					}
-					 
-					newParent.addView(v);
+					v.setVisibility(View.INVISIBLE);
+					populateAnswer(v);
 				}
 			});
 
@@ -251,27 +281,60 @@ public class GuessWordActivity extends Activity {
 		}
 
 		return lettersBoxes;
-
 	}
 
 	protected void populateAnswer(View v) {
-		
-		
-		/* String word = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
-		for (int i = 0; i < word.length(); i++) {
-			TextView textView = (TextView) findViewById(100 + i);
+		m_CurrentGuessLength++;
+		TextView letter = (TextView)v;
+		String phrase = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
+		String[] words = phrase.split(" ");
+		Log.d(TAG, "Length: " + words.length);
 
-			if (textView != null && textView.getText().length() == 0) {
-				String text = (String) ((TextView) v).getText();
-				textView.setText(text);
+		// For every word in the guess word, look for the empty space to populate
+		for(int i = 0; i < words.length; i++) {
+			boolean success = false;
+			String word = words[i];
+			
+			// Try and populate a letter
+			for (int j = 0; j < word.length(); j++) {
+				TextView textView = (TextView) findViewById(100 + i*100 + j);
+	
+				// If found an empty space - populate it with the pressed letter
+				if (textView != null && textView.getText().length() == 0) {
+					String text = (String)letter.getText();
+					textView.setText(text);
+					textView.setTag(letter);
+					textView.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							m_CurrentGuessLength--;
+							TextView view = (TextView)v;
+							view.setText("");
+							Log.d(TAG, "Tag is: " + view.getTag());
+							TextView letter = (TextView)view.getTag();
+							letter.setVisibility(View.VISIBLE);
+						}
+					});
+					success = true;
+					break;
+				}
+			}
+			// If successfully populated a letter, break
+			if(success && m_CurrentGuessLength == m_WordLength) {
+				
 				break;
 			}
 		}
-		*/
 	}
 
-	private String[] generateRandomLetters(String optString) {
-		String word = m_GameDetails.optString(ServerRequests.RESPONSE_FIELD_GAME_WORD);
+	/**
+	 * This method generates the random letters with the word letters mixed into it
+	 * @param word the given word to mix with the random letters
+	 * @return an array of random letters (capitalized) with the word mixed in it
+	 */
+	private String[] generateRandomLetters(String word) {
+		
 		// generate MAX_NUMBER_OF_LETTERS random letters
 		String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 				"k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
@@ -279,31 +342,38 @@ public class GuessWordActivity extends Activity {
 
 		String[] randomLetters = new String[MAX_NUMBER_OF_LETTERS];
 		Random rand = new Random();
+		int randomIndex;
 
-		// Insert our word letters into the array randomly
+		// populate our word letters into the letters
 		for (int i = 0; i < word.length(); i++) {
-			int randomIndex = rand.nextInt(randomLetters.length);
-			while (randomLetters[randomIndex] != null) {
+			do {
+				Log.i(TAG, "WORD!");
 				randomIndex = rand.nextInt(randomLetters.length);
 			}
-
-			randomLetters[randomIndex] = String.valueOf(word.charAt(i))
-					.toUpperCase(Locale.ENGLISH);
+			while(randomLetters[randomIndex] != null);
+			
+			char wordLetter = word.charAt(i);
+			randomLetters[randomIndex] = String.valueOf(wordLetter).toUpperCase(Locale.ENGLISH);
+			Log.i(TAG, "Word letter: " + randomLetters[randomIndex]);
+			Log.i(TAG, "Word letter index: " + randomIndex);
 		}
+		
+		StringBuilder build = new StringBuilder();
+		for(int i = 0; i < randomLetters.length; i++) {
+			build.append(randomLetters[i]);
+		}
+		Log.d(TAG, build.toString());
 
-		// populate the other letters at random
+		// Populate random letters into the array
 		for (int i = 0; i < randomLetters.length; i++) {
-			int randomIndex = rand.nextInt(letters.length);
-			if (randomLetters[i] != null) {
-				continue;
+			if(randomLetters[i] == null) {
+				randomIndex = rand.nextInt(letters.length);
+				randomLetters[i] = letters[randomIndex].toUpperCase(Locale.ENGLISH);
 			}
-
-			randomLetters[i] = letters[randomIndex].toUpperCase(Locale.ENGLISH);
 		}
-
+		
 		return randomLetters;
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

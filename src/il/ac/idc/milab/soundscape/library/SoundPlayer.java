@@ -9,7 +9,6 @@ public class SoundPlayer {
 	
 	private static final String TAG = "SOUND_PLAYER";
 	private MediaPlayer m_MediaPlayer = null;
-	private String m_FilePathToPlay;
 	
 	public SoundPlayer() {}
 

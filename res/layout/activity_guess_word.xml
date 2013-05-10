@@ -60,7 +60,8 @@
         android:id="@+id/guessword_body_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp" >
         
 	    <!-- Play sound button -->
 	    <ImageButton
@@ -125,26 +126,56 @@
         android:layout_weight="1"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:orientation="vertical"
-        android:background="@color/blue_base">
+        android:orientation="vertical" >
 	    
    		<!-- Word to guess -->	    
-   		<il.ac.idc.milab.soundscape.library.FlowLayout
+   		<LinearLayout
    		    android:id="@+id/guessword_footer_word_container"
-   		    android:layout_width="wrap_content"
+   		    android:layout_width="fill_parent"
    		    android:layout_height="0dip"
-   		    android:background="@color/black_overlay"
+   		    android:orientation="vertical"
    		    android:layout_weight="1" >
    		    
-   		</il.ac.idc.milab.soundscape.library.FlowLayout>
+	   	    <LinearLayout
+	   		    android:id="@+id/guessword_footer_word_letters_row1"
+	   		    android:layout_width="wrap_content"
+	   		    android:layout_height="wrap_content"
+	   		    android:layout_gravity="center_horizontal" >
+	   		    
+	   		</LinearLayout>
+		    <LinearLayout
+	   		    android:id="@+id/guessword_footer_word_letters_row2"
+	   		    android:layout_width="wrap_content"
+	   		    android:layout_height="wrap_content"
+	   		    android:layout_gravity="center_horizontal" >
+	   		    
+	   		</LinearLayout>
+   		    
+   		</LinearLayout>
 		
 		<!-- Random letters to guess from -->
-	    <il.ac.idc.milab.soundscape.library.FlowLayout
+	    <LinearLayout
    		    android:id="@+id/guessword_footer_letters_container"
    		    android:layout_width="wrap_content"
    		    android:layout_height="0dip"
+   		    android:orientation="vertical"
    		    android:layout_weight="1" >
    		    
-   		</il.ac.idc.milab.soundscape.library.FlowLayout>
+	   	    <LinearLayout
+	   		    android:id="@+id/guessword_footer_guess_letters_row1"
+	   		    android:layout_width="wrap_content"
+	   		    android:layout_height="wrap_content"
+	   		    android:layout_gravity="center_horizontal" >
+	   		    
+	   		</LinearLayout>
+		    <LinearLayout
+	   		    android:id="@+id/guessword_footer_guess_letters_row2"
+	   		    android:layout_width="wrap_content"
+	   		    android:layout_height="wrap_content"
+	   		    android:layout_gravity="center_horizontal" >
+	   		    
+	   		</LinearLayout>
+	        
+   		</LinearLayout>
     </LinearLayout>
 </LinearLayout>

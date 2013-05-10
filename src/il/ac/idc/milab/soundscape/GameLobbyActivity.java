@@ -186,15 +186,7 @@ public class GameLobbyActivity extends Activity {
 		// If my turn 
 		Log.d(TAG, "Current user: " + ServerRequests.getUserEmail());
 		if(whosTurn.equalsIgnoreCase(ServerRequests.getUserEmail())) {
-			if (state.equalsIgnoreCase("1")) {
-				buttonText = "Record";				
-			}
-			else if(state.equalsIgnoreCase("0")) {
-				buttonText = "Listen";
-			}
-			else {
-				Log.d(TAG, "SERVER ERROR! Somehow I got here!");
-			}
+			buttonText = "Play";
 		}
 		else {
 			buttonText = "Waiting";

@@ -137,9 +137,6 @@ public class SoundTaggingActivity extends Activity {
 				deleteFile(file.getName());
 				Log.d(TAG, "File " + file.getName() + " deleted");
 				editor.commit();
-				if(getApplicationContext().deleteFile(fileName)) {
-					Log.d(TAG, "Successfully deleted the file!");
-				}
 				finish();
 			}
 		} 
