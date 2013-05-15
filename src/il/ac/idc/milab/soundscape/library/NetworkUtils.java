@@ -19,9 +19,6 @@ import org.json.JSONObject;
 import android.accounts.NetworkErrorException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-
-
 
 public class NetworkUtils {
 
@@ -31,8 +28,8 @@ public class NetworkUtils {
 	public static NetworkInfo activeNetworkInfo;
 
 	//public static final String k_ServerUrl = "http://soundscape.hostzi.com/index.php";
-	public static final String k_ServerUrl = "http://10.0.0.5/miLab/index.php";
-	//public static final String k_ServerUrl = "http://soundscape.milab.idc.ac.il/index.php";
+	//public static final String k_ServerUrl = "http://10.0.0.11/miLab/index.php";
+	public static final String k_ServerUrl = "http://soundscape.milab.idc.ac.il/index.php";
 
 	private NetworkUtils() {}
 
@@ -51,12 +48,11 @@ public class NetworkUtils {
 			
 			// Set the POST request entity (body)
 			StringEntity stringEntity;
-			
+
 			try {
 				stringEntity = new StringEntity(requestBody);
 				httpPost.setEntity(stringEntity);
 			} catch (UnsupportedEncodingException e1) {
-				Log.e("NETWORK", "Malformed body in StringEntity");
 			}
 			
 			//sets a request header so the page receiving the request
@@ -69,7 +65,6 @@ public class NetworkUtils {
 			String responseBody = "";
 			try {
 				response = httpclient.execute(httpPost);
-				Log.d("NETWORK", "The response status line is: " + response.getStatusLine().toString());
 				
 				// Get hold of the response entity
 				HttpEntity entity = response.getEntity();
@@ -77,33 +72,22 @@ public class NetworkUtils {
 				// If the response does not enclose an entity, there is no need
 				// to worry about connection release
 				if (entity != null) {
-					Log.d("NETWORK", "Got an entity!");
 					// A Simple JSON Response Read
 					InputStream instream = entity.getContent();
 					responseBody = convertStreamToString(instream);
-					
-					/* HACK to deal with the auto generated code our web hosting is adding */
-					/***********************************************************************/
-					//int index = responseBody.indexOf("<!--");
-					//responseBody = responseBody.substring(0, index);
-					/***********************************************************************/
-					/* HACK to deal with the auto generated code our web hosting is adding */
-					
-					Log.d("NETWORK", "The response body: " + responseBody);
+
 					json = new JSONObject(responseBody);
 					// Closing the input stream will trigger connection release
 					instream.close();
 				}
 				
 			} catch (ClientProtocolException e) {
-				Log.d("NETWORK", "HTTP protocol Error!");
 				json = null;
 			} catch (IOException e) {
-				Log.d("NETWORK", "The connection was aborted!");
 				e.printStackTrace();
 				json = null;
 			} catch (JSONException e) {
-				json = null;
+				json = new JSONObject();
 			}
 			
 			return json;

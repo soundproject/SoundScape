@@ -1,0 +1,227 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".LoginOrRegisterActivity"
+    android:background="@drawable/background" >
+    
+    <!-- Header -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+	    
+	    <ImageView
+		    android:layout_width="match_parent"
+		    android:layout_height="100dp"
+		    android:scaleType="centerInside"
+		    android:contentDescription="" />
+	        
+    </LinearLayout>
+    
+    <!-- Body -->
+    <LinearLayout 
+        android:id="@+id/login_body_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        
+        <!-- Title Container -->
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            
+	        <!-- Move left -->
+            <TextView 
+				android:id="@+id/login_move_to_login"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:layout_centerVertical="true"
+				android:text="Already\nregistered?"
+				android:textSize="12sp"
+				android:gravity="center_vertical"
+				android:drawableLeft="@drawable/navigation_back"
+				android:visibility="invisible"/>
+            
+	        <!-- Title -->
+	        <TextView 
+	            android:id="@+id/login_title"
+		        android:layout_width="match_parent"
+		        android:layout_height="50dp"
+		        android:text="Welcome!"
+		        android:textSize="15sp"
+		        android:gravity="center"/>
+            
+            <!-- Move right -->
+            <TextView 
+                android:id="@+id/login_move_to_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+                android:text="New\nuser?"
+                android:textSize="12sp"
+                android:gravity="center_vertical"
+                android:drawableRight="@drawable/navigation_forward"/>
+                            
+        </RelativeLayout>
+        
+        <!-- Log in frame -->
+	    <ViewFlipper 
+	        android:id="@+id/login_flipper_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
+	        android:layout_marginBottom="5dp"
+	        style="@style/frame_layout" >
+	        
+	        <!-- Login -->
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical">
+
+				<!-- Email label -->
+				<TextView 
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:text="Email Address:"
+				    android:textSize="15sp"
+				    android:drawableLeft="@drawable/icon_required_field" />
+				   
+				<!-- Email Input Field -->
+				<EditText 
+				    android:id="@+id/login_edittext_email"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:gravity="center"
+				    android:hint="Enter Email"
+				    android:inputType="textEmailAddress" />
+				
+		        <!-- Password label -->
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableLeft="@drawable/icon_required_field"
+		            android:text="Password:"
+		            android:textSize="15sp"/>
+		
+			    <!-- Password Input Field -->
+			    <EditText 
+			        android:id="@+id/login_edittext_password"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="center"
+			        android:hint="Enter Password"
+			        android:inputType="textPassword"
+			        />
+			    
+			    <TextView 
+			        android:layout_width="0dp"
+			        android:layout_height="0dp"
+			        android:layout_weight="1"/>
+			    
+			    <!-- Submit button -->
+			    <Button 
+			   	    android:id="@+id/login_button_submit"
+			   	    android:text="Go"
+			   	    android:background="@drawable/button_green"
+			   	    style="@style/gamelobby_button_game" />
+	            
+	        </LinearLayout><!-- Login end -->
+	        
+	        <!-- Registration -->
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical">
+	            
+				<!-- Email label -->
+				<TextView 
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:text="Email Address:"
+				    android:textSize="15sp"
+				    android:drawableLeft="@drawable/icon_required_field" />
+				   
+				<!-- Email Input Field -->
+				<EditText 
+				    android:id="@+id/registration_edittext_email"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:gravity="center"
+				    android:hint="Enter Email"
+				    android:inputType="textEmailAddress" />
+				
+		        <!-- Password label -->
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableLeft="@drawable/icon_required_field"
+		            android:text="Password:"
+		            android:textSize="15sp"/>
+		
+			    <!-- Password Input Field -->
+			    <EditText 
+			        android:id="@+id/registration_edittext_password"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="center"
+			        android:hint="Enter Password"
+			        android:inputType="textPassword"
+			        />
+				
+		        <!-- RePassword label -->
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableLeft="@drawable/icon_required_field"
+		            android:text="Re-enter Password:"
+		            android:textSize="15sp"/>
+		
+			    <!-- RePassword Input Field -->
+			    <EditText 
+			        android:id="@+id/registration_edittext_repassword"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="center"
+			        android:hint="Re-Enter Password"
+			        android:inputType="textPassword"
+			        />
+			    
+			    <TextView 
+			        android:layout_width="0dp"
+			        android:layout_height="0dp"
+			        android:layout_weight="1"/>
+			    
+			    <!-- Submit button -->
+			    <Button 
+			   	    android:id="@+id/registration_button_submit"
+			   	    android:layout_alignParentBottom="true"
+			   	    android:text="Go"
+			   	    android:background="@drawable/button_green"
+			   	    style="@style/gamelobby_button_game" />
+	            
+			</LinearLayout><!-- Registration end -->
+
+	    </ViewFlipper><!-- Log in frame end -->
+        
+    </LinearLayout><!-- Body end -->
+    
+    <!-- Footer -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <ImageView
+		    android:layout_width="match_parent"
+		    android:layout_height="100dp"
+		    android:scaleType="centerInside"
+		    android:contentDescription="" />
+        
+    </LinearLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.Game;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,15 +34,13 @@ public class GameOverActivity extends Activity {
 		this.m_OKButton = (Button) findViewById(R.id.game_over_ok_button);
 		this.m_WordTextView = (TextView) findViewById(R.id.game_over_answer_textView);
 		
-		Bundle extras = getIntent().getExtras();		
-		String word = extras.getString("word");		
+		String word = Game.getWord();		
 		this.m_WordTextView.setText(word);
 		
 		this.m_OKButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				startGameLobbyActivity();
 				finish();
 				
 			}
@@ -54,11 +53,4 @@ public class GameOverActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_game_over, menu);
 		return true;
 	}
-	
-	protected void startGameLobbyActivity() {
-		// TODO Tal how do I start GameLobby 
-		// TODO and let server know about gameover?
-		
-	}
-
 }

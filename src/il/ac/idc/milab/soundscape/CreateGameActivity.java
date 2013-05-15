@@ -3,7 +3,6 @@ package il.ac.idc.milab.soundscape;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +16,6 @@ public class CreateGameActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("CREATE", "Started the CreateGame activity");
 		setContentView(R.layout.activity_create_game);
 
 		m_ButtonEmail = (Button)findViewById(R.id.newgame_button_email);
@@ -25,7 +23,7 @@ public class CreateGameActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("CREATE", "User wants to search for a player");
+				// Create game by specifying an email address
 				m_RandomGame = false;
 				startFindUserToPlayActivity(m_RandomGame);
 				finish();
@@ -37,7 +35,7 @@ public class CreateGameActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("CREATE", "User wants to pick a random player");
+				// Create a game with a random player
 				m_RandomGame = true;
 				startFindUserToPlayActivity(m_RandomGame);
 				finish();

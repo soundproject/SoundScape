@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/background" >
     
     <TextView 
         android:id="@+id/newgame_text_view_title"
@@ -9,14 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/newgame_text_view_title"
-        android:textSize="30sp" />
-    
-	<View
-	    android:id="@+id/line_seperator"
-    	android:layout_width="fill_parent"
-    	android:layout_height="1dp"
-    	android:background="@android:color/black"
-    	android:layout_marginTop="2dp" />
+        android:textSize="30sp"
+        android:layout_marginTop="100dp" />
 	
     <TextView 
         android:id="@+id/newgame_text_view_question"

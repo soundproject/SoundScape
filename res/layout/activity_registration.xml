@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".RegistrationActivity" >
+    tools:context=".LoginActivity" >
 
    
     <TextView
@@ -100,23 +100,11 @@
         android:inputType="textPassword" />
     
     <Button
-        android:id="@+id/registration_button_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/registration_edit_text_repassword"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/registration_button_existing_user" />
-    
-    
-    <Button
         android:id="@+id/registration_button_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/registration_edit_text_repassword"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/registration_button_register" />
     

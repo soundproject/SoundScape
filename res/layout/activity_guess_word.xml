@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".GuessWordActivity" >
+    tools:context=".GuessWordActivity"
+    android:background="@drawable/background_only_header" >
 
     <!-- Screen header container -->
     <LinearLayout 
@@ -16,7 +17,8 @@
 	    <include
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        layout="@layout/game_header" />
+	        layout="@layout/game_header"
+	        android:layout_marginBottom="30dp" />
 	    
 	    <!-- title header -->
 	    <LinearLayout 
@@ -60,7 +62,8 @@
         android:id="@+id/guessword_body_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp" >
         
 	    <!-- Play sound button -->
 	    <ImageButton
@@ -121,30 +124,61 @@
 	</LinearLayout>
 
     <!-- Screen footer container -->
-    <LinearLayout 
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
+    <RelativeLayout 
         android:layout_height="0dip"
-        android:orientation="vertical"
-        android:background="@color/blue_base">
+        android:layout_width="match_parent"
+        android:layout_weight="1" >
 	    
    		<!-- Word to guess -->	    
-   		<il.ac.idc.milab.soundscape.library.FlowLayout
+   		<LinearLayout
    		    android:id="@+id/guessword_footer_word_container"
-   		    android:layout_width="wrap_content"
-   		    android:layout_height="0dip"
-   		    android:background="@color/black_overlay"
-   		    android:layout_weight="1" >
+   		    android:layout_width="match_parent"
+   		    android:layout_height="wrap_content"
+   		    android:layout_alignParentTop="true"
+   		    android:orientation="vertical" >
    		    
-   		</il.ac.idc.milab.soundscape.library.FlowLayout>
+		    <!-- word letters row1  -->
+		    <include
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        layout="@layout/word_letters_row1_layout" />
+		    
+		    <!-- word letters row2  -->
+		    <include
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        layout="@layout/word_letters_row2_layout" />
+   		    
+   		</LinearLayout>
 		
 		<!-- Random letters to guess from -->
-	    <il.ac.idc.milab.soundscape.library.FlowLayout
+	    <LinearLayout
    		    android:id="@+id/guessword_footer_letters_container"
-   		    android:layout_width="wrap_content"
-   		    android:layout_height="0dip"
-   		    android:layout_weight="1" >
-   		    
-   		</il.ac.idc.milab.soundscape.library.FlowLayout>
-    </LinearLayout>
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/guessword_footer_bomb"
+   		    android:orientation="vertical" >
+	   		    
+		    <!-- random guess letters row1  -->
+		    <include
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        layout="@layout/random_letters_row1_layout" />
+		    
+		    <!-- random guess letters row2  -->
+		    <include
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        layout="@layout/random_letters_row2_layout" />
+   		</LinearLayout>
+   		
+	    <ImageButton 
+	        android:id="@+id/guessword_footer_bomb"
+	        android:layout_width="fill_parent"
+	        android:layout_height="40dp"
+	        android:layout_alignParentBottom="true"
+	        android:src="@drawable/ic_bomb"/>
+    </RelativeLayout>
 </LinearLayout>

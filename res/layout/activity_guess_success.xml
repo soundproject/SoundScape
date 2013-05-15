@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GuessSuccessActivity" >
+    tools:context=".GuessSuccessActivity"
+    android:background="@drawable/background" >
 
     <include
         android:id="@+id/include1"
@@ -10,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        layout="@layout/game_header" />
+        layout="@layout/game_header"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/guess_success_correct_textView"
@@ -40,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/guess_succcess_thank_you_textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="50dp"
         android:text="@string/you_receive_string"
         android:textSize="20sp" />
 

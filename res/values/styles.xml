@@ -47,5 +47,23 @@
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/style_3_strikes</item>
     </style>
+    
+    <style name="frame_layout">
+        <item name="android:background">@drawable/frame_layout</item>
+    </style>
+    
+    <style name="word_view_letter_style">
+		<item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:background">@drawable/border_black_letter</item>
+    </style>
+    
+    <style name="guess_button_letter_style">
+		<item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:background">@drawable/button_letter_drawable</item>
+    </style>
 
 </resources>

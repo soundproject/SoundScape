@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/startup_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+		<!-- Email label -->
+		<TextView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Email Address:"
+		    android:textSize="15sp"
+		    android:drawableLeft="@drawable/icon_required_field" />
+		   
+		<!-- Email Input Field -->
+		<EditText 
+		    android:id="@+id/login_edittext_email"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="center"
+		    android:hint="Enter Email"
+		    android:inputType="textEmailAddress" />
+		
+        <!-- Password label -->
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_required_field"
+            android:text="Password:"
+            android:textSize="15sp"/>
+
+	    <!-- Password Input Field -->
+	    <EditText 
+	        android:id="@+id/login_edittext_password"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:hint="Enter Password"
+	        android:inputType="textPassword"
+	        />
+	    
+</LinearLayout>

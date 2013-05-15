@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     	android:layout_marginRight="3dp"
-    	style="@style/recording_textview_letter_style" />
+    	style="@style/word_view_letter_style" />
