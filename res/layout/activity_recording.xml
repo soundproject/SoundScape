@@ -3,14 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".RecordingActivity" >
+    tools:context=".RecordingActivity"
+    android:background="@drawable/background" >
 
     <!-- Header -->
     <include
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        layout="@layout/game_header" />
+        layout="@layout/game_header"
+        android:layout_marginBottom="50dp" />
     
     <!-- Body Container for title -->
     <LinearLayout 
@@ -28,14 +30,17 @@
 	        android:textSize="20sp"
 	        android:gravity="center_horizontal" />
 	    
-	    <!-- custom title container -->
-	    <LinearLayout 
-	        android:id="@+id/recording_linear_layout_title_container"
-	        android:layout_width="fill_parent"
-	        android:layout_height="150dp"
-	        android:orientation="vertical">
-
-		</LinearLayout>
+	    <!-- word letters row1  -->
+	    <include
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        layout="@layout/word_letters_row1_layout" />
+	    
+	    <!-- word letters row2  -->
+	    <include
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        layout="@layout/word_letters_row2_layout" />
     	
         <ImageView
 	        android:id="@+id/recording_image_view_pic"

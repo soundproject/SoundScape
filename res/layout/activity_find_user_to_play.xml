@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
     android:orientation="vertical"
-    tools:context=".MatchActivity" >
+    tools:context=".MatchActivity"
+    android:background="@drawable/background" >
 
     <TextView 
         android:id="@+id/finduser_text_view_title"
@@ -12,7 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/newgame_text_view_title"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:layout_marginTop="100dp" />
     
     <TextView 
         android:id="@+id/finduser_text_view_question"

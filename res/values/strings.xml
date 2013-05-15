@@ -75,5 +75,6 @@
     <string name="answer_was_string">The correct answer was:</string>
     <string name="better_luck_string">Better luck next time...</string>
     <string name="title_activity_recording">RecordingActivity</string>
+    <string name="title_activity_login_or_register">LoginOrRegisterActivity</string>
 
 </resources>

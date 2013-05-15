@@ -1,16 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/background" >
 
     <include
         android:id="@+id/header"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         layout="@layout/game_header" />
 
+    
     <TextView
-        android:id="@+id/title_text_view_my_games"
+        android:id="@+id/lobby_text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -25,14 +27,18 @@
         style="@style/gamelobby_button_game"
         android:text="@string/lobby_button_create_game" />
     
-    <LinearLayout
-        android:id="@+id/lobby_list_view_container"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        
+	    <LinearLayout
+	        android:id="@+id/lobby_list_view_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:orientation="vertical">
+	
+	    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

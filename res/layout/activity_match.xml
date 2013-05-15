@@ -3,28 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MatchActivity" >
+    tools:context=".MatchActivity"
+    android:background="@drawable/background" >
 
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"/>
+    
     <TextView 
         android:id="@+id/match_text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="40sp"
+        android:textSize="35sp"
         android:text="@string/match_text_view_title" />
-    
-	<View
-	    android:id="@+id/line_seperator"
-    	android:layout_width="fill_parent"
-    	android:layout_height="1dp"
-    	android:background="@android:color/black"
-    	android:layout_marginTop="2dp" />"
 
 	<RelativeLayout
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_marginTop="40dp"
-	    android:background="@drawable/border_black_view"
+	    android:layout_marginTop="10dp"
+	    android:layout_marginLeft="5dp"
+	    android:layout_marginRight="5dp"
+	    android:background="@drawable/border_blue_view"
 	    tools:context=".MatchActivity" >
 	    
 	    <TextView 
@@ -59,9 +59,9 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical"
-	    android:background="@drawable/border_black_view"
+	    android:background="@drawable/border_blue_view"
 	    android:layout_gravity="center_horizontal"
-	    android:layout_marginTop="20dp" >
+	    android:layout_marginTop="10dp" >
 	    
 	    <TextView 
 	        android:id="@+id/match_text_view_turn"
@@ -88,7 +88,9 @@
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="center_horizontal"
 	    android:text="@string/finduser_button_submit"
-	    android:layout_marginTop="20dp" />
+	    android:textSize="20sp"
+	    android:padding="20dp"
+	    android:layout_marginTop="10dp" />
 	
 	
 </LinearLayout>

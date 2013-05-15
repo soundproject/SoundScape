@@ -1,16 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
-
-    <TextView
-        android:id="@+id/header_text_view_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/app_name"
-        android:textSize="25sp" />
-
+<!-- Removed for now
     <TextView
         android:id="@+id/header_button_map"
         android:layout_width="42dp"
@@ -30,59 +21,33 @@
         android:layout_marginTop="20dp"
         android:contentDescription=""
         android:src="@drawable/ic_settings_ldpi" />
-
-	<View
-	    android:id="@+id/line_seperator"
-    	android:layout_width="fill_parent"
-    	android:layout_height="1dp"
-    	android:layout_below="@+id/header_text_view_title"
-    	android:background="@android:color/black"
-    	android:layout_marginTop="2dp" />
-    
-    <ImageView
-        android:id="@+id/header_image_view_star_icon"
-        android:contentDescription=""
+ -->
+     
+    <TextView
+        android:id="@+id/header_text_view_bomb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/header_button_map"
-        android:layout_marginTop="10dp"
-        android:src="@android:drawable/star_big_on" />
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:text="3"
+        android:textColor="@color/White"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingTop="7dp"
+        android:paddingRight="7dp"
+        android:background="@drawable/ic_bomb" />
     
     <TextView
         android:id="@+id/header_text_view_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/header_image_view_star_icon"
-        android:layout_toRightOf="@+id/header_image_view_star_icon"
         android:layout_marginLeft="5dp"
-        android:text="Score: 120"
-        android:textSize="25sp" />
-    
-    <ImageView
-        android:id="@+id/header_bomb_icon"
-        android:contentDescription=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/header_image_view_star_icon"
-        android:layout_toLeftOf="@+id/header_text_view_bomb_number"
-        android:src="@drawable/ic_bomb" />
-    
-    <TextView
-        android:id="@+id/header_text_view_bomb_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/header_image_view_star_icon"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="3"
-        android:textSize="25sp" />
-    
-	<View
-    	android:layout_width="fill_parent"
-    	android:layout_height="1dp"
-    	android:layout_below="@+id/header_image_view_star_icon"
-    	android:layout_marginTop="2dp"
-    	android:background="@android:color/black"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignBaseline="@id/header_text_view_bomb"
+        android:text="Score: 0"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
+        android:drawableLeft="@android:drawable/star_on" />
 
 </RelativeLayout>

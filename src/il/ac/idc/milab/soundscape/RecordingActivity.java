@@ -1,31 +1,39 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.Game;
+import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundPlayer;
 import il.ac.idc.milab.soundscape.library.SoundRecorder;
+import il.ac.idc.milab.soundscape.library.User;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
+import android.util.Base64;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 public class RecordingActivity extends Activity {
 
@@ -52,50 +60,49 @@ public class RecordingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recording);
-		Log.d(TAG, "Init progress bar");
-		
-		// Init Sound Recorder
-		m_SoundRecorder = new SoundRecorder(getFilesDir(), MAX_RECORDING_TIME_IN_MILLIS);
-		
-		// Init Sound Player
-		m_SoundPlayer = new SoundPlayer();
-		
-		// Init progress bar
-		m_ProgressBar = (ProgressBar)findViewById(R.id.recording_progressBar);
-		m_Timer = new CountDownTimer(MAX_RECORDING_TIME_IN_MILLIS, 50) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				if(m_IsInProgress) {
-					m_ProgressBar.incrementProgressBy(50);
-				}
-			}
-			
-			@Override
-			public void onFinish() {}
-		};
 		
 		// Check if freestyle or not
-		m_SelectedWord = getIntent().getStringExtra("word");
-		Log.d(TAG, "Selected word: " + m_SelectedWord);
+		m_SelectedWord = Game.getWord();
 		
+		// Check if word was passed successfully from the parent intent
 		if(m_SelectedWord != null) {
-			LinearLayout customTitleContainer = (LinearLayout)findViewById(R.id.recording_linear_layout_title_container);
-			if(m_SelectedWord.equalsIgnoreCase("freestyle")) {
-				// Get the layout inflater (the service that help us add xml files to layout)
-				LayoutInflater inflater =
-					    (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			createCustomTitleFromWord(m_SelectedWord);
+			
+			// Init Sound Recorder
+			m_SoundRecorder = new SoundRecorder(getFilesDir(), MAX_RECORDING_TIME_IN_MILLIS);
+			
+			// Init Sound Player
+			m_SoundPlayer = new SoundPlayer();
+			
+			// Init progress bar
+			m_ProgressBar = (ProgressBar)findViewById(R.id.recording_progressBar);
+			m_Timer = new CountDownTimer(MAX_RECORDING_TIME_IN_MILLIS, 50) {
 				
-				customTitleContainer.addView(inflater.inflate(R.layout.recording_freestyle_header, null));
-			}
-			else {
-				customTitleContainer.addView(createCustomTitleFromWord(m_SelectedWord));
-			}
+				@Override
+				public void onTick(long millisUntilFinished) {
+					if(m_IsInProgress) {
+						m_ProgressBar.incrementProgressBy(50);
+					}
+				}
+				
+				@Override
+				public void onFinish() {
+					onRecord(false);
+				}
+			};
+
+			
+			initControlButtons();
 		}
-		
-		Log.d(TAG, "Init control buttons");
-		initControlButtons();
+		else {
+			finish();
+		}
 	}
+	
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 	
     @Override
     public void onPause() {
@@ -104,45 +111,34 @@ public class RecordingActivity extends Activity {
         m_SoundPlayer.release();
     }
 
-	private LinearLayout createCustomTitleFromWord(String selectedWord) {
-		// Init the words container
-		LinearLayout container = new LinearLayout(getApplicationContext());
-		container.setOrientation(LinearLayout.VERTICAL);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		container.setLayoutParams(params);
-		
+	/**
+	 * This method generates the layout of the word we want to record
+	 */
+	private void createCustomTitleFromWord(String selectedWord) {
 		String[] words = selectedWord.split(" ");
-		
-		// For each word, create the custom TextView letters
-		for(int i = 0; i < words.length; i++) {
-			LinearLayout row = new LinearLayout(getApplicationContext());
-			
-			params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.gravity = Gravity.CENTER_HORIZONTAL;
-			params.topMargin = 20;
-			row.setLayoutParams(params);
-			
-			String word = words[i].toUpperCase();
-			Log.d(TAG, "Word is: " + word);
-			
-			// Create the custom letters
-			for(int j = 0; j < word.length(); j++) {
-				TextView letterView = (TextView)getLayoutInflater().inflate(R.layout.textview_letter_style, null);
-				params = new LinearLayout.LayoutParams(45, 50);
-				params.rightMargin = 3;
-				params.topMargin = 10;
-				letterView.setLayoutParams(params);
-				char letter = word.charAt(j);
-				Log.d(TAG, "Letter is: " + letter);
-				letterView.setText(String.valueOf(letter));
 
-				row.addView(letterView);
+		for(int i = 0; i < words.length; i++) {
+			String layoutName = "guessword_footer_word_letters_row" + (i + 1);
+			int layoutId = getResources().getIdentifier(layoutName, "id", getPackageName());
+			LinearLayout row = (LinearLayout)findViewById(layoutId);
+			row.setVisibility(View.VISIBLE);
+
+			String word = words[i].toUpperCase();
+
+			// Remove the excessive views
+			while(row.getChildCount() > word.length()) {
+				row.removeViewAt(0);
 			}
 			
-			container.addView(row);
+			for(int j = 0; j < row.getChildCount(); j++) {
+				Button letter = (Button)row.getChildAt(j);
+				letter.setText(String.valueOf(word.charAt(j)));
+			}
+			
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			params.gravity = Gravity.CENTER_HORIZONTAL;
+			row.setLayoutParams(params);
 		}
-		
-		return container;
 	}
 
 	private void initControlButtons() {
@@ -153,12 +149,6 @@ public class RecordingActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				onRecord(m_IsRecording);
-				Log.d(TAG, "Record button pressed!");
-				// Set progress bar
-				if(m_IsRecording) {
-					starteProgressBar();
-				}
-				
 				m_IsRecording = !m_IsRecording;
 			}
 		});
@@ -169,13 +159,6 @@ public class RecordingActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				onPlay(m_IsPlaying);
-				Log.d(TAG, "Play button pressed!");
-				// Set progress bar
-				if(m_IsPlaying) {
-					starteProgressBar();
-				}
-				
-				m_IsPlaying = !m_IsPlaying;
 			}
 		});
 		m_ButtonPlay.setVisibility(View.INVISIBLE);
@@ -185,51 +168,81 @@ public class RecordingActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Save button pressed!");
-				saveAndSendFile();
+				if(m_SelectedWord.equalsIgnoreCase("freestyle")) {
+					
+					final EditText input = new EditText(RecordingActivity.this);
+					new AlertDialog.Builder(RecordingActivity.this)
+				    .setMessage("What did you record?")
+				    .setView(input)
+				    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				        public void onClick(DialogInterface dialog, int whichButton) {
+				            Game.setWord(input.getText().toString());
+				            saveAndSendFile();
+				        }
+				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				        public void onClick(DialogInterface dialog, int whichButton) {
+				            // Do nothing.
+				        }
+				    }).show();
+				}
+				else {
+					saveAndSendFile();
+				}
 			}
 		});
 		m_ButtonSave.setVisibility(View.INVISIBLE);
 	}
-
-    private void starteProgressBar() {
-    	Log.d(TAG, "Starting Counter");
-		m_ProgressBar.setProgress(0);
-		m_ProgressBar.setMax(MAX_RECORDING_TIME_IN_MILLIS);
-    	m_Timer.start();
-	}
 	
     private void onRecord(boolean start) {
-    	m_IsInProgress = start;
         if (start) {
-        	Log.d(TAG, "Start Recording!");
+        	m_IsInProgress = true;
         	m_ButtonRecord.setImageDrawable(getResources().getDrawable(R.drawable.btn_stop));
-        	starteProgressBar();
+        	
+        	// Init the progress bar values
+        	m_ProgressBar.setProgress(0);
+        	m_ProgressBar.setMax(MAX_RECORDING_TIME_IN_MILLIS);
+        	m_Timer.start();
+        	
             m_SoundRecorder.startRecording();
             m_ButtonSave.setVisibility(View.INVISIBLE);
             m_ButtonPlay.setVisibility(View.INVISIBLE);
         } else {
-        	Log.d(TAG, "Stop Recording!");
+        	m_IsInProgress = false;
+        	m_ProgressBar.setProgress(0);
         	m_ButtonRecord.setImageDrawable(getResources().getDrawable(R.drawable.btn_record));
         	m_Timer.cancel();
         	m_SoundRecorder.stopRecording();
+        	m_SoundPlayer.initPlayer(m_SoundRecorder.getAbsolutePath());
             m_ButtonSave.setVisibility(View.VISIBLE);
             m_ButtonPlay.setVisibility(View.VISIBLE);
         }
     }
 
 	private void onPlay(boolean start) {
-		m_IsInProgress = start;
-        if (start) {
+        if (start && m_IsInProgress == false) {
+        	m_IsInProgress = true;
         	m_ButtonPlay.setImageDrawable(getResources().getDrawable(R.drawable.btn_stop));
-        	starteProgressBar();
-            m_SoundPlayer.startPlaying(m_SoundRecorder.getFile());
+        	
+        	// Init the progress bar values
+        	m_ProgressBar.setProgress(0);
+        	m_ProgressBar.setMax(m_SoundPlayer.getFileDuration());
+        	m_Timer.start();
+            m_SoundPlayer.startPlaying();
+        	m_SoundPlayer.getActiveMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					onPlay(false);
+				}
+			});
             m_ButtonSave.setVisibility(View.INVISIBLE);
             m_ButtonRecord.setVisibility(View.INVISIBLE);
         } else {
+        	m_IsInProgress = false;
+        	m_SoundPlayer.stopPlaying();
         	m_ButtonPlay.setImageDrawable(getResources().getDrawable(R.drawable.btn_play));
+        	m_ProgressBar.setProgress(0);
         	m_Timer.cancel();
-            m_SoundPlayer.stopPlaying();
             m_ButtonSave.setVisibility(View.VISIBLE);
             m_ButtonRecord.setVisibility(View.VISIBLE);
         }
@@ -244,13 +257,10 @@ public class RecordingActivity extends Activity {
 	
 	private void saveAndSendFile() 
 	{
-		Intent intent = new Intent(this, SoundTaggingActivity.class);
-
 		// Build metadata
 		JSONObject fileMetaData = new JSONObject();
 		try {
 			fileMetaData.put(ServerRequests.REQUEST_FIELD_WORD, m_SelectedWord);
-			intent.putExtra(ServerRequests.REQUEST_FIELD_WORD, m_SelectedWord);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -260,14 +270,85 @@ public class RecordingActivity extends Activity {
 		Editor editor = prefs.edit();
 		editor.putString(ServerRequests.REQUEST_FIELD_FILE_META, fileMetaData.toString());
 		editor.commit();
-		
-		intent.putExtra("filename", m_SoundRecorder.getFile());
-		intent.putExtra("difficulty", getIntent().getExtras().getInt("difficulty", 0));
-		
-		Log.d(TAG, "Starting soundTagging");
 
-		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_GAME));
-		startActivity(intent);
-		finish();
+		JSONObject request = buildRequestToSendFile();
+		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, RecordingActivity.this);
+		
+		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
+			editor.remove(m_SoundRecorder.getFileName());
+			deleteFile(m_SoundRecorder.getFileName());
+			editor.commit();
+			new AlertDialog.Builder(RecordingActivity.this)
+		    .setMessage("Your challenge has been sent!")
+		    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        public void onClick(DialogInterface dialog, int whichButton) {
+		        	// Do Nothing
+		        	finish();
+		        }
+		    }).show();
+		}
+	}
+
+	private JSONObject buildRequestToSendFile() {
+		
+		byte[] encodedFile = encodeFile(new File(m_SoundRecorder.getAbsolutePath()));
+		String fileEncoded = Base64.encodeToString(encodedFile, Base64.DEFAULT);
+
+		JSONObject request = new JSONObject();
+		try 
+		{
+			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_SET);
+			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_FILE);
+			request.put(ServerRequests.REQUEST_FIELD_FILE, fileEncoded);
+			request.put(ServerRequests.REQUEST_FIELD_WORD, Game.getWord());
+			request.put(ServerRequests.REQUEST_FIELD_EMAIL, User.getEmailAddress());
+			request.put(ServerRequests.REQUEST_FIELD_GAMEID, Game.getId());
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+			request = null;
+		}
+
+		return request;
+	}
+	
+	/**
+	 * A helper function that returns a given file as a byte array
+	 * @param i_file the file descriptor
+	 * @return a byte array representing the file content
+	 */
+	private byte[] encodeFile(File i_file) {
+
+		int bytesRead, bytesAvailable, bufferSize;
+		byte[] buffer;
+		int maxBufferSize = 1024;
+		ByteArrayBuffer result = new ByteArrayBuffer(maxBufferSize);
+
+		try {
+			FileInputStream fileInputStream = new FileInputStream(i_file);
+
+			bytesAvailable = fileInputStream.available();
+			bufferSize = Math.min(bytesAvailable, maxBufferSize);
+			buffer = new byte[bufferSize];
+
+			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+			while (bytesRead > 0)
+			{
+				result.append(buffer, 0, bufferSize);
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+			}
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+
+		return result.toByteArray();
 	}
 }

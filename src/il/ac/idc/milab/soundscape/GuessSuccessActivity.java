@@ -37,7 +37,7 @@ public class GuessSuccessActivity extends Activity {
 		this.m_LevelBarProgressBar = (ProgressBar) findViewById(R.id.guess_success_progressBar);
 		
 		Bundle extras = getIntent().getExtras();		
-		int difficulty = extras.getInt("difficulty");
+		String difficulty = extras.getString("difficulty");
 		
 		this.m_NumberOfBombsTextView.setText(String.format("%d", 2));		
 		this.m_NumberOfStarsTextView.setText(String.format("%d", difficulty));		

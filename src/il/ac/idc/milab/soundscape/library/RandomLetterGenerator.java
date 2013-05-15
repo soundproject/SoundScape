@@ -1,7 +1,6 @@
 package il.ac.idc.milab.soundscape.library;
 import java.util.ArrayList;
 import java.util.Random;
-import android.util.Log;
 
 public class RandomLetterGenerator {
 
@@ -51,7 +50,6 @@ public class RandomLetterGenerator {
 			int index = this.m_Random.nextInt(this.m_CharacterArray.size());			
 			if (Character.isLowerCase(this.m_CharacterArray.get(index)))
 			{
-				Log.d(TAG, "Removing Character " + this.m_CharacterArray.get(index));
 				this.m_CharacterArray.set(index, ' ');
 				result[result.length - numberOfCharactersToRemove] = index;
 				numberOfCharactersToRemove--;
@@ -65,14 +63,11 @@ public class RandomLetterGenerator {
 	private Character generateRandomChar() {
 		int random = this.m_Random.nextInt((int) 'z' - 'a');
 		random += 'a';
-		Log.d(TAG, "Random number is " + random);
 		Character result  = Character.valueOf((char) random);
-		Log.d(TAG, "Random char is: " + result.toString());
 		return result;
 	}
 
 	public boolean checkGuess(String i_guess) {
-		Log.i(TAG, "Checking guess: " + i_guess + " against word " + this.m_word);
 		return this.m_word.equals(i_guess);
 	}
 }

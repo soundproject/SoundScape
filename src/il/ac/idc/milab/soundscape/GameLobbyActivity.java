@@ -1,8 +1,10 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.Game;
 import il.ac.idc.milab.soundscape.library.JSONHelper;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
+import il.ac.idc.milab.soundscape.library.User;
 
 import java.util.HashMap;
 
@@ -10,13 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.accounts.NetworkErrorException;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -24,7 +23,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class GameLobbyActivity extends Activity {
@@ -35,14 +33,8 @@ public class GameLobbyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "Starting Game Lobby Activity");
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
+		
 		setContentView(R.layout.activity_game_lobby);
-
 		m_ButtonCreateGame = (Button) findViewById(R.id.lobby_button_create_game);
 		m_ButtonCreateGame.setOnClickListener(new View.OnClickListener() {
 
@@ -51,59 +43,51 @@ public class GameLobbyActivity extends Activity {
 				startNewGameActivity();
 			}
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		
-		JSONObject gameList;
-		try {
-			gameList = NetworkUtils.serverRequests.getUserGameList();
-			
-			if(gameList != null) {
-				populateLobbyWithGames(gameList);	
-			}
-		} catch (NetworkErrorException e) {
-			String msg = "This application requires an Internet connection.";
-			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		JSONObject request = buildRequestForGameList();
+		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, GameLobbyActivity.this);
+		
+		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
+			populateLobbyWithGames(response);
 		}
 	}
 
-	protected void startNewGameActivity() {
-		Intent intent = new Intent(getApplicationContext(),
-				CreateGameActivity.class);
-		startActivity(intent);
-	}
+	private void populateLobbyWithGames(JSONObject i_Response) {
 
-	private void populateLobbyWithGames(JSONObject gameListObject) {
-		// TODO:
-		// [{"gid":"1","uEmail":"tal@tal.com","gTurn":"1","gTurnCount":"1","opponent":"gadi@gadi.com"}]
-		Log.d(TAG, "Starting to populate buttons");
 		try {
 			// Extract all games from response and convert to hash map
-			Log.d(TAG, "Converting response to rawMap");
-			HashMap<String, String> rawMap = JSONHelper.getMapFromJson(gameListObject);
+			HashMap<String, String> rawMap = JSONHelper.getMapFromJson(i_Response);
 
 			String gamesString = rawMap.get(ServerRequests.RESPONSE_FIELD_GAMES);
-			Log.d(TAG, "Extracting the games from the map: " + gamesString);
-			Log.d(TAG, "Converting the The games into an array");
 			JSONArray gameListArray = new JSONArray(gamesString);
-
-			LinearLayout buttonContainer = (LinearLayout) findViewById(R.id.lobby_list_view_container);
-			RelativeLayout gameButton;
-
+			
+			LinearLayout gamesContainer = (LinearLayout) findViewById(R.id.lobby_list_view_container);
+			gamesContainer.removeAllViews();
+			RelativeLayout game;
+			
 			for (int i = 0; i < gameListArray.length(); i++) {
-				JSONObject game = gameListArray.getJSONObject(i);
-				Log.d(TAG, "Converting the following game: " + game.toString());
-				gameButton = createGameLayoutInstance(JSONHelper.getMapFromJson(game));
-				buttonContainer.addView(gameButton);
+				JSONObject gameDetails = gameListArray.getJSONObject(i);
+				
+				Game.init(gameDetails);
+				game = createGameLayoutInstance();
+				
+				// Saving the game details to use when the user chose
+				game.setTag(gameDetails);
+				gamesContainer.addView(game);
 			}
 
 		} catch (JSONException e) {
-			Log.d(TAG, "JSON Error in GameLobby");
 			e.printStackTrace();
 		}
 	}
 
-	private RelativeLayout createGameLayoutInstance(final HashMap<String, String> map) {
+	private RelativeLayout createGameLayoutInstance() {
 		RelativeLayout game = new RelativeLayout(getApplicationContext());
-		game.setBackground(getResources().getDrawable(R.drawable.border_black_button));
 
 		RelativeLayout.LayoutParams params;
 		TextView tvTurnCount = new TextView(getApplicationContext());
@@ -126,7 +110,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.setMargins(10, 0, 0, 0);
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		String turnCount = map.get(ServerRequests.RESPONSE_FIELD_GAME_TURNCOUNT);
+		String turnCount = Game.getTurnCount();
 		tvTurnCount.setText(turnCount);
 		tvTurnCount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 		tvTurnCount.setTextColor(Color.BLACK);
@@ -139,7 +123,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
 		params.addRule(RelativeLayout.LEFT_OF, tvVersus.getId());
-		String opponent = map.get(ServerRequests.RESPONSE_FIELD_GAME_OPPONENT);
+		String opponent = Game.getOpponent();
 		opponent = opponent.split("@")[0];
 		tvOpponentName.setText(opponent);
 		tvOpponentName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -165,7 +149,7 @@ public class GameLobbyActivity extends Activity {
 
 		params.addRule(RelativeLayout.RIGHT_OF, tvVersus.getId());
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		String user = map.get(ServerRequests.RESPONSE_FIELD_GAME_USER);
+		String user = Game.getUser();
 		user = user.split("@")[0];
 		tvMyName.setText(user);
 		tvMyName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -179,22 +163,12 @@ public class GameLobbyActivity extends Activity {
 		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		params.addRule(RelativeLayout.CENTER_VERTICAL);
 		
-		String state = map.get(ServerRequests.RESPONSE_FIELD_GAME_STATE);
-		String whosTurn = map.get(ServerRequests.RESPONSE_FIELD_GAME_WHOSTURN);
+		String whosTurn = Game.getWhosTurn();
 		String buttonText = null;
 		
 		// If my turn 
-		Log.d(TAG, "Current user: " + ServerRequests.getUserEmail());
-		if(whosTurn.equalsIgnoreCase(ServerRequests.getUserEmail())) {
-			if (state.equalsIgnoreCase("1")) {
-				buttonText = "Record";				
-			}
-			else if(state.equalsIgnoreCase("0")) {
-				buttonText = "Listen";
-			}
-			else {
-				Log.d(TAG, "SERVER ERROR! Somehow I got here!");
-			}
+		if(whosTurn.equalsIgnoreCase(User.getEmailAddress())) {
+			buttonText = "Play";
 		}
 		else {
 			buttonText = "Waiting";
@@ -208,18 +182,12 @@ public class GameLobbyActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				// Update the chosen game details and launch Match activity
 				Intent intent = new Intent(getApplicationContext(),
 						MatchActivity.class);
-				String game = null;
-				try {
-					game = JSONHelper.getJsonFromMap(map).toString();
-				} catch (JSONException e) {
-					Log.d(TAG, "Failed to convert map to JSON");
-					e.printStackTrace();
-				}
-				Log.d(TAG, "Game details: " + game);
-				intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, game);
-				Log.d(TAG, "Starting match!");
+				RelativeLayout parent = (RelativeLayout)v.getParent();
+				JSONObject chosenGameDetails = (JSONObject)parent.getTag();
+				Game.init(chosenGameDetails);
 				startActivity(intent);
 			}
 		});
@@ -233,11 +201,38 @@ public class GameLobbyActivity extends Activity {
 
 		return game;
 	}
+		
+	protected void startNewGameActivity() {
+		Intent intent = new Intent(getApplicationContext(),
+				CreateGameActivity.class);
+		startActivity(intent);
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game_lobby, menu);
 		return true;
+	}
+	
+	/**
+	 * This function gets the user active game list
+	 * @return a JSON object representing the user game list or null if 
+	 * response was not valid
+	 */
+	public JSONObject buildRequestForGameList() {
+		JSONObject request = new JSONObject();
+		try {
+			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_GET);
+			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_GAMES);
+			request.put(ServerRequests.REQUEST_FIELD_EMAIL, User.getEmailAddress());
+			request.put(ServerRequests.REQUEST_FIELD_TOKEN, User.getToken());
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			request = null;
+		}
+
+		return request;
 	}
 }

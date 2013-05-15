@@ -1,8 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WordSelectionActivity" >
+    tools:context=".WordSelectionActivity"
+    android:orientation="vertical"
+    android:background="@drawable/background" >
     
     <include
         android:id="@+id/header"
@@ -10,16 +12,101 @@
         android:layout_height="wrap_content"
         layout="@layout/game_header" />
 
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="What would you like to record?"
+        android:textSize="20sp" />
+    
     <LinearLayout
         android:id="@+id/word_list_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="110dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:orientation="vertical" >
+        
+        <TextView 
+            android:id="@+id/word_difficuly1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="test"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_1"/>
+        
+        <TextView 
+            android:id="@+id/word_difficuly2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="test"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_2"/>
+        
+        <TextView 
+            android:id="@+id/word_difficuly3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="test"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_3"/>
+        
+        <TextView 
+            android:id="@+id/word_difficuly4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="test"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_4"/>
+        
+        <TextView 
+            android:id="@+id/word_difficuly5"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="Test"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_5"/>
+        
+        <TextView 
+            android:id="@+id/word_freestyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:text="Record your own sound"
+            android:textSize="20sp"
+            android:textColor="@color/White"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@drawable/word_selection_1"/>
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

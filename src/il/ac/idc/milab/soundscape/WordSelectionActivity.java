@@ -1,96 +1,81 @@
 package il.ac.idc.milab.soundscape;
 
-import java.util.Locale;
-
+import il.ac.idc.milab.soundscape.library.Game;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
+
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "WORD_SELECTION";
 	public static final String k_FreeStyle = "freestyle";
-	private String m_GameDetails = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_word_selection);
+
+		JSONObject request;
+		JSONObject response = null;
+		request = buildRequestForRandomWords();
+		response = NetworkUtils.serverRequests.sendRequestToServer(request, WordSelectionActivity.this);
 		
-		m_GameDetails = getIntent().getStringExtra(ServerRequests.RESPONSE_FIELD_GAME);
-		
-		LinearLayout wordListLayout = (LinearLayout) findViewById(R.id.word_list_layout);
+		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
+			JSONObject words = response.optJSONObject(ServerRequests.RESPONSE_FIELD_WORDS);
 
-		// clear any exisitng buttons in case we are resuming and buttons are
-		// already here
-		wordListLayout.removeAllViews();
-
-		// Generate button for freestyle words
-		Button wordButton = new Button(getApplicationContext());
-		wordButton.setText(k_FreeStyle);
-		wordButton.setOnClickListener(this);
-		wordListLayout.addView(wordButton, new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		wordListLayout.addView(new TextView(this));
-		wordListLayout.addView(new TextView(this));
-
-		JSONObject response = new JSONObject();
-		try {
-			response = NetworkUtils.serverRequests.getRandomWords();
-			if(response != null) {
-				JSONObject words = response.optJSONObject(ServerRequests.RESPONSE_FIELD_WORDS);
-				Log.d(TAG, "The words are: " + words);
-				Log.d(TAG, "The length is: " + words.length());
+			LinearLayout wordListLayout = (LinearLayout)findViewById(R.id.word_list_layout);
+			
+			for(int i = 0; i < words.length(); i++) {
+				String index = String.format(Locale.US, "%d", i + 1);
+				String currentWord = words.optString(index);
 				
-				for (int i = 0; i < words.length(); i++)
-				{
-					String index = String.format(Locale.US, "%d", i + 1);
-					String currentWord = words.optString(index);
-					Log.d(TAG, "Got word " + currentWord);
-					addWordButton(currentWord, index);	
-				}
+				TextView text = (TextView) wordListLayout.getChildAt(i);
+				text.setOnClickListener(this);
+				text.setText(currentWord);
+				text.setTag(index);
 			}
-		} catch (NetworkErrorException e) {
-			String msg = "This application requires an Internet connection.";
-			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+				
+			
+			TextView freestyle = (TextView)findViewById(R.id.word_freestyle);
+			freestyle.setOnClickListener(this);
+		}
+		else {
+			finish();
 		}
 	}
-
-	private void addWordButton(String i_Word, String i_Difficulty) {
-
-		Button wordButton =  new Button(getApplicationContext());
-		LinearLayout wordListLayout = (LinearLayout) findViewById(R.id.word_list_layout);
+	
+	/**
+	 * This function gets a random set of words from the server by difficulty
+	 * @return a JSON object representing a random set of words with difficulty 
+	 * tags or null if response was not valid
+	 */
+	public JSONObject buildRequestForRandomWords() {
+		JSONObject request = new JSONObject();
 		
-		// get proper resource with number of stars. star_big_on is placeholder
-		Drawable stars = getResources().getDrawable((android.R.drawable.star_big_on));
-		
-		wordButton = new Button(getApplicationContext());
-		wordButton.setText(i_Word);
-		wordButton.setOnClickListener(this);
-		wordButton.setCompoundDrawablesWithIntrinsicBounds(null, null, stars, null);
-		wordButton.setTag(i_Difficulty);
-		
-		wordListLayout.addView(wordButton, new LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		try {
+			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_GET);
+			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_WORDS);
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 
+		return request;
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,29 +86,23 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Button button = (Button) v;
-		startRecordingActivity(button);
+		TextView text = (TextView) v;
+		startRecordingActivity(text);
 	}
 
 	
-	private void startRecordingActivity(Button button) {
+	private void startRecordingActivity(TextView i_TextView) {
 		
-		String word = button.getText().toString();
-		Log.d(TAG, "Selected word was: " + word);
+		String word = i_TextView.getText().toString();
+		if(word.equalsIgnoreCase("record your own sound")) {
+			word = "freestyle";
+		}
 		Intent intent = new Intent(getApplicationContext(),
 				RecordingActivity.class);
 		
-		intent.putExtra("word", word);
-		Log.d(TAG, "The TAG is: " + button.getTag());
-		Integer difficulty = Integer.getInteger((String) button.getTag());
-
-		if (difficulty != null)
-		{
-			intent.putExtra("difficulty", difficulty.intValue());
-			Log.d(TAG, "**** DIFFICULTY IS " + intent.getExtras().getInt("difficulty"));
-		}
+		Game.setWord(word);
+		Game.setDifficualty((String)i_TextView.getTag());
 		
-		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME, m_GameDetails);
 		startActivity(intent);
 		finish();
 	}

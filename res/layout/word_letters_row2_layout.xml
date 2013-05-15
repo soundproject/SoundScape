@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/guessword_footer_word_letters_row2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:visibility="invisible" >
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+
+    <Button
+        android:layout_marginRight="2dp" 
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+        android:layout_marginRight="2dp"
+		style="@style/word_view_letter_style" />
+    
+    <Button 
+		style="@style/word_view_letter_style" />
+
+</LinearLayout>
