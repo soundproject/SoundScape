@@ -2,24 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameOverActivity"
+    tools:context=".GuessFailActivity"
     android:background="@drawable/background" >
-
-    <include
-        android:id="@+id/include1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        layout="@layout/game_header" />
 
     <TextView
         android:id="@+id/game_over_time_up_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/include1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="80dp"
         android:text="@string/time_up_string"
         android:textSize="25sp" />
 
@@ -57,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/game_over_better_luck_textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
+        android:layout_marginTop="18dp"
         android:text="OK" />
 
 </RelativeLayout>

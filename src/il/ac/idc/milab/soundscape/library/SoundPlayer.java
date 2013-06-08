@@ -4,9 +4,13 @@ import java.io.IOException;
 
 import android.media.MediaPlayer;
 
+/**
+ * This class represents the media player of the device
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class SoundPlayer {
 	
-	private static final String TAG = "SOUND_PLAYER";
 	private MediaPlayer m_MediaPlayer = null;
 	private String m_FilePathToPlay;
 	private int m_Duration;
@@ -30,7 +34,7 @@ public class SoundPlayer {
 	
 	
 	/**
-	 * Starts to play the file that has been initialize prior
+	 * This function starts to play the file that has been initialize prior
 	 */
     public void startPlaying() {
     	initPlayer(m_FilePathToPlay);
@@ -40,7 +44,7 @@ public class SoundPlayer {
     }
 
     /**
-     * Stops a previously started playing
+     * This function stops a previously started playing
      */
     public void stopPlaying() {
     	if(m_MediaPlayer != null && m_MediaPlayer.isPlaying()) {
@@ -51,7 +55,7 @@ public class SoundPlayer {
     }
     
     /**
-     * Release the player
+     * This function releases the player
      */
     public void release() {
         if (m_MediaPlayer != null) {
@@ -60,12 +64,16 @@ public class SoundPlayer {
         }
     }
     
+    /**
+     * This function gets the sound file duration in miliseconds
+     * @return the duration of the sound file in miliseconds
+     */
     public int getFileDuration() {
     	return m_Duration;
     }
     
     /**
-     * Returns the active media player
+     * This function returns the active media player
      * @return the media player used for playing the sounds
      */
     public MediaPlayer getActiveMediaPlayer() {

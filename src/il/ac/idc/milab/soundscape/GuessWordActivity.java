@@ -1,7 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.AlertDialogHelper;
 import il.ac.idc.milab.soundscape.library.Game;
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundPlayer;
 import il.ac.idc.milab.soundscape.library.User;
@@ -15,14 +15,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -33,9 +32,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
+/**
+ * This class represent the guessing screen logic
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class GuessWordActivity extends Activity {
 	
-	private static final String TAG = "GUESS_WORD";
 	private static final int MAX_NUMBER_OF_GUESS_LETTERS = 16;
 	private static final int MAX_ALLOWED_STRIKES = 3;
 	private static final int MAX_WORD_LETTERS_IN_ROW = 10;
@@ -74,21 +78,25 @@ public class GuessWordActivity extends Activity {
 		// Request the sound file from the server
 		String soundFileName = "temp" + Game.getId();
 		JSONObject request = buildRequestForGameFile();
-		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, GuessWordActivity.this);
+		JSONObject response = ServerRequests.sendRequestToServer(request, 
+				GuessWordActivity.this);
 
-		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
-			String encodedFile = response.optString(ServerRequests.RESPONSE_FIELD_FILE);
+		if(ServerRequests.isValidResponse(response)) {
+			String encodedFile = response.optString(
+					ServerRequests.RESPONSE_FIELD_FILE);
 			byte[] soundFile = Base64.decode(encodedFile, Base64.DEFAULT);
 			
 			try {
-				FileOutputStream fileOutputStream = openFileOutput(soundFileName, Context.MODE_PRIVATE);
+				FileOutputStream fileOutputStream = 
+						openFileOutput(soundFileName, Context.MODE_PRIVATE);
 				fileOutputStream.write(soundFile);
 				fileOutputStream.close();
 				
 				// Init our sound player
 				m_SoundPlayer.initPlayer(getFilesDir() + "/" + soundFileName);
 				
-				m_Timer = new CountDownTimer(m_SoundPlayer.getFileDuration(), 50) {
+				m_Timer = new CountDownTimer(m_SoundPlayer.getFileDuration(), 
+						50) {
 					
 					@Override
 					public void onTick(long millisUntilFinished) {
@@ -104,33 +112,44 @@ public class GuessWordActivity extends Activity {
 				};
 			}
 			catch(IOException e) {
-				finish();
+				String title = "Error:";
+				String message = "There was a problem retrieving the " + 
+						"sound file, please try again later"; 
+				AlertDialogHelper.buildErrorDialog(GuessWordActivity.this, 
+						title, 
+						message).show();
 			}
 			
 			// Init UI with game details
 			initUIWithDetails();
 		}
 		else {
-			//TODO: exit gracefully with a message to user
-			finish();
+			String title = "Error:";
+			String message = "Could not reach server, please try again later"; 
+			AlertDialogHelper.buildErrorDialog(GuessWordActivity.this, 
+					title, 
+					message).show();
 		}
 	}
 	
 	/**
 	 * This method is called when the user presses the "play/stop" button 
-	 * @param start
+	 * @param i_Start true if the user pressed the "play" button, 
+	 * false otherwise
 	 */
-	private void onPlay(boolean start) {
-        if (start && m_IsInProgress == false) {
+	private void onPlay(boolean i_Start) {
+        if (i_Start && m_IsInProgress == false) {
         	m_IsInProgress = true;
-        	m_ButtonPlay.setImageDrawable(getResources().getDrawable(R.drawable.btn_stop));
+        	m_ButtonPlay.setImageDrawable(
+        			getResources().getDrawable(R.drawable.btn_stop));
         	
         	// Init the progress bar values
         	m_ProgressBar.setProgress(0);
         	m_ProgressBar.setMax(m_SoundPlayer.getFileDuration());
         	m_Timer.start();
             m_SoundPlayer.startPlaying();
-        	m_SoundPlayer.getActiveMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        	m_SoundPlayer.getActiveMediaPlayer().setOnCompletionListener(
+        			new MediaPlayer.OnCompletionListener() {
 				
 				@Override
 				public void onCompletion(MediaPlayer mp) {
@@ -140,7 +159,8 @@ public class GuessWordActivity extends Activity {
         } else {
         	m_IsInProgress = false;
         	m_SoundPlayer.stopPlaying();
-        	m_ButtonPlay.setImageDrawable(getResources().getDrawable(R.drawable.btn_play));
+        	m_ButtonPlay.setImageDrawable(
+        			getResources().getDrawable(R.drawable.btn_play));
         	m_ProgressBar.setProgress(0);
         	m_Timer.cancel();
         }
@@ -154,12 +174,19 @@ public class GuessWordActivity extends Activity {
 		JSONObject request = new JSONObject();
 		try 
 		{
-			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_GET);
-			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_FILE);
+			request.put(ServerRequests.REQUEST_ACTION, 
+					ServerRequests.REQUEST_ACTION_GET);
+			request.put(ServerRequests.REQUEST_SUBJECT, 
+					ServerRequests.REQUEST_SUBJECT_FILE);
 			request.put(ServerRequests.REQUEST_FIELD_GAMEID, Game.getId());
 		} 
 		catch (JSONException e) {
-			e.printStackTrace();
+			String title = "Error:";
+			String message = "The was an error building the request for the " +
+					"sound file"; 
+			AlertDialogHelper.buildErrorDialog(GuessWordActivity.this, 
+					title, 
+					message).show();
 			request = null;
 		}
 		
@@ -177,11 +204,13 @@ public class GuessWordActivity extends Activity {
      */
 	private void initUIWithDetails() {
 		// Init title with player names
-		TextView userView = (TextView)findViewById(R.id.guessword_leftPlayerName);
+		TextView userView = (TextView)findViewById(
+				R.id.guessword_leftPlayerName);
 		String user = Game.getUser().split("@")[0];
 		userView.setText(user);
 		
-		TextView opponentView = (TextView)findViewById(R.id.guessword_rightPlayerName);
+		TextView opponentView = (TextView)findViewById(
+				R.id.guessword_rightPlayerName);
 		String opponent = Game.getOpponent().split("@")[0];
 		opponentView.setText(opponent);
 		
@@ -196,7 +225,8 @@ public class GuessWordActivity extends Activity {
 		});
 		
 		// Init bomb button
-		ImageButton bombButton = (ImageButton)findViewById(R.id.guessword_footer_bomb);
+		ImageButton bombButton = (ImageButton)findViewById(
+				R.id.guessword_footer_bomb);
 		bombButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -209,8 +239,10 @@ public class GuessWordActivity extends Activity {
 			}
 
 			private void updateBombCount() {
-				TextView bombCount = (TextView)findViewById(R.id.header_text_view_bomb);
-				int currentCount = Integer.parseInt((String) bombCount.getText());
+				TextView bombCount = (TextView)findViewById(
+						R.id.header_text_view_bomb);
+				int currentCount = Integer.parseInt(
+						(String) bombCount.getText());
 				if(currentCount > 0) {
 					currentCount--;
 					bombCount.setText(String.valueOf(currentCount));
@@ -218,7 +250,6 @@ public class GuessWordActivity extends Activity {
 			}
 		});
 		
-		//TODO: finish this
 		initWordLayout();
 		initGuessLettersLayout();
 	}
@@ -226,6 +257,7 @@ public class GuessWordActivity extends Activity {
 	/**
 	 * This method is used when the user pressed the bomb to remove random 
 	 * letters
+	 * TODO: This method needs to be refactored
 	 */
 	protected void removeLetters() {
 		Random random = new Random();
@@ -233,17 +265,24 @@ public class GuessWordActivity extends Activity {
 		
 		String wordInUpperCase = m_WordToGuess.toUpperCase(Locale.ENGLISH);
 		
-		while(numOfLettersToRemove > 0 && m_NumberOfVisibleLetters > m_WordLength) {
-			//TODO: If have time, need to refactor this UGLY way of doing this
+		int maxNumOfTries = 10;
+		
+		while(numOfLettersToRemove > 0 && 
+				m_NumberOfVisibleLetters > m_WordLength && maxNumOfTries > 0) {
+			maxNumOfTries--;
+			
 			// Init the indexes of the guess buttons that are available
 			int[] availableIndexesToRemove = new int[m_NumberOfVisibleLetters];
 			int index = 0;
+			
+			// Take all visible buttons into the array
 			for(int i = 0; i < m_GuessLettersButtons.length; i++) {
 				if(m_GuessLettersButtons[i].isShown()) {
 					availableIndexesToRemove[index] = i;
 					index++;
 				}
 			}
+			
 			int randomIndex = random.nextInt(availableIndexesToRemove.length);
 			
 			// according to the index, decide from which row to remove a letter
@@ -261,6 +300,9 @@ public class GuessWordActivity extends Activity {
 		m_NumOfLettersToRemove = m_NumOfLettersToRemove / 2;
 	}
 
+	/**
+	 * This method crosses off a strike if failed guess/bomb was used
+	 */
 	protected void addStrike() {
 		// Build the name of the resource that represent the needed strike view
 		String strikeName = "guessword_text_view_strike" + m_CurrentStrike;
@@ -279,6 +321,7 @@ public class GuessWordActivity extends Activity {
 	 */
 	private void initWordLayout() {
 		String phrase = Game.getWord();
+		Log.d("BUG", "The phrase is: " + phrase);
 		String[] words = phrase.split(" ");
 
 		for(int i = 0; i < words.length; i++) {
@@ -351,10 +394,10 @@ public class GuessWordActivity extends Activity {
 	/**
 	 * This method populate the first free space in the word letter layout and
 	 * checks the answer in case it populated all available letters
-	 * @param v the button that was clicked
+	 * @param i_View the button that was clicked
 	 */
-	protected void populateAnswer(View v) {
-		Button guessLetter = (Button)v;
+	protected void populateAnswer(View i_View) {
+		Button guessLetter = (Button)i_View;
 		m_CurrentGuess.append(guessLetter.getText());
 
 		String phrase = Game.getWord();
@@ -403,56 +446,52 @@ public class GuessWordActivity extends Activity {
 		
 		// If populated all letters, check guess
 		if(m_CurrentGuess.length() == m_WordLength) {
-			if(isCorrectGuess()) {
-				if(updateServerOfSuccess(true)) {
-					startGuessSuccessfulActivity();;
-				}
-				else {
-					printErrorToUser();
-				}
+			if(isCorrectGuess() && updateServerOfSuccess(true)) {
+				startGuessSuccessfulActivity();
 			}
 			else if(m_CurrentStrike < MAX_ALLOWED_STRIKES) {
 				addStrike();
 				clearLetters();
 			}
-			else {
-				if(updateServerOfSuccess(false)) {
-				}
-				else {
-					printErrorToUser();
-				}
-				startGameOverActivity();
+			else if(updateServerOfSuccess(false)) {
+					startGameOverActivity();
 			}
 		}
 	}
 
-	private void printErrorToUser() {
-		new AlertDialog.Builder(GuessWordActivity.this)
-	    .setMessage("Couldn't connect to server, please try again.")
-	    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-	        public void onClick(DialogInterface dialog, int whichButton) {
-
-	        }
-	    }).show();
-		
-		//TODO: Change this to exit more gracefully
-		finish();
-	}
-
-	private boolean updateServerOfSuccess(boolean success) {
+	/**
+	 * This method is responsible for updating the server on the success/failure
+	 * of the user in guessing the word
+	 * @param i_SuccessfulGuess true if the guess was correct, false otherwise
+	 * @return true if the server was updated, false otherwise
+	 */
+	private boolean updateServerOfSuccess(boolean i_SuccessfulGuess) {
 		boolean isSuccessful = false;
-		JSONObject request = buildRequestToUpdateGuess(success);
-		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, GuessWordActivity.this);
-		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
+		JSONObject request = buildRequestToUpdateGuess(i_SuccessfulGuess);
+		JSONObject response = ServerRequests.sendRequestToServer(request, GuessWordActivity.this);
+		
+		if(ServerRequests.isValidResponse(response)) {
 			isSuccessful = true;
 		}
 		else {
+			String title = "Error:";
+			String message = "Couldn't reach server. " + 
+					"Please try again";
+			AlertDialogHelper.buildErrorDialog(GuessWordActivity.this, 
+					title, 
+					message).show();
 		}
 		
 		return isSuccessful;
 	}
 
-	private JSONObject buildRequestToUpdateGuess(boolean success) {
+	/**
+	 * This method is responsible for building the request that update server 
+	 * the server of a given guess
+	 * @param i_SuccessfulGuess true if the guess was correct, false otherwise
+	 * @return JSONObject that represents the request to the server
+	 */
+	private JSONObject buildRequestToUpdateGuess(boolean i_SuccessfulGuess) {
 		JSONObject request = new JSONObject();
 		try 
 		{
@@ -460,16 +499,25 @@ public class GuessWordActivity extends Activity {
 			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_GAME);
 			request.put(ServerRequests.REQUEST_FIELD_GAMEID, Game.getId());
 			request.put(ServerRequests.REQUEST_FIELD_EMAIL, User.getEmailAddress());
-			request.put(ServerRequests.REQUEST_FIELD_GUESS, success);
+			request.put(ServerRequests.REQUEST_FIELD_GUESS, i_SuccessfulGuess);
 		} 
 		catch (JSONException e) {
-			e.printStackTrace();
+			String title = "Error:";
+			String message = "There was an error building the request " + 
+					"for next turn"; 
+			AlertDialogHelper.buildErrorDialog(GuessWordActivity.this, 
+					title, 
+					message).show();
 			request = null;
 		}
 
 		return request;
 	}
 
+	/**
+	 * This method clears all letters that were guessed after a failed attempt
+	 * to guess the word 
+	 */
 	private void clearLetters() {
 		String phrase = Game.getWord();
 		String[] words = phrase.split(" ");
@@ -495,6 +543,10 @@ public class GuessWordActivity extends Activity {
 		}
 	}
 
+	/**
+	 * This is a helper method to check if guess is correct
+	 * @return true if the guess is correct, false otherwise
+	 */
 	private boolean isCorrectGuess() {
 		return m_CurrentGuess.toString().equalsIgnoreCase(m_WordToGuess);
 	}
@@ -509,7 +561,7 @@ public class GuessWordActivity extends Activity {
 	}
 
 	private void startGameOverActivity() {
-		Intent intent = new Intent(this, GameOverActivity.class);
+		Intent intent = new Intent(this, GuessFailActivity.class);
 		
 		//TODO: Remove? change?
 		intent.putExtra(ServerRequests.RESPONSE_FIELD_GAME_DIFFICUALTY, Game.getDifficualty());

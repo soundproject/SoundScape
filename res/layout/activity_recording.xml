@@ -12,14 +12,49 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/game_header"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="40dp" />
     
     <!-- Body Container for title -->
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-	    
+	
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            
+		    <!-- player 1 -->
+		    <TextView 
+		        android:id="@+id/recording_textview_user"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:text="player1"
+		        android:textSize="20sp"
+		        android:gravity="center_horizontal" />
+		    
+		    <!-- versus -->
+		    <TextView 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="VS"
+		        android:textSize="20sp"
+		        android:gravity="center_horizontal" />
+		    
+		    <!-- player 2 -->
+		    <TextView 
+		        android:id="@+id/recording_textview_opponent"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:text="player2"
+		        android:textSize="20sp"
+		        android:gravity="center_horizontal" />
+            
+        </LinearLayout>
+        
 	    <!-- title -->
 	    <TextView 
 	        android:id="@+id/body_title"
@@ -92,6 +127,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/btn_save" />
+        android:src="@drawable/btn_send" />
 
 </LinearLayout>

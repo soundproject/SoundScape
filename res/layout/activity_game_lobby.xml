@@ -2,43 +2,63 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@drawable/background" >
+    android:background="@drawable/background_only_header" >
 
-    <include
-        android:id="@+id/header"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        layout="@layout/game_header" />
-
-    
     <TextView
         android:id="@+id/lobby_text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="100dp"
         android:text="@string/lobby_text_view_title"
         android:textSize="25sp" />
     
-    <Button
-        android:id="@+id/lobby_button_create_game"
-        android:background="@drawable/button_green"
-        android:layout_marginTop="20dp"
-        style="@style/gamelobby_button_game"
-        android:text="@string/lobby_button_create_game" />
-    
     <ScrollView 
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="250dp"
+        android:background="@color/White">
         
 	    <LinearLayout
 	        android:id="@+id/lobby_list_view_container"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="20dp"
+	        android:layout_height="wrap_content"
 	        android:orientation="vertical">
 	
 	    </LinearLayout>
     </ScrollView>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="or choose an opponent:"
+        android:textSize="25sp" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+        
+	    <Button 
+	        android:id="@+id/newgame_button_email"
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:background="@drawable/button_green"
+	        android:text="@string/newgame_button_email"
+	        android:textStyle="bold"
+	        android:textSize="20sp"
+	        android:layout_marginRight="10dp" />
+	    
+	    <Button 
+	        android:id="@+id/newgame_button_random"
+	        android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:background="@drawable/button_green"
+	        android:text="@string/newgame_button_random"
+	        android:textStyle="bold"
+	        android:textSize="20sp" />
+        
+    </LinearLayout>
 </LinearLayout>

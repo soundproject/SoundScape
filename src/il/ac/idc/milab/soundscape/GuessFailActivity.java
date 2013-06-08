@@ -9,8 +9,17 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class GameOverActivity extends Activity {
+/**
+ * This class represents the screen that the user sees after three strikes on
+ * guessing the recorded word. 
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
+public class GuessFailActivity extends Activity {
 
+	private Button m_OKButton;
+	private TextView m_WordTextView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,14 +30,13 @@ public class GameOverActivity extends Activity {
 	protected void onResume() {
 	
 		super.onResume();
-		
 		initButtons();
 		
 	}
-	
-	private Button m_OKButton;
-	private TextView m_WordTextView;
 
+	/**
+	 * This method Initialize the button to finish once the user press it
+	 */
 	private void initButtons() {
 		
 		this.m_OKButton = (Button) findViewById(R.id.game_over_ok_button);
@@ -42,7 +50,6 @@ public class GameOverActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				finish();
-				
 			}
 		});
 	}

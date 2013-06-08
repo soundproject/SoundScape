@@ -20,7 +20,6 @@ public class GuessSuccessActivity extends Activity {
 	private Button m_OKButton;
 	private TextView m_NumberOfStarsTextView;
 	private TextView m_NumberOfBombsTextView;
-	private ProgressBar m_LevelBarProgressBar;
 	
 	@Override
 	protected void onResume() {
@@ -34,30 +33,21 @@ public class GuessSuccessActivity extends Activity {
 		this.m_OKButton = (Button) findViewById(R.id.guess_success_back_to_menu_button);
 		this.m_NumberOfBombsTextView = (TextView) findViewById(R.id.guess_success_bomb_textView);
 		this.m_NumberOfStarsTextView = (TextView) findViewById(R.id.guess_success_stars_textView);
-		this.m_LevelBarProgressBar = (ProgressBar) findViewById(R.id.guess_success_progressBar);
-		
+
 		Bundle extras = getIntent().getExtras();		
 		String difficulty = extras.getString("difficulty");
 		
 		this.m_NumberOfBombsTextView.setText(String.format("%d", 2));		
 		this.m_NumberOfStarsTextView.setText(String.format("%d", difficulty));		
-		this.m_LevelBarProgressBar.setMax(100);		
-		this.m_LevelBarProgressBar.setProgress(25);
 		
 		this.m_OKButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				startGameLobbyActivity();
 				finish();
 				
 			}
 		});
-		
-	}
-
-	protected void startGameLobbyActivity() {
-		// TODO TAL - how do I start the gameLobby from here?
 		
 	}
 

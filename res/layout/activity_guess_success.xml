@@ -5,35 +5,13 @@
     tools:context=".GuessSuccessActivity"
     android:background="@drawable/background" >
 
-    <include
-        android:id="@+id/include1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        layout="@layout/game_header"
-        android:layout_marginBottom="20dp" />
-
     <TextView
         android:id="@+id/guess_success_correct_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/include1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="100dp"
         android:text="@string/guess_correct_label_string"
-        android:textSize="25sp" />
-
-    <TextView
-        android:id="@+id/guess_succcess_thank_you_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/guess_success_correct_textView"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:lines="2"
-        android:text="@string/guess_success_mapping_thanks_string"
         android:textSize="25sp" />
 
     <TextView

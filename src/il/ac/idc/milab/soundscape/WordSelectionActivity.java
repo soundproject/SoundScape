@@ -1,7 +1,6 @@
 package il.ac.idc.milab.soundscape;
 
 import il.ac.idc.milab.soundscape.library.Game;
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 
 import java.util.Locale;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 public class WordSelectionActivity extends Activity implements OnClickListener {
 
-	private static final String TAG = "WORD_SELECTION";
 	public static final String k_FreeStyle = "freestyle";
 
 	@Override
@@ -31,7 +29,7 @@ public class WordSelectionActivity extends Activity implements OnClickListener {
 		JSONObject request;
 		JSONObject response = null;
 		request = buildRequestForRandomWords();
-		response = NetworkUtils.serverRequests.sendRequestToServer(request, WordSelectionActivity.this);
+		response = ServerRequests.sendRequestToServer(request, WordSelectionActivity.this);
 		
 		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
 			JSONObject words = response.optJSONObject(ServerRequests.RESPONSE_FIELD_WORDS);

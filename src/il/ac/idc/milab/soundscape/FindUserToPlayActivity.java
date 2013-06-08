@@ -1,7 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.AlertDialogHelper;
 import il.ac.idc.milab.soundscape.library.Game;
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.User;
 
@@ -17,9 +17,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * This class represents the new game activity where the user search for either
+ * a random player to start a game with or a specific person (by e-mail)
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class FindUserToPlayActivity extends Activity {
 
-	private static final String TAG = "FIND_USER";
 	private boolean m_IsRandom = false;
 	private EditText m_Email;
 	private Button m_Submit;
@@ -33,20 +38,9 @@ public class FindUserToPlayActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		boolean randomPlayer = isRandomPlayer();
+		
 		if(randomPlayer) {
-			JSONObject request = buildRequestForPlayer(null);
-			JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, FindUserToPlayActivity.this);
-			
-			if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
-				JSONObject game;
-				try {
-					game = new JSONObject(response.optString(ServerRequests.RESPONSE_FIELD_GAME));
-					Game.init(game);
-					startGameActivity(Game.getOpponent());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
+			startGameWithPlayer(null);
 		}
 		
 		// If not random
@@ -61,40 +55,76 @@ public class FindUserToPlayActivity extends Activity {
 			public void onClick(View v) {
 				String email = m_Email.getText().toString();
 				
-				// Check if the given email address is valid and is not the user's email
-				if(emailFormatIsValid(email) && email.equalsIgnoreCase(User.getEmailAddress()) == false) {
-					JSONObject request = buildRequestForPlayer(email);
-					JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, FindUserToPlayActivity.this);
-					
-					if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
-						JSONObject game;
-						try {
-							game = new JSONObject(response.optString(ServerRequests.RESPONSE_FIELD_GAME));
-							Game.init(game);
-							startGameActivity(Game.getOpponent());
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
+				// Check if the given email address is valid and is not 
+				// the user's email
+				if(User.validateEmailFormat(email) && 
+						email.equalsIgnoreCase(
+								User.getEmailAddress()) == false) {
+					startGameWithPlayer(email);
 				}
 				else {
-					buildErrorDialog("Error:", "The email provided is invalid.");
+					String title = "Error:";
+					String message = "The email provided is invalid.";
+					AlertDialogHelper.buildErrorDialog(
+							FindUserToPlayActivity.this, 
+							title, 
+							message).show();
 				}
 			}
 		});
 	}
 
+	/**
+	 * This method given an e-mail, searches for a player with that e-mail to
+	 * start a game with, if e-mail provided is null, search for random player
+	 * @param i_Email the e-mail of the person you wish to start playing with
+	 * or null for random player
+	 */
+	private void startGameWithPlayer(String i_Email) {
+		JSONObject request = buildRequestForPlayer(i_Email);
+		JSONObject response = ServerRequests.sendRequestToServer(request, 
+				FindUserToPlayActivity.this);
+		
+		if(ServerRequests.isValidResponse(response)) {
+			JSONObject game;
+			try {
+				String gameDetails = response.getString(
+						ServerRequests.RESPONSE_FIELD_GAME);
+				game = new JSONObject(gameDetails);
+				Game.init(game);
+				startGameActivity(Game.getOpponent());
+			} catch (JSONException e) {
+				String title = "Error:";
+				String message = "Couldn't create the game requested. " + 
+						"Please try again";
+				AlertDialogHelper.buildErrorDialog(getApplicationContext(), 
+						title, 
+						message).show();
+			}
+		}
+	}
+
+	/**
+	 * This method is responsible for building the JSON request to start a game
+	 * with a player
+	 * @param i_Email the e-mail of the opponent you wish to start a game with
+	 * @return a JSONObject representing the request for a game against a player
+	 */
 	private JSONObject buildRequestForPlayer(String i_Email) {
 		
 		JSONObject request = new JSONObject();
 		try {
-			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_GET);
-			request.put(ServerRequests.REQUEST_SUBJECT, ServerRequests.REQUEST_SUBJECT_EMAIL);
-			request.put(ServerRequests.REQUEST_FIELD_EMAIL, User.getEmailAddress());
+			request.put(ServerRequests.REQUEST_ACTION, 
+					ServerRequests.REQUEST_ACTION_GET);
+			request.put(ServerRequests.REQUEST_SUBJECT, 
+					ServerRequests.REQUEST_SUBJECT_EMAIL);
+			request.put(ServerRequests.REQUEST_FIELD_EMAIL, 
+					User.getEmailAddress());
 			
 			// If random player needed
 			if(i_Email == null) {
-				request.put(ServerRequests.REQUEST_FIELD_OPPONENT, ServerRequests.REQUEST_FIELD_RANDOM);
+				request.put(ServerRequests.REQUEST_FIELD_OPPONENT, 
+						ServerRequests.REQUEST_FIELD_RANDOM);
 			}
 			else {
 				request.put(ServerRequests.REQUEST_FIELD_OPPONENT, i_Email);
@@ -108,50 +138,25 @@ public class FindUserToPlayActivity extends Activity {
 		return request;
 	}
 
-
+	/**
+	 * This method starts the game against the opponent we got
+	 * @param i_OpponentEmail the opponent e-mail of this game
+	 */
 	private void startGameActivity(String i_OpponentEmail) {
-		Intent intent = new Intent(getApplicationContext(), MatchActivity.class);
+		Intent intent = new Intent(getApplicationContext(), WordSelectionActivity.class);
 		startActivity(intent);
 		finish();
 	}
 
+	/**
+	 * This is a helper method to check if the user wants a random player
+	 * @return true is user requested a random player, false otherwise
+	 */
 	private boolean isRandomPlayer() {
 		Bundle extras = getIntent().getExtras();
 		m_IsRandom = extras.getBoolean("random");
 		
 		return m_IsRandom;
-	}
-	
-	/**
-	 * This method checks a given string if it's a correct email format
-	 * @param i_Email the string we wish to check
-	 * @return true if the string represents a valid email format, false otherwise
-	 * TODO: Make this method use regex to check for email validation
-	 */
-	private boolean emailFormatIsValid(String i_Email) {
-		boolean isValid = false;
-		
-		int index = i_Email.indexOf("@");
-		
-		// Checks if there is a "@" somewhere in the string
-		if(index != -1 && index > 0 && index < i_Email.length()) {
-			isValid = true;
-		}
-		else {
-			String message = "Incorrect Email Format"; 
-			buildErrorDialog(null, message).show();
-		}
-		
-		return isValid;
-	}
-	
-	private AlertDialog buildErrorDialog(String title, String message) {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this)
-		.setTitle(title)
-		.setMessage(message)
-		.setNeutralButton("Close", null);
-		
-		return alert.create();
 	}
 
 	@Override

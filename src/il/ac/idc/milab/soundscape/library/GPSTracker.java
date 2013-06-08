@@ -12,6 +12,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
  
+/**
+ * This class represents a GPS tracker for the android device.
+ * It hold all the basic needs to get location related data from the device
+ * 
+ * Note: This was not implemented in the game but left here in case we want to 
+ * add location based details in the future
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class GPSTracker extends Service implements LocationListener {
  
     private final Context mContext;
@@ -30,10 +39,10 @@ public class GPSTracker extends Service implements LocationListener {
     double longitude; // longitude
  
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
  
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BETWEEN_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BETWEEN_UPDATES = 1000 * 60 * 1;
  
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -68,7 +77,8 @@ public class GPSTracker extends Service implements LocationListener {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     if (locationManager != null) {
                         location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                .getLastKnownLocation(
+                                		LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
@@ -84,7 +94,8 @@ public class GPSTracker extends Service implements LocationListener {
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         if (locationManager != null) {
                             location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    .getLastKnownLocation(
+                                    		LocationManager.GPS_PROVIDER);
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
@@ -154,18 +165,22 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.setTitle("GPS is settings");
  
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage("GPS is not enabled. " +
+        		"Do you want to go to settings menu?");
  
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Settings", 
+        		new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                Intent intent = new Intent(
+                		Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
             }
         });
  
         // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Cancel", 
+        		new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             dialog.cancel();
             }
@@ -176,23 +191,25 @@ public class GPSTracker extends Service implements LocationListener {
     }
  
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location i_Location) {
     }
  
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled(String i_Provider) {
     }
  
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onProviderEnabled(String i_Provider) {
     }
  
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onStatusChanged(String i_Provider,
+    		int i_Status, 
+    		Bundle i_Extras) {
     }
  
     @Override
-    public IBinder onBind(Intent arg0) {
+    public IBinder onBind(Intent i_Arg) {
         return null;
     }
  

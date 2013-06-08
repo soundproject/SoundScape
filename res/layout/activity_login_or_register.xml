@@ -40,32 +40,34 @@
 				android:layout_height="wrap_content"
 				android:layout_alignParentLeft="true"
 				android:layout_centerVertical="true"
-				android:text="Already\nregistered?"
-				android:textSize="12sp"
+				android:text="Existing\nuser?"
+				android:textSize="15sp"
 				android:gravity="center_vertical"
 				android:drawableLeft="@drawable/navigation_back"
 				android:visibility="invisible"/>
             
 	        <!-- Title -->
-	        <TextView 
+
+	        <TextView
 	            android:id="@+id/login_title"
-		        android:layout_width="match_parent"
-		        android:layout_height="50dp"
-		        android:text="Welcome!"
-		        android:textSize="15sp"
-		        android:gravity="center"/>
+	            android:layout_width="match_parent"
+	            android:layout_height="50dp"
+	            android:gravity="center"
+	            android:text="Log In"
+	            android:textSize="30sp" />
             
             <!-- Move right -->
-            <TextView 
+
+            <TextView
                 android:id="@+id/login_move_to_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-				android:layout_alignParentRight="true"
-				android:layout_centerVertical="true"
-                android:text="New\nuser?"
-                android:textSize="12sp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/navigation_forward"
                 android:gravity="center_vertical"
-                android:drawableRight="@drawable/navigation_forward"/>
+                android:text="New\nuser?"
+                android:textSize="15sp" />
                             
         </RelativeLayout>
         

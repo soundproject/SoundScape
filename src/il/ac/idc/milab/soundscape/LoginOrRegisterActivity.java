@@ -1,5 +1,6 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.AlertDialogHelper;
 import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.User;
@@ -8,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -20,9 +20,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+/**
+ * This class represents the login/registration screen logic
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class LoginOrRegisterActivity extends Activity {
 
-	private static final String TAG = "MAIN";
 	private static final String MSG_REGISTRATION = "Registration";
 	private static final String MSG_LOGIN = "Log In";
 	
@@ -41,7 +45,8 @@ public class LoginOrRegisterActivity extends Activity {
 		
 		// Init the connectivity manager
 		ConnectivityManager connectivityManager 
-		        = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		        = (ConnectivityManager) getSystemService(
+		        		Context.CONNECTIVITY_SERVICE);
 				NetworkUtils.init(connectivityManager);
 		
 		// Initiate our user profile
@@ -50,7 +55,8 @@ public class LoginOrRegisterActivity extends Activity {
 		
 		// Try and login in case we already have the user credentials
 		if(m_User.isKnown() && 
-				successfulRequestToServer(buildRequestByAction(ServerRequests.REQUEST_ACTION_LOGIN))) {
+				successfulRequestToServer(buildRequestByAction(
+						ServerRequests.REQUEST_ACTION_LOGIN))) {
 			startGameLobbyActivity();
 		}
 		// Show the login/registration screen
@@ -63,20 +69,28 @@ public class LoginOrRegisterActivity extends Activity {
 		initLoginForm();
 	}
 	
+	/**
+	 * This method initialize the login form with the proper fields
+	 */
 	private void initLoginForm() {
-		TextView moveToRegister = (TextView)findViewById(R.id.login_move_to_register);
+		TextView moveToRegister = (TextView)findViewById(
+				R.id.login_move_to_register);
 		moveToRegister.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				initRegistrationForm();
 				updateLoginTitle(MSG_REGISTRATION);
-				TextView moveToRegister = (TextView)findViewById(R.id.login_move_to_register);
+				TextView moveToRegister = (TextView)findViewById(
+						R.id.login_move_to_register);
 				moveToRegister.setVisibility(View.INVISIBLE);
-				TextView moveToLogin = (TextView)findViewById(R.id.login_move_to_login);
+				TextView moveToLogin = (TextView)findViewById(
+						R.id.login_move_to_login);
 				moveToLogin.setVisibility(View.VISIBLE);
-				m_ViewFlipper.setInAnimation(LoginOrRegisterActivity.this, R.anim.view_transition_in_right);
-				m_ViewFlipper.setOutAnimation(LoginOrRegisterActivity.this, R.anim.view_transition_out_right);
+				m_ViewFlipper.setInAnimation(LoginOrRegisterActivity.this, 
+						R.anim.view_transition_in_right);
+				m_ViewFlipper.setOutAnimation(LoginOrRegisterActivity.this, 
+						R.anim.view_transition_out_right);
 				m_ViewFlipper.showPrevious();
 			}
 		});
@@ -95,7 +109,8 @@ public class LoginOrRegisterActivity extends Activity {
 				if(emailFormatIsValid(User.getEmailAddress()) && 
 						passwordFormatIsValid(User.getPassword())) {
 					try {
-						JSONObject request = buildRequestByAction(ServerRequests.REQUEST_ACTION_LOGIN);
+						JSONObject request = buildRequestByAction(
+								ServerRequests.REQUEST_ACTION_LOGIN);
 						boolean success = successfulRequestToServer(request);
 						if(success) {
 							startGameLobbyActivity();
@@ -108,6 +123,9 @@ public class LoginOrRegisterActivity extends Activity {
 		});
 	}
 	
+	/**
+	 * This method initialize the registration form with the proper fields
+	 */
 	private void initRegistrationForm() {
 		TextView moveToLogin = (TextView)findViewById(R.id.login_move_to_login);
 		moveToLogin.setOnClickListener(new View.OnClickListener() {
@@ -116,24 +134,36 @@ public class LoginOrRegisterActivity extends Activity {
 			public void onClick(View v) {
 				initLoginForm();
 				updateLoginTitle(MSG_LOGIN);
-				TextView moveToLogin = (TextView)findViewById(R.id.login_move_to_login);
+				TextView moveToLogin = (TextView)findViewById(
+						R.id.login_move_to_login);
+				
 				moveToLogin.setVisibility(View.INVISIBLE);
-				TextView moveToRegister = (TextView)findViewById(R.id.login_move_to_register);
+				TextView moveToRegister = (TextView)findViewById(
+						R.id.login_move_to_register);
 				moveToRegister.setVisibility(View.VISIBLE);
-				m_ViewFlipper.setInAnimation(LoginOrRegisterActivity.this, R.anim.view_transition_in_left);
-				m_ViewFlipper.setOutAnimation(LoginOrRegisterActivity.this, R.anim.view_transition_out_left);
+				m_ViewFlipper.setInAnimation(LoginOrRegisterActivity.this, 
+						R.anim.view_transition_in_left);
+				m_ViewFlipper.setOutAnimation(LoginOrRegisterActivity.this, 
+						R.anim.view_transition_out_left);
 				m_ViewFlipper.showNext();
 			}
 		});
 		
-		m_UserEmailAddress = (EditText)findViewById(R.id.registration_edittext_email);
-		m_UserPassword = (EditText)findViewById(R.id.registration_edittext_password);
-		m_UserRePassword = (EditText)findViewById(R.id.registration_edittext_repassword);
-		m_SubmitButton = (Button)findViewById(R.id.registration_button_submit);
+		m_UserEmailAddress = (EditText)findViewById(
+				R.id.registration_edittext_email);
+		
+		m_UserPassword = (EditText)findViewById(
+				R.id.registration_edittext_password);
+		
+		m_UserRePassword = (EditText)findViewById(
+				R.id.registration_edittext_repassword);
+		
+		m_SubmitButton = (Button)findViewById(
+				R.id.registration_button_submit);
 		m_SubmitButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View i_View) {
 				User.setEmailAddress(m_UserEmailAddress.getText().toString());
 				User.setPassword(m_UserPassword.getText().toString());
 				
@@ -142,7 +172,8 @@ public class LoginOrRegisterActivity extends Activity {
 						passwordFormatIsValid(User.getPassword()) &&
 						passwordsMatch()) {
 					try {
-						JSONObject request = buildRequestByAction(ServerRequests.REQUEST_ACTION_REGISTER);
+						JSONObject request = buildRequestByAction(
+								ServerRequests.REQUEST_ACTION_REGISTER);
 						boolean success = successfulRequestToServer(request);
 						if(success) {
 							startGameLobbyActivity();
@@ -155,6 +186,11 @@ public class LoginOrRegisterActivity extends Activity {
 		});
 	}
 
+	/**
+	 * This method checks whether the password that was entered in both fields
+	 * of the registration form match
+	 * @return true if passwords match, false otherwise
+	 */
 	protected boolean passwordsMatch() {
 		boolean isValid = false;
 		String password = m_UserPassword.getText().toString();
@@ -164,18 +200,30 @@ public class LoginOrRegisterActivity extends Activity {
 			isValid = true;
 		}
 		else {
-			buildErrorDialog(null, "Passwords do not match.").show();
+			String title = null;
+			String message = "Passwords do not match.";
+			AlertDialogHelper.buildErrorDialog(LoginOrRegisterActivity.this, 
+					title, 
+					message).show();
 		}
 		
 		return isValid;
 	}
 
-	protected JSONObject buildRequestByAction(String action) {
+	/**
+	 * This method responsible for building a request based on the specified
+	 * action (Login/Registration)
+	 * @param i_Action
+	 * @return
+	 */
+	protected JSONObject buildRequestByAction(String i_Action) {
 		JSONObject request = new JSONObject();
 		try {
-			request.put(ServerRequests.REQUEST_ACTION, action);
-			request.put(ServerRequests.REQUEST_FIELD_EMAIL, User.getEmailAddress());
-			request.put(ServerRequests.REQUEST_FIELD_PASSWORD, User.getPassword());
+			request.put(ServerRequests.REQUEST_ACTION, i_Action);
+			request.put(ServerRequests.REQUEST_FIELD_EMAIL, 
+					User.getEmailAddress());
+			request.put(ServerRequests.REQUEST_FIELD_PASSWORD, 
+					User.getPassword());
 		}
 		catch(JSONException e) {
 			request = null;
@@ -185,42 +233,53 @@ public class LoginOrRegisterActivity extends Activity {
 		return request;
 	}
 
-
-	protected boolean passwordFormatIsValid(String password) {
-		// TODO: add more logic if required
-		boolean isValid = false;
+	/**
+	 * This method checks a given string if it's a correct password format
+	 * @param i_Password the string we wish to check
+	 * @return true if the string represents a valid password format, 
+	 * false otherwise
+	 */
+	protected boolean passwordFormatIsValid(String i_Password) {
+		boolean isValid = User.validatePasswordFormat(i_Password);
 		
-		if(password.length() == 0) {
-			String message = "Password cannot be empty."; 
-			buildErrorDialog(null, message).show();
+		if(isValid == false) {
+			String title = null;
+			String message = "Incorrect password format."; 
+			AlertDialogHelper.buildErrorDialog(LoginOrRegisterActivity.this, 
+					title, 
+					message).show();
 		}
-		else {
-			isValid = true;
-		}
+
 		return isValid;
 	}
 
-	protected void updateLoginTitle(String message) {
+	/**
+	 * This is a helper method responsible to update the title based on the
+	 * screen we are currently at (login/registration)
+	 * @param i_Title the title
+	 */
+	protected void updateLoginTitle(String i_Title) {
 		TextView title = (TextView)findViewById(R.id.login_title);
-		title.setText(message);
+		title.setText(i_Title);
 	}
 
 	/**
 	 * This method checks the email with our DB and returns whether it is there
-	 * @param i_Request 
+	 * @param i_Request a JSONObject representing the request to the server
 	 * @return true if the email is already in our DB, false otherwise
-	 * @throws Exception 
 	 */
 	private boolean successfulRequestToServer(JSONObject i_Request) {
 		boolean success = false;
 		if(i_Request != null) {
 			JSONObject response = null;
-				response = NetworkUtils.serverRequests.sendRequestToServer(i_Request, LoginOrRegisterActivity.this);
-				if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
-					success = true;
-					String token = response.optString(ServerRequests.RESPONSE_FIELD_TOKEN);
-					User.setToken(token);
-				}
+			response = ServerRequests.sendRequestToServer(i_Request, 
+					LoginOrRegisterActivity.this);
+			if(ServerRequests.isValidResponse(response)) {
+				success = true;
+				String token = response.optString(
+						ServerRequests.RESPONSE_FIELD_TOKEN);
+				User.setToken(token);
+			}
 		}
 		
 		return success;
@@ -230,33 +289,21 @@ public class LoginOrRegisterActivity extends Activity {
 	/**
 	 * This method checks a given string if it's a correct email format
 	 * @param i_Email the string we wish to check
-	 * @return true if the string represents a valid email format, false otherwise
-	 * TODO: Make this method use regex to check for email validation
+	 * @return true if the string represents a valid email format, false 
+	 * otherwise
 	 */
 	private boolean emailFormatIsValid(String i_Email) {
-		boolean isValid = false;
+		boolean isValid = User.validateEmailFormat(i_Email);
 		
-		int index = i_Email.indexOf("@");
-		
-		// Checks if there is a "@" somewhere in the string
-		if(index != -1 && index > 0 && index < i_Email.length()) {
-			isValid = true;
-		}
-		else {
-			String message = "Incorrect Email Format"; 
-			buildErrorDialog(null, message).show();
+		if(isValid == false) {
+			String title = null;
+			String message = "Incorrect Email Format."; 
+			AlertDialogHelper.buildErrorDialog(LoginOrRegisterActivity.this, 
+					title, 
+					message).show();
 		}
 		
 		return isValid;
-	}
-	
-	private AlertDialog buildErrorDialog(String title, String message) {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this)
-		.setTitle(title)
-		.setMessage(message)
-		.setNeutralButton("Close", null);
-		
-		return alert.create();
 	}
 
 	/**

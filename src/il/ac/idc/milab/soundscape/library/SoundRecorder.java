@@ -5,19 +5,25 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.media.MediaRecorder;
 
+/**
+ * This class represents the media recorder of the device
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class SoundRecorder {
 
-	private static final String TAG = "SOUND_RECORDER";
 	private MediaRecorder m_MediaRecorder = null;
 	private int m_MaxRecordingLengthInMillis = 0;
 	private boolean m_IsRecording = false;
 	private File m_FileDirectory;
 	private String m_FileName;
 
-	public SoundRecorder(File i_FileDirectory, int i_MaxRecordingLengthInMillis) {
+	public SoundRecorder(File i_FileDirectory, 
+			int i_MaxRecordingLengthInMillis) {
 		m_FileDirectory = i_FileDirectory;
 		m_MaxRecordingLengthInMillis = i_MaxRecordingLengthInMillis;
 	}
@@ -42,7 +48,8 @@ public class SoundRecorder {
 	 * @return a string representing the absolute path to the file
 	 */
 	private String generateNextFile() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", 
+				Locale.US);
 		Date date = new Date();
 		m_FileName = String.format("recording_%s.amr",
 				dateFormat.format(date));

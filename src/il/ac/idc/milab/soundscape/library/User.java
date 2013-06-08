@@ -6,7 +6,7 @@ import android.util.Log;
 
 /**
  * This class represents the user playing this game
- * @author Tal
+ * @author Tal Kammer & Gadi Ickowicz
  *
  */
 public class User {
@@ -114,5 +114,42 @@ public class User {
 		Log.d(TAG, "Email: " + m_EmailAddress);
 		Log.d(TAG, "Password: " + m_Password);
 		Log.d(TAG, "Token: " + m_Token);
+	}
+	
+	/**
+	 * This is a helper method responsible for checking the format of an e-mail
+	 * @param i_Email a string representing an e-mail address we wish to check 
+	 * @return true, if the format is valid, false otherwise
+	 * TODO: if a stronger format validation will be needed, we should consider
+	 * moving to regex and implement something like: 
+	 * [a-zA-Z][a-zA-Z0-9-_.]{1,20}@[a-zA-Z0-9]{2,20}(\.[a-zA-Z]{2,5}){1,2}
+	 */
+	public static boolean validateEmailFormat(String i_Email) {
+		boolean isValid = false;
+		
+		int index = i_Email.indexOf("@");
+		
+		// Checks if there is a "@" somewhere in the string
+		if(index != -1 && index > 0 && index < i_Email.length()) {
+			isValid = true;
+		}
+		
+		return isValid;
+	}
+	
+	/**
+	 * This is a helper method responsible for checking the format of a password
+	 * @param i_Password a string representing a password
+	 * @return true, if the format is valid, false otherwise
+	 * TODO: add more logic if required
+	 */
+	public static boolean validatePasswordFormat(String i_Password) {
+		boolean isValid = false;
+		
+		if(i_Password.length() != 0) {
+			isValid = true;
+		}
+		
+		return isValid;
 	}
 }

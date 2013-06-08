@@ -1,7 +1,7 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.AlertDialogHelper;
 import il.ac.idc.milab.soundscape.library.Game;
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.SoundPlayer;
 import il.ac.idc.milab.soundscape.library.SoundRecorder;
@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONException;
@@ -34,10 +35,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+
+/**
+ * This class represents the Recording activity logic. it handles the sound
+ * recording and sound player.
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class RecordingActivity extends Activity {
 
-	private static final String TAG = "SOUND_RECORDING";
 	private static final int MAX_RECORDING_TIME_IN_MILLIS = 20000;
 	
 	private SoundRecorder m_SoundRecorder = null;
@@ -90,16 +98,33 @@ public class RecordingActivity extends Activity {
 					onRecord(false);
 				}
 			};
-
 			
+			initGameTitle();
 			initControlButtons();
 		}
 		else {
+			String title = "Oops..";
+			String message = "There seems to be a problem finding the word " + 
+					"to record, please try again.";
+			AlertDialogHelper.buildErrorDialog(RecordingActivity.this, 
+					title, 
+					message).show();
 			finish();
 		}
 	}
 	
-    @Override
+	/**
+	 * This method init the recording screen player vs player title
+	 */
+    private void initGameTitle() {
+    	TextView user = (TextView)findViewById(R.id.recording_textview_user);
+    	TextView opponent = (TextView)findViewById(R.id.recording_textview_opponent);
+    	
+    	user.setText(Game.getUser().split("@")[0]);
+    	opponent.setText(Game.getOpponent().split("@")[0]);
+	}
+
+	@Override
     public void onResume() {
         super.onResume();
     }
@@ -123,7 +148,7 @@ public class RecordingActivity extends Activity {
 			LinearLayout row = (LinearLayout)findViewById(layoutId);
 			row.setVisibility(View.VISIBLE);
 
-			String word = words[i].toUpperCase();
+			String word = words[i].toUpperCase(Locale.US);
 
 			// Remove the excessive views
 			while(row.getChildCount() > word.length()) {
@@ -176,8 +201,37 @@ public class RecordingActivity extends Activity {
 				    .setView(input)
 				    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int whichButton) {
-				            Game.setWord(input.getText().toString());
-				            saveAndSendFile();
+				        	String phrase = input.getText().toString();
+				            String[] words = phrase.split(" ");
+				            String msg = null;
+				            boolean isValidPhrase = true;
+				            // If there are less than 3 words
+				            if(words.length < 3) {
+					            for(int i = 0; i < words.length; i++) {
+					            	// and each word is less than 10 chars
+					            	if(words[i].length() > 10) {
+					            		isValidPhrase = false;
+					            		msg = "Only words under 10 letters are allowed.";
+					            		break;
+					            	}
+					            }
+				            }
+				            else {
+				            	isValidPhrase = false;
+				            	msg = "Only 3 words are allowed.";
+				            }
+				            
+				            if(isValidPhrase) {
+				            	Game.setWord(phrase);
+				            	saveAndSendFile();
+				            }
+				            else {
+								new AlertDialog.Builder(RecordingActivity.this)
+							    .setMessage(msg)
+							    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							        public void onClick(DialogInterface dialog, int whichButton) {}}
+							    ).show();
+				            }
 				        }
 				    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int whichButton) {
@@ -272,7 +326,7 @@ public class RecordingActivity extends Activity {
 		editor.commit();
 
 		JSONObject request = buildRequestToSendFile();
-		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, RecordingActivity.this);
+		JSONObject response = ServerRequests.sendRequestToServer(request, RecordingActivity.this);
 		
 		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
 			editor.remove(m_SoundRecorder.getFileName());
@@ -342,10 +396,8 @@ public class RecordingActivity extends Activity {
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 

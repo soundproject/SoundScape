@@ -1,8 +1,8 @@
 package il.ac.idc.milab.soundscape;
 
+import il.ac.idc.milab.soundscape.library.AlertDialogHelper;
 import il.ac.idc.milab.soundscape.library.Game;
 import il.ac.idc.milab.soundscape.library.JSONHelper;
-import il.ac.idc.milab.soundscape.library.NetworkUtils;
 import il.ac.idc.milab.soundscape.library.ServerRequests;
 import il.ac.idc.milab.soundscape.library.User;
 
@@ -17,32 +17,58 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
+/**
+ * This class represents the main lobby of the games.
+ * The player can see here all games that he/she are currently playing and 
+ * start a new game if he wishes
+ * @author Tal Kammer & Gadi Ickowicz
+ *
+ */
 public class GameLobbyActivity extends Activity {
 
-	private static final String TAG = "GAMELOBBY";
-	private Button m_ButtonCreateGame;
+	private boolean m_RandomGame = false;
+	private Button m_ButtonEmail;
+	private Button m_ButtonRandom;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_game_lobby);
-		m_ButtonCreateGame = (Button) findViewById(R.id.lobby_button_create_game);
-		m_ButtonCreateGame.setOnClickListener(new View.OnClickListener() {
+		m_ButtonEmail = (Button)findViewById(R.id.newgame_button_email);
+		m_ButtonEmail.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				startNewGameActivity();
+				// Create game by specifying an email address
+				m_RandomGame = false;
+				startFindUserToPlayActivity(m_RandomGame);
 			}
 		});
+		
+		m_ButtonRandom = (Button)findViewById(R.id.newgame_button_random);
+		m_ButtonRandom.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// Create a game with a random player
+				m_RandomGame = true;
+				startFindUserToPlayActivity(m_RandomGame);
+			}
+		});
+	}
+	
+	private void startFindUserToPlayActivity(boolean random) {
+		Intent intent = new Intent(this, FindUserToPlayActivity.class);
+		intent.putExtra("random", random);
+		startActivity(intent);
 	}
 	
 	@Override
@@ -50,9 +76,9 @@ public class GameLobbyActivity extends Activity {
 		super.onResume();
 		
 		JSONObject request = buildRequestForGameList();
-		JSONObject response = NetworkUtils.serverRequests.sendRequestToServer(request, GameLobbyActivity.this);
+		JSONObject response = ServerRequests.sendRequestToServer(request, GameLobbyActivity.this);
 		
-		if(response != null && response.optInt(ServerRequests.RESPONSE_FIELD_SUCCESS) == ServerRequests.RESPONSE_VALUE_SUCCESS) {
+		if(ServerRequests.isValidResponse(response)) {
 			populateLobbyWithGames(response);
 		}
 	}
@@ -68,7 +94,7 @@ public class GameLobbyActivity extends Activity {
 			
 			LinearLayout gamesContainer = (LinearLayout) findViewById(R.id.lobby_list_view_container);
 			gamesContainer.removeAllViews();
-			RelativeLayout game;
+			LinearLayout game;
 			
 			for (int i = 0; i < gameListArray.length(); i++) {
 				JSONObject gameDetails = gameListArray.getJSONObject(i);
@@ -78,90 +104,114 @@ public class GameLobbyActivity extends Activity {
 				
 				// Saving the game details to use when the user chose
 				game.setTag(gameDetails);
-				gamesContainer.addView(game);
+				
+				// Sort games that games where I can play will show at the top
+				String whosTurn = Game.getWhosTurn();
+				if(whosTurn.equalsIgnoreCase(User.getEmailAddress())) {
+					gamesContainer.addView(game, 0);
+				}
+				else {
+					gamesContainer.addView(game);
+				}
+				
 			}
 
 		} catch (JSONException e) {
-			e.printStackTrace();
+			String title = "Error:";
+			String message = "The was an error getting all games in the list"; 
+			AlertDialogHelper.buildErrorDialog(GameLobbyActivity.this, 
+					title, 
+					message).show();
 		}
 	}
 
-	private RelativeLayout createGameLayoutInstance() {
-		RelativeLayout game = new RelativeLayout(getApplicationContext());
-
-		RelativeLayout.LayoutParams params;
+	/**
+	 * This method creates a single line representing a single game between the
+	 * user and an opponent
+	 * @return a LinearLayout that represents a game
+	 */
+	private LinearLayout createGameLayoutInstance() {
+		LinearLayout game = new LinearLayout(getApplicationContext());
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		game.setBackgroundColor(getResources().getColor(R.color.AliceBlue));
+		game.setLayoutParams(params);
+		
 		TextView tvTurnCount = new TextView(getApplicationContext());
 		TextView tvOpponentName = new TextView(getApplicationContext());
 		TextView tvVersus = new TextView(getApplicationContext());
 		TextView tvMyName = new TextView(getApplicationContext());
 		Button button = new Button(getApplicationContext());
 
-		// Set the ID of all views
-		tvTurnCount.setId(100);
-		tvOpponentName.setId(101);
-		tvVersus.setId(102);
-		tvMyName.setId(103);
-		button.setId(104);
-
 		// Init turn count text view
-		params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params = new LinearLayout.LayoutParams(
+				0,
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				1f);
 
-		params.setMargins(10, 0, 0, 0);
-		params.addRule(RelativeLayout.CENTER_VERTICAL);
 		String turnCount = Game.getTurnCount();
 		tvTurnCount.setText(turnCount);
 		tvTurnCount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 		tvTurnCount.setTextColor(Color.BLACK);
+		tvTurnCount.setGravity(Gravity.CENTER);
 		tvTurnCount.setLayoutParams(params);
 
 		// Init the opponent name
-		params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params = new LinearLayout.LayoutParams(
+				0,
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				3f);
 
-		params.addRule(RelativeLayout.CENTER_VERTICAL);
-		params.addRule(RelativeLayout.LEFT_OF, tvVersus.getId());
 		String opponent = Game.getOpponent();
+		if(opponent.equalsIgnoreCase(User.getEmailAddress())) {
+			opponent = "You";
+		}
+		else {
+			opponent = opponent.split("@")[0];
+		}
 		opponent = opponent.split("@")[0];
 		tvOpponentName.setText(opponent);
 		tvOpponentName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 		tvOpponentName.setTextColor(Color.BLACK);
+		tvOpponentName.setGravity(Gravity.CENTER);
 		tvOpponentName.setLayoutParams(params);
 
 		// Init the Versus sign
-		params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
 
-		params.addRule(RelativeLayout.CENTER_IN_PARENT);
-		params.setMargins(10, 0, 10, 0);
 		tvVersus.setText("VS.");
 		tvVersus.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 		tvVersus.setTextColor(Color.BLACK);
+		tvVersus.setGravity(Gravity.CENTER);
 		tvVersus.setLayoutParams(params);
 
 		// Init the user name
-		params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params = new LinearLayout.LayoutParams(
+				0,
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				3f);
 
-		params.addRule(RelativeLayout.RIGHT_OF, tvVersus.getId());
-		params.addRule(RelativeLayout.CENTER_VERTICAL);
 		String user = Game.getUser();
-		user = user.split("@")[0];
+		if(user.equalsIgnoreCase(User.getEmailAddress())) {
+			user = "You";
+		}
+		else {
+			user = user.split("@")[0];
+		}
 		tvMyName.setText(user);
 		tvMyName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 		tvMyName.setTextColor(Color.BLACK);
+		tvMyName.setGravity(Gravity.CENTER);
 		tvMyName.setLayoutParams(params);
 
 		// Init the play button
-		params = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params.addRule(RelativeLayout.CENTER_VERTICAL);
+		params = new LinearLayout.LayoutParams(
+				0,
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				2f);
 		
 		String whosTurn = Game.getWhosTurn();
 		String buttonText = null;
@@ -172,23 +222,24 @@ public class GameLobbyActivity extends Activity {
 		}
 		else {
 			buttonText = "Waiting";
+			button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+			button.setTextColor(Color.BLACK);
 			button.setEnabled(false);
 		}
 
 		button.setText(buttonText);
+		button.setGravity(Gravity.CENTER);
 		button.setLayoutParams(params);
 
 		button.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// Update the chosen game details and launch Match activity
-				Intent intent = new Intent(getApplicationContext(),
-						MatchActivity.class);
-				RelativeLayout parent = (RelativeLayout)v.getParent();
+				// Update the chosen game details and launch game activity
+				LinearLayout parent = (LinearLayout)v.getParent();
 				JSONObject chosenGameDetails = (JSONObject)parent.getTag();
 				Game.init(chosenGameDetails);
-				startActivity(intent);
+				startGameActivity();
 			}
 		});
 		
@@ -200,12 +251,6 @@ public class GameLobbyActivity extends Activity {
 		game.addView(button);
 
 		return game;
-	}
-		
-	protected void startNewGameActivity() {
-		Intent intent = new Intent(getApplicationContext(),
-				CreateGameActivity.class);
-		startActivity(intent);
 	}
 	
 	@Override
@@ -220,7 +265,7 @@ public class GameLobbyActivity extends Activity {
 	 * @return a JSON object representing the user game list or null if 
 	 * response was not valid
 	 */
-	public JSONObject buildRequestForGameList() {
+	private JSONObject buildRequestForGameList() {
 		JSONObject request = new JSONObject();
 		try {
 			request.put(ServerRequests.REQUEST_ACTION, ServerRequests.REQUEST_ACTION_GET);
@@ -229,10 +274,34 @@ public class GameLobbyActivity extends Activity {
 			request.put(ServerRequests.REQUEST_FIELD_TOKEN, User.getToken());
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			String title = "Error:";
+			String message = "Couldn't build the request for the games."; 
+			AlertDialogHelper.buildErrorDialog(GameLobbyActivity.this, 
+					title, 
+					message).show();
 			request = null;
 		}
 
 		return request;
+	}
+	
+	/**
+	 * This method is responsible for starting the next activity according to
+	 * the state (guessing/recording)
+	 */
+	private void startGameActivity() {
+		Intent intent = null;
+		
+		if (Game.getState().equalsIgnoreCase("1")) {
+			intent = new Intent(getApplicationContext(), WordSelectionActivity.class);
+		} 
+		else if(Game.getState().equalsIgnoreCase("0")) {
+			intent = new Intent(getApplicationContext(), GuessWordActivity.class);
+		}
+		else {
+			finish();
+		}
+
+		startActivity(intent);
 	}
 }
